@@ -4,9 +4,10 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 
-// master
+// user interface
 
 public class MainActivity extends Activity {
+	private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -19,4 +20,15 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
+    
+    @Override
+    public void onPause(){
+    	super.onPause();
+    }
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    }
+    
 }
