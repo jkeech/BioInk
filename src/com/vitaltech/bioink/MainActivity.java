@@ -27,6 +27,7 @@ public class MainActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					Toast.makeText(getApplicationContext(), "start viz pressed", Toast.LENGTH_SHORT).show();
+			        new Discovery(getApplicationContext());
 				}
 			}
 		);
