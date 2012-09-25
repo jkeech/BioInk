@@ -8,7 +8,7 @@ public class SceneTest {
 
 	@Test
 	public void testUpdate() {
-		Scene scene = new Scene();
+		Scene scene = new Scene(1000);
 		
 		// add some dummy items
 		scene.update("user1",DataType.HEARTRATE,50);
