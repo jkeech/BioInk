@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 // user interface
@@ -20,7 +21,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "Main Activity created");
         setContentView(R.layout.activity_main);
-        this.vizButton=(Button)this.findViewById(R.id.button1);
+        this.vizButton=(Button)this.findViewById(R.id.vizButton);
         this.vizButton.setOnClickListener(
         	new OnClickListener() {
 				@Override
@@ -53,4 +54,18 @@ public class MainActivity extends Activity {
     	// resume data analysis
     }
     
+    public void changeRadioStatus(Boolean power){
+    	String radio="off.";
+    	if(power)
+    		radio="on.";
+    	((TextView)this.findViewById(R.id.radioTextView)).setText("Radio is "+radio);
+    }
+
+    public void changeDevicesPaired(Integer paired){
+    	((TextView)this.findViewById(R.id.pairedTextView)).setText("Devices paired: "+paired.toString());
+    }
+
+    public void changeDevicesAudible(Integer audible){
+    	((TextView)this.findViewById(R.id.audibleTextView)).setText("Devices audible: "+audible.toString());
+    }
 }

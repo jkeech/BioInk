@@ -13,7 +13,7 @@
         android:contentDescription="@string/bio_ink_logo" >
         
 	    <ImageView
-	        android:id="@+id/imageView1"
+	        android:id="@+id/logoImageView"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="center"
@@ -31,28 +31,28 @@
         android:weightSum="15" >
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/radioTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/radio_status" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/pairedTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/devices_paired" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/audibleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/devices_audible" />
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/vizButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
