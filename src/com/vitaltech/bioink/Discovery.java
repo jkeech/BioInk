@@ -24,11 +24,13 @@ public class Discovery {
 
 		context=_context;
 		activity=_activity;
-		new Thread(new Runnable() {
-			public void run() {
-				findDevices(btAdapter);
+		new Thread(
+			new Runnable() {
+				public void run() {
+					//findDevices(btAdapter);
+				}
 			}
-		}).start();
+		).start();
 	}
 	
 	public void findDevices(BluetoothAdapter _btAdapter){

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,12 +22,14 @@ public class MainActivity extends Activity {
 	private Button vizButton;
 	private Discovery discovery;
 
+	// **** Start Lifecycle ****
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(DEBUG) Log.d(TAG, "__onCreate()__");
 
-        if(DEBUG) Log.d(TAG, "Main Activity created");
-
+        //Remove title bar
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
 		BluetoothAdapter btAdapter=BluetoothAdapter.getDefaultAdapter();
@@ -51,10 +54,27 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
+    public void onStart() {
+    	super.onStart();
+    	if(DEBUG) Log.d(TAG,"__onStart()__");
     }
+
+    @Override
+    public void onRestart() {
+    	super.onRestart();
+    	if(DEBUG) Log.d(TAG,"__onRestart()__");
+    }
+
+    @Override
+    protected void onResume() {
+    	super.onResume();
+        if(DEBUG) Log.d(TAG, "__onResume()__");
+    	// resume screen state
+    	// resume bluetooth traffic
+    	// resume data analysis
+    }
+
+    // **** Activity is running at this point ****
     
     @Override
     public void onPause(){
@@ -65,13 +85,21 @@ public class MainActivity extends Activity {
     	// pause data analysis
     }
     
+    public void onStop() {
+    	super.onStop();
+    	if(DEBUG) Log.d(TAG, "__onStop()__");
+    }
+
+    public void onDestroy() {
+    	super.onStop();
+    	if(DEBUG) Log.d(TAG, "__onDestroy()__");
+    }
+    // **** End Lifecycle ****    
+
     @Override
-    protected void onResume() {
-    	super.onResume();
-        if(DEBUG) Log.d(TAG, "__onResume()__");
-    	// resume screen state
-    	// resume bluetooth traffic
-    	// resume data analysis
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return true;
     }
     
     public void changeRadioStatus(Boolean power){
