@@ -24,13 +24,7 @@ public class Discovery {
 
 		context=_context;
 		activity=_activity;
-		new Thread(
-			new Runnable() {
-				public void run() {
-					//findDevices(btAdapter);
-				}
-			}
-		).start();
+		findDevices(btAdapter);
 	}
 	
 	public void findDevices(BluetoothAdapter _btAdapter){
@@ -45,11 +39,31 @@ public class Discovery {
         // If BT is not on, request that it be enabled.
         // setupChat() will then be called during onActivityResult
         if (!btAdapter.isEnabled()) {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            activity.startActivityForResult(enableIntent, 3); // 3==REQUEST_ENABLE_BT
+            Intent enableIntent=new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            if(enableIntent==null){
+            	Log.e(TAG, "enable intent is null");
+            	return;
+            }
+			Log.d(TAG, "start bluetooth intent");
+            ((Activity)context).startActivityForResult(enableIntent, 1); // 3==REQUEST_ENABLE_BT
+//            while(btAdapter.getState()!=BluetoothAdapter.STATE_ON || btAdapter.getState()!=BluetoothAdapter.STATE_TURNING_ON){
+//    			Log.e(TAG, "turning on bluetooth <= "+btAdapter.getState());
+//            	try {
+//            		Thread.sleep(100);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//					Log.e(TAG, e.toString());
+//				}
+//            }
+ //           activity=((Activity)context).getParent();
+//            if(activity!=null){
+//            	activity.startActivityForResult(enableIntent, 1);
+//            }else{
+//    			Toast.makeText(context.getApplicationContext(),"activity == null",Toast.LENGTH_LONG).show();
+//            }
         }
 		
-		Log.d(TAG, "bluetooth adapter: "+btAdapter.getName()+", "+btAdapter.getState()+", "+btAdapter.getScanMode());
+		Log.d(TAG, "bluetooth adapter: "+btAdapter.getName()+", state: "+btAdapter.getState()+", scanmode: "+btAdapter.getScanMode());
 
 		Set<BluetoothDevice> pairedDevices=btAdapter.getBondedDevices();
 		Log.d(TAG, "bluetooth set size: "+pairedDevices.size());

@@ -3,6 +3,10 @@ package com.vitaltech.bioink;
 import android.os.Bundle;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -21,6 +25,9 @@ public class MainActivity extends Activity {
 
 	private Button vizButton;
 	private Discovery discovery;
+	
+	private BroadcastReceiver broadcastReceiver;
+	private IntentFilter intentFilter;
 
 	// **** Start Lifecycle ****
     @Override
@@ -39,7 +46,28 @@ public class MainActivity extends Activity {
 			finish();
 		}
 
-        discovery=new Discovery(getApplicationContext(), getParent(), btAdapter);
+		intentFilter=new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED);
+		broadcastReceiver=new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context contxt, Intent intent) {
+				if(DEBUG) Log.d(TAG, "broadcast received");
+				switch(intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)){
+				case BluetoothAdapter.STATE_ON:
+				case BluetoothAdapter.STATE_TURNING_ON:
+					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => on");
+					changeRadioStatus(true);
+					break;
+				case BluetoothAdapter.STATE_OFF:
+				case BluetoothAdapter.STATE_TURNING_OFF:
+				default:
+					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => off");
+					changeRadioStatus(false);
+					break;
+				}
+			}
+		};
+
+		discovery=new Discovery(this, getParent(), btAdapter);
 		
 		this.vizButton=(Button)this.findViewById(R.id.vizButton);
         this.vizButton.setOnClickListener(
@@ -54,43 +82,46 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    public void onStart() {
-    	super.onStart();
-    	if(DEBUG) Log.d(TAG,"__onStart()__");
-    }
-
-    @Override
-    public void onRestart() {
+    public void onRestart() { // Activity was stopped; step to onStart()
     	super.onRestart();
     	if(DEBUG) Log.d(TAG,"__onRestart()__");
     }
 
     @Override
-    protected void onResume() {
+    public void onStart() { // Make Activity visible
+    	super.onStart();
+    	if(DEBUG) Log.d(TAG,"__onStart()__");
+    	// start bluetooth module
+    }
+
+    @Override
+    protected void onResume() { // Activity was partially visible
+        this.registerReceiver(broadcastReceiver, intentFilter);
     	super.onResume();
         if(DEBUG) Log.d(TAG, "__onResume()__");
-    	// resume screen state
     	// resume bluetooth traffic
-    	// resume data analysis
+    	// start data analysis
+    	// start screen visualization
     }
 
     // **** Activity is running at this point ****
     
     @Override
-    public void onPause(){
+    public void onPause(){ // Activity was visible but now is now partially visible
+        this.unregisterReceiver(broadcastReceiver);
     	super.onPause();
         if(DEBUG) Log.d(TAG, "__onPause()__");
-    	// save screen state
     	// pause bluetooth traffic
-    	// pause data analysis
+    	// stop data analysis
+    	// stop screen visualization
     }
     
-    public void onStop() {
+    public void onStop() { // Activity was partially visible but is now hidden
     	super.onStop();
     	if(DEBUG) Log.d(TAG, "__onStop()__");
     }
 
-    public void onDestroy() {
+    public void onDestroy() { // Activity was hidden but is now being stopped alltogether
     	super.onStop();
     	if(DEBUG) Log.d(TAG, "__onDestroy()__");
     }
