@@ -85,6 +85,7 @@ public class MainActivity extends Activity {
     public void onRestart() { // Activity was stopped; step to onStart()
     	super.onRestart();
     	if(DEBUG) Log.d(TAG,"__onRestart()__");
+    	changeRadioStatus(true);
     }
 
     @Override
@@ -92,6 +93,7 @@ public class MainActivity extends Activity {
     	super.onStart();
     	if(DEBUG) Log.d(TAG,"__onStart()__");
     	// start bluetooth module
+    	changeRadioStatus(false);
     }
 
     @Override
