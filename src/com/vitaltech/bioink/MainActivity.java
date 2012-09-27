@@ -46,7 +46,9 @@ public class MainActivity extends Activity {
 			finish();
 		}
 
-		intentFilter=new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED);
+		intentFilter=new IntentFilter();
+		intentFilter.addAction(android.bluetooth.BluetoothAdapter.ACTION_STATE_CHANGED);
+		
 		broadcastReceiver=new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context contxt, Intent intent) {
@@ -66,6 +68,7 @@ public class MainActivity extends Activity {
 				}
 			}
 		};
+		registerReceiver(broadcastReceiver, intentFilter);
 
 		discovery=new Discovery(this, getParent(), btAdapter);
 		
@@ -98,7 +101,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onResume() { // Activity was partially visible
-        this.registerReceiver(broadcastReceiver, intentFilter);
+        registerReceiver(broadcastReceiver, intentFilter);
     	super.onResume();
         if(DEBUG) Log.d(TAG, "__onResume()__");
     	// resume bluetooth traffic
@@ -110,7 +113,7 @@ public class MainActivity extends Activity {
     
     @Override
     public void onPause(){ // Activity was visible but now is now partially visible
-        this.unregisterReceiver(broadcastReceiver);
+        unregisterReceiver(broadcastReceiver);
     	super.onPause();
         if(DEBUG) Log.d(TAG, "__onPause()__");
     	// pause bluetooth traffic
