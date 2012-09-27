@@ -1,6 +1,7 @@
 package com.vitaltech.bioink;
 
 
+import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,7 +19,7 @@ public class Scene {
 	 * will be created if it does not exist. This method should be called by the
 	 * data processing module.
 	 */
-	public void update(String id, DataType type, double val){
+	public void update(String id, DataType type, float val){
 		users.putIfAbsent(id,new User()); // insert into the dictionary if it does not exist
 		
 		// update the user in the scene
@@ -35,8 +36,23 @@ public class Scene {
 	 * biological data.
 	 */
 	private void adjustTargets(){
-		// TODO: iterate through users and update blob properties with
-		// newly computed targets
+		Collection<User> c = users.values();
+		for(User user : c)
+		{
+			Blob ink = user.ink;
+			ink.energy = user.heartrate / 100f;
+			ink.radius = user.respiration / 100f;
+			adjustColor(ink,user.temp);
+		}
+	}
+	
+	private void adjustColor(Blob ink, float temp){
+		final float MIN_TEMP = 96.0f;
+		final float MAX_TEMP = 102.0f;
+		
+		float ratio = (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
+		
+		// TODO calculate color and then set the r,g,b components of the ink blob
 	}
 	
 	/*

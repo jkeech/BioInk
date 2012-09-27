@@ -12,15 +12,15 @@ public class SceneTest {
 		
 		// add some dummy items
 		scene.update("user1",DataType.HEARTRATE,50);
-		scene.update("user2",DataType.TEMP,98.6);
-		scene.update("user1",DataType.TEMP,99.78);
+		scene.update("user2",DataType.TEMP,98.6f);
+		scene.update("user1",DataType.TEMP,99.78f);
 		
 		assertEquals(50,scene.users.get("user1").heartrate,0);
 		assertEquals(99.78,scene.users.get("user1").temp,0);
 		assertEquals(98.6,scene.users.get("user2").temp,0 );
 		
 		// update existing item
-		scene.update("user1",DataType.HEARTRATE,60.3);
+		scene.update("user1",DataType.HEARTRATE,60.3f);
 		assertEquals(60.3,scene.users.get("user1").heartrate,0);
 	}
 

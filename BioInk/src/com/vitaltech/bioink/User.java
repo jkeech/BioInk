@@ -5,10 +5,10 @@ package com.vitaltech.bioink;
  */
 public class User {
 	// biological data retrieved from sensors
-	public double heartrate = 0;
-	public double respiration = 0;
-	public double temp = 0;
-	public double conductivity = 0;
+	public float heartrate = 0;
+	public float respiration = 0;
+	public float temp = 0;
+	public float conductivity = 0;
 	
 	// each user also has a corresponding blob visualization
 	public Blob ink;	
