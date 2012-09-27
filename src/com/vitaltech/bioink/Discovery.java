@@ -17,13 +17,13 @@ public class Discovery {
 	
 	private BluetoothAdapter btAdapter;
 	private Context context;
-	private Activity activity;
+//	private Activity activity;
 
-	public Discovery(Context _context,Activity _activity,BluetoothAdapter _btAdapter) {
+	public Discovery(Context _context, BluetoothAdapter _btAdapter) {
 		if(DEBUG) Log.d(TAG,"Bluetooth discovery");
 
 		context=_context;
-		activity=_activity;
+//		activity=_activity;
 		findDevices(btAdapter);
 	}
 	

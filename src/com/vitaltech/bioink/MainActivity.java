@@ -55,22 +55,27 @@ public class MainActivity extends Activity {
 				if(DEBUG) Log.d(TAG, "broadcast received");
 				switch(intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)){
 				case BluetoothAdapter.STATE_ON:
-				case BluetoothAdapter.STATE_TURNING_ON:
 					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => on");
-					changeRadioStatus(true);
+					changeRadioStatus("on");
+					vizButton.setText("Start Visualization");
 					break;
 				case BluetoothAdapter.STATE_OFF:
-				case BluetoothAdapter.STATE_TURNING_OFF:
-				default:
 					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => off");
-					changeRadioStatus(false);
+					changeRadioStatus("off");
+					vizButton.setText("Enable Bluetooth");
+					break;
+				case BluetoothAdapter.STATE_TURNING_OFF:
+				case BluetoothAdapter.STATE_TURNING_ON:
+				default:
+					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => changing");
+					changeRadioStatus("changing");
 					break;
 				}
 			}
 		};
 		registerReceiver(broadcastReceiver, intentFilter);
 
-		discovery=new Discovery(this, getParent(), btAdapter);
+		discovery=new Discovery(this, btAdapter);
 		
 		this.vizButton=(Button)this.findViewById(R.id.vizButton);
         this.vizButton.setOnClickListener(
@@ -78,6 +83,9 @@ public class MainActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 			        if(DEBUG) Log.d(TAG, "Viz Button pressed");
+			        if(vizButton.getText()=="Enable Bluetooth"){
+			            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
+			        }
 			        // TODO Start viz engine here.
 				}
 			}
@@ -88,7 +96,6 @@ public class MainActivity extends Activity {
     public void onRestart() { // Activity was stopped; step to onStart()
     	super.onRestart();
     	if(DEBUG) Log.d(TAG,"__onRestart()__");
-    	changeRadioStatus(true);
     }
 
     @Override
@@ -96,7 +103,6 @@ public class MainActivity extends Activity {
     	super.onStart();
     	if(DEBUG) Log.d(TAG,"__onStart()__");
     	// start bluetooth module
-    	changeRadioStatus(false);
     }
 
     @Override
@@ -138,11 +144,8 @@ public class MainActivity extends Activity {
         return true;
     }
     
-    public void changeRadioStatus(Boolean power){
-    	String radio="off.";
-    	if(power)
-    		radio="on.";
-    	((TextView)this.findViewById(R.id.radioTextView)).setText("Radio is "+radio);
+    public void changeRadioStatus(String stat){
+    	((TextView)this.findViewById(R.id.radioTextView)).setText("Radio is "+stat);
     }
 
     public void changePairedStatus(Integer paired){
