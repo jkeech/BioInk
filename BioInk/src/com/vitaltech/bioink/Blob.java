@@ -1,33 +1,59 @@
 package com.vitaltech.bioink;
 
-public class Blob {
+import rajawali.primitives.Sphere;
+import android.graphics.Color;
+import android.opengl.GLES20;
+
+public class Blob extends Sphere {
 	// current data
 	private float _x,_y,_z; // position
-	private float _r,_g,_b; // color
+	private int _color; // color
 	private float _radius; // size
 	private float _energy; // amount of energy on the surface of the blob
+	private float _dist; // distance from the center of the scene
 	
 	// target data to animate towards
 	public float x,y,z;
-	public float r,g,b;
+	public int color;
 	public float radius;
 	public float energy;
+	public float dist;
 	
 	// smooth out the animations with exponential decay towards the target
 	private float DECAY = 2.0f; // 1 = instantaneous, >1 for slower decay
 	
+	private BlobShader shader;
+	private int frameCount = 0;
+	
 	public Blob(){
+		super(1,18,18);
 		_x = _y = _z = x = y = z = 0;
-		_r = _g = _b = r = g = b = 0;
+		_color = color = Color.BLACK;
 		_radius = 0;
 		radius = 0.2f;
 		_energy = energy = 0;
+		_dist = dist = 0;
+		
+		shader = new BlobShader();
+		shader.setUseColor(true);
+		setMaterial(shader);
+		setDrawingMode(GLES20.GL_LINES);
 	}
 	
 	public void draw(){
 		animate();
 		
-		// TODO: add drawing code here, probably with an external 3D library
+		setColor(_color);
+		shader.setTime((float)frameCount++);
+		shader.setStrength(_energy);
+	}
+	
+	public void adjustColor(float temp){
+		final float MIN_TEMP = 96.0f;
+		final float MAX_TEMP = 102.0f;
+		
+		float ratio = Math.max(0,Math.min((temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP),1.0f)); //clamp between 0 and 1
+		color = interpolateColor(Color.GREEN,Color.RED,ratio);	
 	}
 	
 	// update current data by moving towards the target
@@ -35,10 +61,24 @@ public class Blob {
 		_x = _x + (x-_x)/DECAY;
 		_y = _y + (y-_y)/DECAY;
 		_z = _z + (z-_z)/DECAY;
-		_r = _r + (r-_r)/DECAY;
-		_g = _g + (g-_g)/DECAY;
-		_b = _b + (b-_b)/DECAY;
 		_radius = _radius + (radius-_radius)/DECAY;
 		_energy = _energy + (energy-_energy)/DECAY;
+		_dist = _dist + (dist-_dist)/DECAY;
+		_color = interpolateColor(_color,color,1/DECAY);
+	}
+	
+	private int interpolateColor(int a, int b, float proportion) {
+	    float[] hsva = new float[3];
+	    float[] hsvb = new float[3];
+	    Color.colorToHSV(a, hsva);
+	    Color.colorToHSV(b, hsvb);
+	    for (int i = 0; i < 3; i++) {
+	      hsvb[i] = interpolate(hsva[i], hsvb[i], proportion);
+	    }
+	    return Color.HSVToColor(hsvb);
+	}
+	
+	private float interpolate(float a, float b, float proportion) {
+	    return (a + ((b - a) * proportion));
 	}
 }

@@ -9,6 +9,7 @@ public class User {
 	public float respiration = 0;
 	public float temp = 0;
 	public float conductivity = 0;
+	public float stress = 0; // 0 <= stress <= 1
 	
 	// each user also has a corresponding blob visualization
 	public Blob ink;	

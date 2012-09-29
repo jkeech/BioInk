@@ -1,20 +1,18 @@
 package com.vitaltech.bioink;
 
+import rajawali.RajawaliActivity;
 import android.os.Bundle;
-import android.app.Activity;
-import android.util.Log;
 import android.view.Menu;
 
-// master
-
-public class MainActivity extends Activity {
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        //Log.e("ErrorType","Error msg here");
-    }
+public class MainActivity extends RajawaliActivity {
+	private Scene scene;
+    
+    @Override public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		scene = new Scene(this,1000);
+		scene.setSurfaceView(mSurfaceView);
+		super.setRenderer(scene);
+	}	
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
