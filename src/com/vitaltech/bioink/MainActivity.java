@@ -25,9 +25,9 @@ public class MainActivity extends Activity {
 
 	private Button vizButton;
 	private Discovery discovery;
-	
 	private BroadcastReceiver broadcastReceiver;
 	private IntentFilter intentFilter;
+	private BluetoothAdapter btAdapter;
 
 	// **** Start Lifecycle ****
     @Override
@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
-		BluetoothAdapter btAdapter=BluetoothAdapter.getDefaultAdapter();
+		btAdapter=BluetoothAdapter.getDefaultAdapter();
 		if(btAdapter==null){
 			Toast.makeText(getApplicationContext(),"Bluetooth not available on this device",Toast.LENGTH_LONG).show();
 			Log.e(TAG, "Bluetooth not available on this device");
@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
 
 		intentFilter=new IntentFilter();
 		intentFilter.addAction(android.bluetooth.BluetoothAdapter.ACTION_STATE_CHANGED);
-		
+
 		broadcastReceiver=new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context contxt, Intent intent) {
@@ -80,13 +80,30 @@ public class MainActivity extends Activity {
 		this.vizButton=(Button)this.findViewById(R.id.vizButton);
         this.vizButton.setOnClickListener(
         	new OnClickListener() {
-				@Override
 				public void onClick(View v) {
 			        if(DEBUG) Log.d(TAG, "Viz Button pressed");
 			        if(vizButton.getText()=="Enable Bluetooth"){
 			            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
+			        }else{
+			            new Thread(new Runnable() { 
+			                public void run(){
+			                	if(DEBUG) Log.d(TAG,"start Bluetooth thread");
+					            // TODO Start bluetooth thread here.
+			                }
+			            }).start();
+			            new Thread(new Runnable() { 
+			                public void run(){
+			                	if(DEBUG) Log.d(TAG,"start data thread");
+						        // TODO Start data processing thread here.
+			                }
+			            }).start();
+			            new Thread(new Runnable() { 
+			                public void run(){
+			                	if(DEBUG) Log.d(TAG,"start viz thread");
+						        // TODO Start viz thread here.
+			                }
+			            }).start();
 			        }
-			        // TODO Start viz engine here.
 				}
 			}
 		);
@@ -102,7 +119,6 @@ public class MainActivity extends Activity {
     public void onStart() { // Make Activity visible
     	super.onStart();
     	if(DEBUG) Log.d(TAG,"__onStart()__");
-    	// start bluetooth module
     }
 
     @Override
@@ -110,9 +126,13 @@ public class MainActivity extends Activity {
         registerReceiver(broadcastReceiver, intentFilter);
     	super.onResume();
         if(DEBUG) Log.d(TAG, "__onResume()__");
-    	// resume bluetooth traffic
-    	// start data analysis
-    	// start screen visualization
+        if(btAdapter.isEnabled()){
+			changeRadioStatus("on");
+			vizButton.setText("Start Visualization");
+        }else{
+			changeRadioStatus("off");
+			vizButton.setText("Enable Bluetooth");
+		}
     }
 
     // **** Activity is running at this point ****
