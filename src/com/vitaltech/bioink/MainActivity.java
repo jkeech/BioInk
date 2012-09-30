@@ -73,7 +73,7 @@ public class MainActivity extends Activity {
 				}
 			}
 		};
-		registerReceiver(broadcastReceiver, intentFilter);
+//		registerReceiver(broadcastReceiver, intentFilter);
 
 		discovery=new Discovery(this, btAdapter);
 		
