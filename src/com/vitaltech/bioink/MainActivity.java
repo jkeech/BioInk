@@ -1,24 +1,23 @@
 package com.vitaltech.bioink;
 
-import android.os.Bundle;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import rajawali.RajawaliActivity;
 
 // user interface with master branch
 
-public class MainActivity extends Activity {
+public class MainActivity extends RajawaliActivity {
 	private static final String TAG=MainActivity.class.getSimpleName();
 
 	public static final Boolean DEBUG=true;
@@ -28,16 +27,26 @@ public class MainActivity extends Activity {
 	private BroadcastReceiver broadcastReceiver;
 	private IntentFilter intentFilter;
 	private BluetoothAdapter btAdapter;
+	
+	private Scene scene;
 
 	// **** Start Lifecycle ****
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(DEBUG) Log.d(TAG, "__onCreate()__");
 
         //Remove title bar
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        
+        if(DEBUG) Log.d(TAG, "__onCreate()__");
+        
+        // START VIZ SCENE
+        scene = new Scene(this,1000);
+		scene.initScene();
+		scene.setSurfaceView(mSurfaceView);
+		super.setRenderer(scene);
+		// END VIZ SCENE
 
 		btAdapter=BluetoothAdapter.getDefaultAdapter();
 		if(btAdapter==null){
@@ -96,12 +105,12 @@ public class MainActivity extends Activity {
 						        // TODO Start data processing thread here.
 			                }
 			            }).start();
-			            new Thread(new Runnable() { 
-			                public void run(){
-			                	if(DEBUG) Log.d(TAG,"start viz thread");
-						        // TODO Start viz thread here.
-			                }
-			            }).start();
+			            if (DEBUG) Log.d(TAG,"start viz");
+			            setContentView(mLayout);
+			            
+			            // start data feeding thread for testing
+			            new Thread(new Runnable() { public void run() { generateData(); }}).start();
+			            
 			        }
 				}
 			}
@@ -115,7 +124,7 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    public void onStart() { // Make Activity visible
+    public void onStart() { // Make application visible
     	super.onStart();
     	if(DEBUG) Log.d(TAG,"__onStart()__");
     }
@@ -157,12 +166,11 @@ public class MainActivity extends Activity {
     }
     // **** End Lifecycle ****    
 
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
+        getMenuInflater().inflate(R.menu.activity_main, (android.view.Menu) menu);
         return true;
     }
-    
+
     public void changeRadioStatus(String stat){
     	((TextView)this.findViewById(R.id.radioTextView)).setText("Radio is "+stat);
     }
@@ -173,5 +181,19 @@ public class MainActivity extends Activity {
 
     public void changeAudibleStatus(Integer audible){
     	((TextView)this.findViewById(R.id.audibleTextView)).setText("Devices audible: "+audible.toString());
+    }
+
+    	
+    public void generateData(){
+    	scene.update("user1", DataType.HEARTRATE, 50);
+    	scene.update("user1", DataType.TEMP, 97);
+    	try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	scene.update("user1", DataType.TEMP, 105);
+    	scene.update("user1", DataType.HEARTRATE,120);
     }
 }
