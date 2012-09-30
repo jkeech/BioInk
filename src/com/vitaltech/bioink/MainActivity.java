@@ -16,7 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-// user interface
+// user interface with master branch
 
 public class MainActivity extends Activity {
 	private static final String TAG=MainActivity.class.getSimpleName();
