@@ -185,15 +185,21 @@ public class MainActivity extends RajawaliActivity {
 
     	
     public void generateData(){
-    	scene.update("user1", DataType.HEARTRATE, 50);
-    	scene.update("user1", DataType.TEMP, 97);
     	try {
+    		scene.update("user1", DataType.HEARTRATE, 50);
+        	scene.update("user1", DataType.TEMP, 97);
 			Thread.sleep(4000);
+			scene.update("user1", DataType.TEMP, 105);
+	    	scene.update("user1", DataType.HEARTRATE,120);
+	    	Thread.sleep(4000);
+	    	scene.update("user1", DataType.HEARTRATE, 0);
+	    	Thread.sleep(1000);
+	    	scene.update("user1", DataType.TEMP, 95);
+	    	//Thread.sleep(4000);
+	    	//scene.update("user2", DataType.HEARTRATE, 70);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	scene.update("user1", DataType.TEMP, 105);
-    	scene.update("user1", DataType.HEARTRATE,120);
     }
 }
