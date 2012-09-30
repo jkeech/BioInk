@@ -12,7 +12,7 @@ public class DataProcess {
 	}
 	
 	//Add user to the user list
-	public void addUser(int userID){
+	public void addUser(String userID){
 		users.add(new UserDP(userID));	
 	}
 	
@@ -21,7 +21,7 @@ public class DataProcess {
 		Iterator<UserDP> it = users.iterator();
 		
 		while(it.hasNext()){
-			if(it.next().id == userID){
+			if(it.next().id.equals(userID)){
 				switch(dtype){
 				case HEARTRATE: 
 					it.next().heartrate = value; 
@@ -35,19 +35,54 @@ public class DataProcess {
 				case CONDUCTIVITY: 
 					it.next().conductivity = value;
 					break;
+				default:
+					break;
 				}
 			}
 		}
 	}
 	
-	public UserDP getUser(int userID){
+	public UserDP getUser(String userID){
 		Iterator<UserDP> it = users.iterator();
 		
 		while(it.hasNext()){
-			if(it.next().id == userID){
+			if(it.next().id.equals(userID)){
 				return it.next();
 			}
 		}
 		return null;
+	}
+	
+	public float userDistance(String id_x, String id_y){
+		float diff = 0;
+		
+		UserDP x = getUser(id_x);
+		UserDP y = getUser(id_y);
+		
+		if(x.heartrate > y.heartrate){
+			diff = x.heartrate - y.heartrate;
+		}else{
+			diff = y.heartrate - x.heartrate;
+		}
+		
+		if(x.respiration > y.respiration){
+			diff = diff + x.respiration - y.respiration;
+		}else{
+			diff = diff + y.respiration - x.respiration;
+		}
+		
+		if(x.temp > y.temp){
+			diff = diff + x.temp - y.temp;
+		}else{
+			diff = diff + y.temp - x.temp;
+		}
+		
+		if(x.conductivity > y.conductivity){
+			diff = diff + x.conductivity - y.conductivity;
+		}else{
+			diff = diff + y.conductivity - x.conductivity;
+		}
+		
+		return diff;
 	}
 }
