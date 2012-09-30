@@ -28,6 +28,7 @@ public class Scene extends RajawaliRenderer {
 		updater.schedule(new CalculationTimer(), 0, updateInterval);
 	}
 	
+	@Override
 	public void initScene(){
 		mLight = new DirectionalLight(0.1f, 0.2f, 1.0f); // set the direction
 		mLight.setPower(1.5f);
@@ -58,7 +59,7 @@ public class Scene extends RajawaliRenderer {
 			Animation3D mAnim;
 			mAnim = new RotateAnimation3D(axis, 360);
 			mAnim.setRepeatCount(Animation3D.INFINITE);
-			mAnim.setDuration(12000);
+			mAnim.setDuration(500);
 			mAnim.setTransformable3D(tmp.ink);
 			
 			addChild(tmp.ink);
@@ -84,7 +85,6 @@ public class Scene extends RajawaliRenderer {
 		{
 			Blob ink = user.ink;
 			ink.energy = user.heartrate / 100f;
-			ink.radius = user.respiration / 100f;
 			ink.dist = user.stress;
 			ink.adjustColor(user.temp);
 		}

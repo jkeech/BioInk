@@ -12,5 +12,5 @@ public class User {
 	public float stress = 0; // 0 <= stress <= 1
 	
 	// each user also has a corresponding blob visualization
-	public Blob ink;	
+	public Blob ink = new Blob();	
 }

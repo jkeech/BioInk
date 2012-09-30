@@ -31,7 +31,7 @@ public class BlobShader extends SimpleMaterial {
 			"	float yangle = dot(cYaxis, directionVec) * 6.0;\n" +
 			"	float zangle = dot(cZaxis, directionVec) * 4.5;\n" +
 			"	vec4 timeVec = aPosition;\n" +
-			"	float time = uTime * .05;\n" +
+			"	float time = uTime * .03;\n" +
 			// -- cos & sin calculations for each of the angles
 			//    change some numbers here & there to get the 
 			//    desired effect.
@@ -50,6 +50,7 @@ public class BlobShader extends SimpleMaterial {
 			"	vTextureCoord = aTextureCoord;\n" +
 			// -- use the (normalized) direction vector as the
 			//    vertex color to get a nice colorful effect
+			//"	vColor = vec4(directionVec, 1.0);\n" +
 			"	vColor = aColor;\n" +
 			"}\n";
 	

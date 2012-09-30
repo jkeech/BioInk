@@ -8,7 +8,6 @@ public class Blob extends Sphere {
 	// current data
 	private float _x,_y,_z; // position
 	private int _color; // color
-	private float _radius; // size
 	private float _energy; // amount of energy on the surface of the blob
 	private float _dist; // distance from the center of the scene
 	
@@ -20,17 +19,15 @@ public class Blob extends Sphere {
 	public float dist;
 	
 	// smooth out the animations with exponential decay towards the target
-	private float DECAY = 2.0f; // 1 = instantaneous, >1 for slower decay
+	private float DECAY = 50.0f; // 1 = instantaneous, >1 for slower decay
 	
 	private BlobShader shader;
 	private int frameCount = 0;
 	
 	public Blob(){
-		super(1,18,18);
+		super(2,60,60);
 		_x = _y = _z = x = y = z = 0;
 		_color = color = Color.BLACK;
-		_radius = 0;
-		radius = 0.2f;
 		_energy = energy = 0;
 		_dist = dist = 0;
 		
@@ -61,7 +58,6 @@ public class Blob extends Sphere {
 		_x = _x + (x-_x)/DECAY;
 		_y = _y + (y-_y)/DECAY;
 		_z = _z + (z-_z)/DECAY;
-		_radius = _radius + (radius-_radius)/DECAY;
 		_energy = _energy + (energy-_energy)/DECAY;
 		_dist = _dist + (dist-_dist)/DECAY;
 		_color = interpolateColor(_color,color,1/DECAY);
