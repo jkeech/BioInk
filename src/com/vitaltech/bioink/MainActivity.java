@@ -73,7 +73,6 @@ public class MainActivity extends Activity {
 				}
 			}
 		};
-//		registerReceiver(broadcastReceiver, intentFilter);
 
 		discovery=new Discovery(this, btAdapter);
 		
@@ -152,7 +151,7 @@ public class MainActivity extends Activity {
     	if(DEBUG) Log.d(TAG, "__onStop()__");
     }
 
-    public void onDestroy() { // Activity was hidden but is now being stopped alltogether
+    public void onDestroy() { // Activity was hidden but is now being stopped altogether
     	super.onStop();
     	if(DEBUG) Log.d(TAG, "__onDestroy()__");
     }
