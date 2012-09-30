@@ -3,3 +3,8 @@ user interface branch
 post-merge with master
 
 ready to fix icon image
+
+icon images fixed
+
+ready to streamline activity start-up
+

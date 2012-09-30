@@ -1,7 +1,0 @@
-master branch of development
-
-post-merge with UI
-
-add bluetooth, data, and viz modules
-TODO: fix logo icon
-
