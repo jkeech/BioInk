@@ -8,12 +8,12 @@ public class DataProcess {
 	public List<UserDP> users;
 	
 	public DataProcess(){
-		users = New ArrayList<UserDP>;
+		users = new ArrayList<UserDP>();
 	}
 	
 	//Add user to the user list
 	public void addUser(int userID){
-		users.add(New UserDP(userID));	
+		users.add(new UserDP(userID));	
 	}
 	
 	//Push user data into data processing module, user is specified by its ID
