@@ -17,23 +17,24 @@ public class DataProcess {
 	}
 	
 	//Push user data into data processing module, user is specified by its ID
-	public void push(int userID, DataType dtype, float value){
+	public void push(String userID, DataType dtype, float value){
 		Iterator<UserDP> it = users.iterator();
 		
 		while(it.hasNext()){
-			if(it.next().id.equals(userID)){
+			UserDP user = it.next();
+			if(user.id.equals(userID)){
 				switch(dtype){
 				case HEARTRATE: 
-					it.next().heartrate = value; 
+					user.heartrate = value; 
 					break;
 				case RESPIRATION: 
-					it.next().respiration = value;
+					user.respiration = value;
 					break;
 				case TEMP: 
-					it.next().temp = value; 
+					user.temp = value; 
 					break;
 				case CONDUCTIVITY: 
-					it.next().conductivity = value;
+					user.conductivity = value;
 					break;
 				default:
 					break;
@@ -46,8 +47,9 @@ public class DataProcess {
 		Iterator<UserDP> it = users.iterator();
 		
 		while(it.hasNext()){
-			if(it.next().id.equals(userID)){
-				return it.next();
+			UserDP user = it.next();
+			if(user.id.equals(userID)){
+				return user;
 			}
 		}
 		return null;
@@ -55,34 +57,43 @@ public class DataProcess {
 	
 	public float userDistance(String id_x, String id_y){
 		float diff = 0;
+		float total = 0;
 		
 		UserDP x = getUser(id_x);
 		UserDP y = getUser(id_y);
 		
 		if(x.heartrate > y.heartrate){
 			diff = x.heartrate - y.heartrate;
+			total += diff;
 		}else{
 			diff = y.heartrate - x.heartrate;
+			total += diff;
 		}
 		
 		if(x.respiration > y.respiration){
-			diff = diff + x.respiration - y.respiration;
+			diff = x.respiration - y.respiration;
+			total += diff;
 		}else{
-			diff = diff + y.respiration - x.respiration;
+			diff = y.respiration - x.respiration;
+			total += diff;
 		}
 		
 		if(x.temp > y.temp){
-			diff = diff + x.temp - y.temp;
+			diff = x.temp - y.temp;
+			total += diff;
 		}else{
-			diff = diff + y.temp - x.temp;
+			diff = y.temp - x.temp;
+			total += diff;
 		}
 		
 		if(x.conductivity > y.conductivity){
-			diff = diff + x.conductivity - y.conductivity;
+			diff = x.conductivity - y.conductivity;
+			total += diff;
 		}else{
-			diff = diff + y.conductivity - x.conductivity;
+			diff = y.conductivity - x.conductivity;
+			total += diff;
 		}
 		
-		return diff;
+		return total;
 	}
 }
