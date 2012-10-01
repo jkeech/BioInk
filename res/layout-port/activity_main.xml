@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:baselineAligned="false"
     android:weightSum="2" >
 
@@ -10,18 +10,18 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:contentDescription="@string/bio_ink_logo" >
-        
-	    <ImageView
-	        android:id="@+id/logoImageView"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center"
-            android:contentDescription="@string/bio_ink_logo"
-	        android:src="@drawable/logo_transparent" />
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="vertical" >
 
-	</LinearLayout>
-    
+        <ImageView
+            android:id="@+id/LogoImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/bio_ink_logo"
+            android:src="@drawable/logo_transparent" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -55,12 +55,9 @@
             android:id="@+id/vizButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:layout_marginTop="20dp"
             android:layout_weight="2"
             android:text="@string/viz_button" />
 
     </LinearLayout>
-
 </LinearLayout>
