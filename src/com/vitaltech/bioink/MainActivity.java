@@ -38,7 +38,7 @@ public class MainActivity extends RajawaliActivity {
         //Remove title bar
         //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        
+        Log.d(TAG, "kailean change");
         if(DEBUG) Log.d(TAG, "__onCreate()__");
         
         // START VIZ SCENE
