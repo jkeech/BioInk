@@ -3,6 +3,7 @@ package com.vitaltech.bioink;
 import rajawali.primitives.Sphere;
 import android.graphics.Color;
 import android.opengl.GLES20;
+import android.util.Log;
 
 public class Blob extends Sphere {
 	// current data
@@ -69,22 +70,33 @@ public class Blob extends Sphere {
 	    Color.colorToHSV(a, hsva);
 	    Color.colorToHSV(b, hsvb);
 	    for (int i = 0; i < 3; i++) {
-	      hsvb[i] = interpolate(hsva[i], hsvb[i], proportion);
+	    	if(i==0)
+	    		hsvb[i] = interpolateCircular(hsva[i],hsvb[i],proportion);
+	    	else
+	    		hsvb[i] = interpolateLinear(hsva[i],hsvb[i],proportion);
 	    }
 	    return Color.HSVToColor(hsvb);
 	}
 	
-	//.8 -> .1: dist = .3
-	private float interpolate(float a, float b, float proportion) {
-		float dist = Math.min(Math.abs(b-a),Math.abs(1-b+a)); // shortest distance between these colors
+	// interpolate linearly (usually 0-1)
+	private float interpolateLinear(float a, float b, float proportion){
+		return (a + (b-a)*proportion);
+	}
+	
+	// interpolate from 0-360 around a circle
+	private float interpolateCircular(float a, float b, float proportion) {
+		float dist = Math.min(Math.abs(b-a),Math.abs(360-b+a)); // shortest distance between these colors
 		if(Math.abs(b-a) == dist)
 			return (a + (b-a)*proportion);
 		else {
-			// it wraps around the circle, so interpolate that way
-			if(a > 0.5)
-				return (a + dist*proportion) - 1;
-			else
-				return (a - dist*proportion) - 1;
+			// it wraps around the circle, so interpolate the other way
+			float value = a + (360-b+a)*proportion;
+			
+			// perform the wrap
+			if (value < 0) value += 360;
+			if (value > 360) value -= 360;
+			Log.d("visualization","a:"+a+", b:"+b+", prop:"+proportion+", result: "+value);
+			return value;
 		}
 			
 		//return (a + ((b - a) * proportion));
