@@ -42,7 +42,7 @@ public class Blob extends Sphere {
 		
 		setColor(_color);
 		shader.setTime((float)frameCount++);
-		shader.setStrength(_energy);
+		shader.setStrength(_energy/100);
 	}
 	
 	public void adjustColor(float temp){
@@ -50,7 +50,7 @@ public class Blob extends Sphere {
 		final float MAX_TEMP = 102.0f;
 		
 		float ratio = Math.max(0,Math.min((temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP),1.0f)); //clamp between 0 and 1
-		color = interpolateColor(Color.GREEN,Color.RED,ratio);	
+		color = interpolateColor(Color.BLUE,Color.RED,ratio);	
 	}
 	
 	// update current data by moving towards the target
@@ -74,7 +74,19 @@ public class Blob extends Sphere {
 	    return Color.HSVToColor(hsvb);
 	}
 	
+	//.8 -> .1: dist = .3
 	private float interpolate(float a, float b, float proportion) {
-	    return (a + ((b - a) * proportion));
+		float dist = Math.min(Math.abs(b-a),Math.abs(1-b+a)); // shortest distance between these colors
+		if(Math.abs(b-a) == dist)
+			return (a + (b-a)*proportion);
+		else {
+			// it wraps around the circle, so interpolate that way
+			if(a > 0.5)
+				return (a + dist*proportion) - 1;
+			else
+				return (a - dist*proportion) - 1;
+		}
+			
+		//return (a + ((b - a) * proportion));
 	}
 }

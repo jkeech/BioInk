@@ -87,7 +87,7 @@ public class Scene extends RajawaliRenderer {
 		for(User user : c)
 		{
 			Blob ink = user.ink;
-			ink.energy = user.heartrate / 100f;
+			ink.energy = user.heartrate;
 			ink.dist = user.stress;
 			ink.adjustColor(user.temp);
 		}
