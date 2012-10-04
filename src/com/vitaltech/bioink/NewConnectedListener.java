@@ -36,6 +36,7 @@ public class NewConnectedListener extends ConnectListenerImpl
 	private SummaryPacketInfo SummaryInfoPacket = new SummaryPacketInfo();
 	
 	private PacketTypeRequest RqPacketType = new PacketTypeRequest();
+	
 	public NewConnectedListener(Handler handler,Handler _NewHandler) {
 		super(handler, null);
 		_OldHandler= handler;
@@ -46,6 +47,7 @@ public class NewConnectedListener extends ConnectListenerImpl
 	}
 	public void Connected(ConnectedEvent<BTClient> eventArgs) {
 		System.out.println(String.format("Connected to BioHarness %s.", eventArgs.getSource().getDevice().getName()));
+		eventArgs.getSource().getDevice().getAddress();
 		/*Use this object to enable or disable the different Packet types*/
 		RqPacketType.GP_ENABLE = true;
 		RqPacketType.BREATHING_ENABLE = true;

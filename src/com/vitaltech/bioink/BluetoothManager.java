@@ -25,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class BluetoothManager extends Activity {
+public class BluetoothManager {
     /** Called when the activity is first created. */
 	BluetoothAdapter adapter = null;
 	BTClient _bt;
@@ -43,7 +43,7 @@ public class BluetoothManager extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bluetooth_manager);
+        //setContentView(R.layout.activity_bluetooth_manager);
         /*Sending a message to android that we are going to initiate a pairing request*/
         IntentFilter filter = new IntentFilter("android.bluetooth.device.action.PAIRING_REQUEST");
         /*Registering a new BTBroadcast receiver from the Main Activity context with pairing request event*/
@@ -236,7 +236,7 @@ public class BluetoothManager extends Activity {
     			String PeakAccText = msg.getData().getString("PeakAcceleration");
     			tv = (EditText)findViewById(R.id.labelPeakAcc);
     			if (tv != null)tv.setText(PeakAccText);
-    			
+    			msg.getData().
     		break;	
     		
     		
