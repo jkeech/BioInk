@@ -51,7 +51,8 @@ public class Blob extends Sphere {
 		final float MAX_TEMP = 102.0f;
 		
 		float ratio = Math.max(0,Math.min((temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP),1.0f)); //clamp between 0 and 1
-		color = interpolateColor(Color.BLUE,Color.RED,ratio);	
+		color = interpolateColor(Color.GREEN,Color.CYAN,ratio);
+		Log.d("visualization","color: "+color);
 	}
 	
 	// update current data by moving towards the target
@@ -71,7 +72,7 @@ public class Blob extends Sphere {
 	    Color.colorToHSV(b, hsvb);
 	    for (int i = 0; i < 3; i++) {
 	    	if(i==0)
-	    		hsvb[i] = interpolateCircular(hsva[i],hsvb[i],proportion);
+	    		hsvb[i] = interpolateCircular(hsva[i],hsvb[i],proportion); // hue is interpolated from [0,360) where it wraps around
 	    	else
 	    		hsvb[i] = interpolateLinear(hsva[i],hsvb[i],proportion);
 	    }
@@ -83,19 +84,19 @@ public class Blob extends Sphere {
 		return (a + (b-a)*proportion);
 	}
 	
-	// interpolate from 0-360 around a circle
+	// interpolate from [0,360) around a circle
 	private float interpolateCircular(float a, float b, float proportion) {
 		float dist = Math.min(Math.abs(b-a),Math.abs(360-b+a)); // shortest distance between these colors
-		if(Math.abs(b-a) == dist)
+		if(Math.abs(b-a) == dist) // interpolate in the normal direction
 			return (a + (b-a)*proportion);
 		else {
 			// it wraps around the circle, so interpolate the other way
-			float value = a + (360-b+a)*proportion;
+			float value = a - (360-b+a)*proportion;
 			
 			// perform the wrap
 			if (value < 0) value += 360;
 			if (value > 360) value -= 360;
-			Log.d("visualization","a:"+a+", b:"+b+", prop:"+proportion+", result: "+value);
+			//Log.d("visualization","a:"+a+", b:"+b+", prop:"+proportion+", result: "+value);
 			return value;
 		}
 			

@@ -188,7 +188,7 @@ public class MainActivity extends RajawaliActivity {
     	try {
     		scene.update("user1", DataType.HEARTRATE, 50);
         	scene.update("user1", DataType.TEMP, 97);
-			Thread.sleep(4000);
+			Thread.sleep(6000);
 			scene.update("user1", DataType.TEMP, 105);
 	    	scene.update("user1", DataType.HEARTRATE,120);
 	    	Thread.sleep(4000);
