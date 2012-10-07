@@ -168,7 +168,8 @@ public class MainActivity extends RajawaliActivity {
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, (android.view.Menu) menu);
-        return true;
+//        return true;
+        return false;
     }
 
     public void changeRadioStatus(String stat){

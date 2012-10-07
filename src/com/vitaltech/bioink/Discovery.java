@@ -45,6 +45,7 @@ public class Discovery {
 		Log.d(TAG, "bluetooth adapter: "+btAdapter.getName()+", state: "+btAdapter.getState()+", scanmode: "+btAdapter.getScanMode());
 
 		Set<BluetoothDevice> pairedDevices=btAdapter.getBondedDevices();
+//		btAdapter.st
 		Log.d(TAG, "bluetooth set size: "+pairedDevices.size());
 		if(pairedDevices.size()>0){
 			for(BluetoothDevice device : pairedDevices){
