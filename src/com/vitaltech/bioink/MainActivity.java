@@ -169,13 +169,21 @@ public class MainActivity extends RajawaliActivity {
         if(DEBUG) Log.d(TAG, "__onResume()__");
         registerReceiver(broadcastReceiver, intentFilter);
     	super.onResume();
-        if(btAdapter.isEnabled()){
-			changeRadioStatus("on");
-			vizButton.setText("Start Visualization");
+    	if(vizActive){
+            if(DEBUG) Log.d(TAG, "return to visualization");
+            setContentView(mLayout);
         }else{
-			changeRadioStatus("off");
-			vizButton.setText("Enable Bluetooth");
-		}
+            if(DEBUG) Log.d(TAG, "return to menu");
+            setContentView(R.layout.activity_main);
+            connectButton();
+            if(btAdapter.isEnabled()){
+				changeRadioStatus("on");
+				vizButton.setText("Start Visualization");
+	        }else{
+				changeRadioStatus("off");
+				vizButton.setText("Enable Bluetooth");
+			}
+    	}
     }
 
     // **** Activity is running at this point ****
