@@ -8,3 +8,4 @@ icon images fixed
 
 ready to streamline activity start-up
 
+step up UI branch after merge
