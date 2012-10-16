@@ -42,8 +42,7 @@ public class MainActivity extends RajawaliActivity {
         if(DEBUG) Log.d(TAG, "__onCreate()__");
         
         // START VIZ SCENE
-        scene = new Scene(this,1000);
-		scene.initScene();
+        scene = new Scene(this);
 		scene.setSurfaceView(mSurfaceView);
 		super.setRenderer(scene);
 		// END VIZ SCENE
@@ -186,15 +185,19 @@ public class MainActivity extends RajawaliActivity {
     	
     public void generateData(){
     	try {
-    		scene.update("user1", DataType.HEARTRATE, 50);
-        	scene.update("user1", DataType.TEMP, 97);
-			Thread.sleep(6000);
-			scene.update("user1", DataType.TEMP, 105);
-	    	scene.update("user1", DataType.HEARTRATE,120);
+    		scene.update("user1", DataType.COLOR, 1);
+        	scene.update("user1", DataType.ENERGY, 1);
 	    	Thread.sleep(4000);
-	    	scene.update("user1", DataType.HEARTRATE, 0);
+	    	scene.update("user1", DataType.X, 2);
+	    	scene.update("user1", DataType.Y, 2);
+	    	scene.update("user1", DataType.Z, 2);
 	    	Thread.sleep(1000);
-	    	scene.update("user1", DataType.TEMP, 95);
+	    	scene.update("user2", DataType.COLOR, 0.5f);
+	    	scene.update("user2", DataType.ENERGY, 0.5f);
+	    	scene.update("user2", DataType.X, -2);
+	    	scene.update("user2", DataType.Y, -2);
+	    	scene.update("user2", DataType.Z, -2);
+	    	
 	    	//Thread.sleep(4000);
 	    	//scene.update("user2", DataType.HEARTRATE, 70);
 		} catch (InterruptedException e) {
