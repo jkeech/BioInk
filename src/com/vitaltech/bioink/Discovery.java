@@ -21,13 +21,12 @@ public class Discovery {
 
 	public Discovery(Context _context, BluetoothAdapter _btAdapter) {
 		if(DEBUG) Log.d(TAG,"Bluetooth discovery");
-
 		context=_context;
-		findDevices(btAdapter);
+//		findDevices(btAdapter);
 	}
 	
 	public void findDevices(BluetoothAdapter _btAdapter){
-		
+		if(DEBUG) Log.d(TAG,"find devices");		
 		btAdapter=BluetoothAdapter.getDefaultAdapter();
 		if(btAdapter==null){
 			Toast.makeText(context.getApplicationContext(),"Bluetooth not available on this device",Toast.LENGTH_LONG).show();

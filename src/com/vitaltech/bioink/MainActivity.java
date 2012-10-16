@@ -47,15 +47,14 @@ public class MainActivity extends RajawaliActivity {
 			Log.e(TAG, "Bluetooth not available on this device");
 			finish();
 		}
-		discovery=new Discovery(this, btAdapter);
-        
-		// TODO INSTANTIATE DATA PROCESSING
-		// FIXME add code here
-		// END DATA PROCESSING
 
-		// TODO INSTANTIATE BLUETOOTH
-		// FIXME add code here
-		// END BLUETOOTH
+		discovery=new Discovery(this, btAdapter);
+        new Thread(new Runnable() { 
+            public void run(){
+            	if(DEBUG) Log.d(TAG,"start finding devices");
+            	discovery.findDevices(btAdapter);
+            }
+        }).start();
 
 		vizActive = false;
         // INSTANTIATE VIZ SCENE
@@ -64,6 +63,14 @@ public class MainActivity extends RajawaliActivity {
 		scene.setSurfaceView(mSurfaceView);
 		super.setRenderer(scene);
 		// END VIZ SCENE
+
+		// TODO INSTANTIATE DATA PROCESSING
+		// FIXME dataprocessing(scene)
+		// END DATA PROCESSING
+
+		// TODO INSTANTIATE BLUETOOTH
+		// FIXME bluetooth(dataprocessing)
+		// END BLUETOOTH
 
 		// Catch Bluetooth radio events
 		intentFilter=new IntentFilter();
@@ -149,23 +156,12 @@ public class MainActivity extends RajawaliActivity {
                 vizActive = false;
                 connectButton();
                 return true;
+            }else{
+                if(DEBUG) Log.d(TAG, "ending app");
+                finish();
             }
         }
-        if(DEBUG) Log.d(TAG, "ending app");
-        finish();
         return false;
-    }
-
-    @Override
-    public void onRestart() { // Activity was stopped; step to onStart()
-    	super.onRestart();
-    	if(DEBUG) Log.d(TAG,"__onRestart()__");
-    }
-
-    @Override
-    public void onStart() { // Make application visible
-    	super.onStart();
-    	if(DEBUG) Log.d(TAG,"__onStart()__");
     }
 
     @Override
@@ -194,24 +190,18 @@ public class MainActivity extends RajawaliActivity {
     	// stop screen visualization
     }
     
-    public void onStop() { // Activity was partially visible but is now hidden
-    	if(DEBUG) Log.d(TAG, "__onStop()__");
-    	super.onStop();
-    }
-
-    public void onDestroy() { // Activity was hidden but is now being stopped altogether
-    	if(DEBUG) Log.d(TAG, "__onDestroy()__");
-    	super.onStop();
-    }
+//    public void onDestroy() { // Activity was hidden but is now being stopped altogether
+//    	if(DEBUG) Log.d(TAG, "__onDestroy()__");
+//    	super.onStop();
+//    }
     // **** End Lifecycle ****    
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, (android.view.Menu) menu);
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.activity_main, (android.view.Menu) menu);
 //        return true;
-        return false;
-    }
+//    }
 
-    public void changeRadioStatus(String stat){
+    private void changeRadioStatus(String stat){
     	if(vizActive){
     		Log.e(TAG, "Cannot update radio status while in visualization");
     	}else{
@@ -219,7 +209,7 @@ public class MainActivity extends RajawaliActivity {
     	}
     }
 
-    public void changePairedStatus(Integer paired){
+    private void changePairedStatus(Integer paired){
     	if(vizActive){
     		Log.e(TAG, "Cannot update paired status while in visualization");
     	}else{
@@ -227,7 +217,7 @@ public class MainActivity extends RajawaliActivity {
     	}
     }
 
-    public void changeAudibleStatus(Integer audible){
+    private void changeAudibleStatus(Integer audible){
     	if(vizActive){
     		Log.e(TAG, "Cannot update audible status while in visualization");
     	}else{
@@ -236,7 +226,7 @@ public class MainActivity extends RajawaliActivity {
     }
 
     	
-    public void generateData(){
+    private void generateData(){
     	scene.update("user1", DataType.HEARTRATE, 50);
     	scene.update("user1", DataType.TEMP, 97);
     	try {
