@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -27,26 +28,18 @@ public class MainActivity extends RajawaliActivity {
 	private BroadcastReceiver broadcastReceiver;
 	private IntentFilter intentFilter;
 	private BluetoothAdapter btAdapter;
+	private Boolean vizActive;
 	
+//	private kailean bluetooth		// FIXME
+//	private mario dataprocessing	// FIXME
 	private Scene scene;
 
 	// **** Start Lifecycle ****
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //Remove title bar
-        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        
         if(DEBUG) Log.d(TAG, "__onCreate()__");
-        
-        // START VIZ SCENE
-        scene = new Scene(this,1000);
-		scene.initScene();
-		scene.setSurfaceView(mSurfaceView);
-		super.setRenderer(scene);
-		// END VIZ SCENE
 
 		btAdapter=BluetoothAdapter.getDefaultAdapter();
 		if(btAdapter==null){
@@ -54,10 +47,27 @@ public class MainActivity extends RajawaliActivity {
 			Log.e(TAG, "Bluetooth not available on this device");
 			finish();
 		}
+		discovery=new Discovery(this, btAdapter);
+        
+		// TODO INSTANTIATE DATA PROCESSING
+		// FIXME add code here
+		// END DATA PROCESSING
 
+		// TODO INSTANTIATE BLUETOOTH
+		// FIXME add code here
+		// END BLUETOOTH
+
+		vizActive = false;
+        // INSTANTIATE VIZ SCENE
+        scene = new Scene(this,1000);
+		scene.initScene();
+		scene.setSurfaceView(mSurfaceView);
+		super.setRenderer(scene);
+		// END VIZ SCENE
+
+		// Catch Bluetooth radio events
 		intentFilter=new IntentFilter();
 		intentFilter.addAction(android.bluetooth.BluetoothAdapter.ACTION_STATE_CHANGED);
-
 		broadcastReceiver=new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context contxt, Intent intent) {
@@ -82,9 +92,11 @@ public class MainActivity extends RajawaliActivity {
 				}
 			}
 		};
-
-		discovery=new Discovery(this, btAdapter);
-		
+		connectButton();
+    }
+    
+    private void connectButton(){
+		// Configure single Button system
 		this.vizButton=(Button)this.findViewById(R.id.vizButton);
         this.vizButton.setOnClickListener(
         	new OnClickListener() {
@@ -96,25 +108,52 @@ public class MainActivity extends RajawaliActivity {
 			            new Thread(new Runnable() { 
 			                public void run(){
 			                	if(DEBUG) Log.d(TAG,"start Bluetooth thread");
-					            // TODO Start bluetooth thread here.
+					            // TODO Start bluetooth active thread here.
 			                }
-			            }).start();
+			            }).start(); // bluetooth
+
 			            new Thread(new Runnable() { 
 			                public void run(){
 			                	if(DEBUG) Log.d(TAG,"start data thread");
-						        // TODO Start data processing thread here.
+						        // TODO Start data processing active thread here.
 			                }
-			            }).start();
-			            if (DEBUG) Log.d(TAG,"start viz");
-			            setContentView(mLayout);
-			            
-			            // start data feeding thread for testing
-			            new Thread(new Runnable() { public void run() { generateData(); }}).start();
-			            
+			            }).start(); // data processing
+
+//			            new Thread(new Runnable() { 
+//			                public void run(){
+//			                	if(DEBUG) Log.d(TAG,"start data thread");
+						            if (DEBUG) Log.d(TAG,"start viz");
+						            setContentView(mLayout);
+						            vizActive = true;
+
+						            // start data feeding thread for testing
+						            new Thread(new Runnable() {
+						            	public void run() { 
+						            		generateData(); 
+						            	}
+						            }).start();// debug data
+//			                }
+//			            }).start(); // visualization
 			        }
 				}
 			}
 		);
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if(DEBUG) Log.d(TAG, "back keycode received");
+            if(vizActive){
+                if(DEBUG) Log.d(TAG, "turning off visualization");
+                setContentView(R.layout.activity_main);
+                vizActive = false;
+                connectButton();
+                return true;
+            }
+        }
+        if(DEBUG) Log.d(TAG, "ending app");
+        finish();
+        return false;
     }
 
     @Override
@@ -131,9 +170,9 @@ public class MainActivity extends RajawaliActivity {
 
     @Override
     protected void onResume() { // Activity was partially visible
+        if(DEBUG) Log.d(TAG, "__onResume()__");
         registerReceiver(broadcastReceiver, intentFilter);
     	super.onResume();
-        if(DEBUG) Log.d(TAG, "__onResume()__");
         if(btAdapter.isEnabled()){
 			changeRadioStatus("on");
 			vizButton.setText("Start Visualization");
@@ -147,22 +186,22 @@ public class MainActivity extends RajawaliActivity {
     
     @Override
     public void onPause(){ // Activity was visible but now is now partially visible
+        if(DEBUG) Log.d(TAG, "__onPause()__");
         unregisterReceiver(broadcastReceiver);
     	super.onPause();
-        if(DEBUG) Log.d(TAG, "__onPause()__");
     	// pause bluetooth traffic
     	// stop data analysis
     	// stop screen visualization
     }
     
     public void onStop() { // Activity was partially visible but is now hidden
-    	super.onStop();
     	if(DEBUG) Log.d(TAG, "__onStop()__");
+    	super.onStop();
     }
 
     public void onDestroy() { // Activity was hidden but is now being stopped altogether
-    	super.onStop();
     	if(DEBUG) Log.d(TAG, "__onDestroy()__");
+    	super.onStop();
     }
     // **** End Lifecycle ****    
 
@@ -173,15 +212,27 @@ public class MainActivity extends RajawaliActivity {
     }
 
     public void changeRadioStatus(String stat){
-    	((TextView)this.findViewById(R.id.radioTextView)).setText("Radio is "+stat);
+    	if(vizActive){
+    		Log.e(TAG, "Cannot update radio status while in visualization");
+    	}else{
+    		((TextView)this.findViewById(R.id.radioTextView)).setText("Radio is "+stat);
+    	}
     }
 
     public void changePairedStatus(Integer paired){
-    	((TextView)this.findViewById(R.id.pairedTextView)).setText("Devices paired: "+paired.toString());
+    	if(vizActive){
+    		Log.e(TAG, "Cannot update paired status while in visualization");
+    	}else{
+    		((TextView)this.findViewById(R.id.pairedTextView)).setText("Devices paired: "+paired.toString());
+    	}
     }
 
     public void changeAudibleStatus(Integer audible){
-    	((TextView)this.findViewById(R.id.audibleTextView)).setText("Devices audible: "+audible.toString());
+    	if(vizActive){
+    		Log.e(TAG, "Cannot update audible status while in visualization");
+    	}else{
+    		((TextView)this.findViewById(R.id.audibleTextView)).setText("Devices audible: "+audible.toString());
+    	}
     }
 
     	

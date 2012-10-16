@@ -14,7 +14,7 @@ public class Discovery {
 	private static final String TAG=Discovery.class.getSimpleName();
 
 	// Get debug setting from MainActivity
-	public static final Boolean DEBUG=MainActivity.DEBUG;
+	public static final Boolean DEBUG = MainActivity.DEBUG;
 	
 	private BluetoothAdapter btAdapter;
 	private Context context;
