@@ -4,6 +4,7 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="lib" path="libs/rajawalilib/rajawalilib.jar"/>
 	<classpathentry kind="lib" path="libs"/>
+	<classpathentry kind="lib" path="libs/BioHarnessBT.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="output" path="bin/classes"/>
