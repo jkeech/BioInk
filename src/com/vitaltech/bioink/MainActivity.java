@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -179,9 +178,13 @@ public class MainActivity extends RajawaliActivity {
             if(btAdapter.isEnabled()){
 				changeRadioStatus("on");
 				vizButton.setText("Start Visualization");
+				changeAudibleStatus(0);
+				changePairedStatus(0);
 	        }else{
 				changeRadioStatus("off");
 				vizButton.setText("Enable Bluetooth");
+				changeAudibleStatus(-1);
+				changePairedStatus(-1);
 			}
     	}
     }

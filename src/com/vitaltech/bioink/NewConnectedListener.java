@@ -8,6 +8,7 @@ import android.os.Message;
 import android.widget.TextView;
 import zephyr.android.BioHarnessBT.*;
 
+@SuppressWarnings("unused")
 public class NewConnectedListener extends ConnectListenerImpl
 {
 	private Handler _OldHandler;
