@@ -90,9 +90,9 @@ public class BitOps {
 			);
 			System.out.print("\n");
 		}
-		
 	}
-	
+
+	// Turn a Set of 8-bit Bytes into a List of 10-bit Longs
 	public static List<Long> zephyParse(Set<Byte> samples) {
 		List<Long> decoded = new ArrayList<Long>();
 		Byte[] array = (Byte[])samples.toArray(new Byte[samples.size()]);
@@ -100,22 +100,16 @@ public class BitOps {
 		int shifter = 1;
 		for(int i=1; i<samples.size(); ++i){
 			if(shifter != 5){
-				long rightMask = (255 << ((shifter-1) * 2)) & 255;
+				long rightMask = ((long)255 << ((shifter-1) * 2)) & 255;
 				long right = (((long)array[i-1]) & rightMask) >> ((shifter-1)*2);
-				long leftMask = (1 << (shifter * 2)) - 1;
+				long leftMask = ((long)1 << (shifter * 2)) - 1;
 				long left = ((((long)array[i]) & leftMask) << (8-((shifter-1)*2)));
 				
 				decoded.add(
-	//				Integer.valueOf(
-						(left | right) & 1023
-	//				)
+					(left | right) & 1023
 				);
-
-//			System.out.println(shifter + " ," + (long)array[i-1] + ", " + (long)array[i] + "\t :: " + 
-//					BigInteger.valueOf(left).toString(2) + "\t & " + 
-//					BigInteger.valueOf(right).toString(2) + "\t >> " + decoded.get(decoded.size()-1));
-
 			}
+
 			shifter++;
 			if(shifter > 5){
 				shifter = 1;
