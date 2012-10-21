@@ -21,7 +21,7 @@ public class Blob extends Sphere {
 	private BlobShader shader;
 	
 	public Blob(){
-		super(2,60,60);
+		super(0.2f,60,60);
 		_x = _y = _z = x = y = z = 0;
 		_color = color = Color.BLACK;
 		_energy = energy = 0;
@@ -44,7 +44,7 @@ public class Blob extends Sphere {
 	}
 	
 	public void adjustColor(float ratio){
-		color = interpolateColor(Color.GREEN,Color.CYAN,ratio);
+		color = interpolateColor(Color.GREEN,Color.RED,ratio);
 	}
 	
 	// update current data by moving towards the target
