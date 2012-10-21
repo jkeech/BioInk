@@ -126,6 +126,61 @@ public class DataProcess {
 		}
 	}
 	
+	public void mapSphericalPosition(String uid){
+		float temp = 0;
+		
+		//coordinates
+		float x = 0;
+		float y = 0;
+		float z = 0;
+		
+		//spherical coordinates
+		float sigma = 0; //heart rate 0-180
+		float delta = 0; //respiration rate 0-360
+		float ro = 0; //hrv
+		
+		//extract user heart rate and calculate sigma positioning
+		temp = users.get(uid).heartrate;
+		sigma = (temp - minHR ) / (maxHR - minHR); //map to 0-1
+		sigma = sigma * 180;
+		sigma = (float) Math.toRadians(sigma);
+		
+		//extract user respiration rate and calculate delta positioning
+		temp = users.get(uid).respiration;
+		delta = (temp - minResp ) / (maxResp - minResp);
+		delta = delta * 360;
+		delta = (float) Math.toRadians(delta);
+		
+		//extract hrv and calculate ro position
+		ro = 1;
+		
+		x = (float) (ro * Math.sin(sigma) * Math.cos(delta));
+		x = x * (maxPos - minPos);
+		x = x + minPos;
+		//validation
+		x = Math.max(Math.min(x, maxPos), minPos);
+		//Log.d("dp", "uid: " + uid + " x: " + x);
+		
+		y = (float) (ro * Math.sin(sigma) * Math.sin(delta));
+		y = y * (maxPos - minPos);
+		y = y + minPos;
+		//validation
+		y = Math.max(Math.min(y, maxPos), minPos);
+		//Log.d("dp", "uid: " + uid + " y: " + y);
+		
+		z = (float) (ro * Math.cos(sigma));
+		
+		//update x and y values
+		scene.update(uid, DataType.X, x);
+		scene.update(uid, DataType.Y, y);
+		scene.update(uid, DataType.Z, z);
+		
+		if(active_hrv){
+			//calculate and update Z position value
+			z = 1;
+		}
+	}
+	
 	/*
 	 * This method calculates the biometric and positional mappings
 	 */
@@ -134,7 +189,7 @@ public class DataProcess {
 		for(User user : c){
 			mapRespirationRate(user.id);
 			mapHeartRate(user.id);
-			mapPosition(user.id);
+			mapSphericalPosition(user.id);
 		}
 	}
 	
