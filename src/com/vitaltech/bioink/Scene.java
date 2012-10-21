@@ -23,7 +23,7 @@ public class Scene extends RajawaliRenderer {
 	
 	public Scene(Context context){
 		super(context);
-		setFrameRate(20);
+		setFrameRate(60);
 		initScene();
 	}
 	
