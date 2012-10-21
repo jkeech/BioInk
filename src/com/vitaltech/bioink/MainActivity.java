@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import rajawali.RajawaliActivity;
 
+@SuppressWarnings("deprecation")
 public class MainActivity extends RajawaliActivity {
 	private static final String TAG=MainActivity.class.getSimpleName();
 	public static final Boolean DEBUG=true;
@@ -27,9 +28,9 @@ public class MainActivity extends RajawaliActivity {
 	private BluetoothAdapter btAdapter;
 	private Boolean vizActive;
 	
-    @SuppressWarnings("unused")
-    //Suppressed Warnings, BTMan runs in the background
+	@SuppressWarnings("unused")
 	private BluetoothManager BTMan;
+	
 	private DataProcess dp;
 	private Scene scene;
 
@@ -128,16 +129,16 @@ public class MainActivity extends RajawaliActivity {
 			            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
 			        }else{
 			        	if (DEBUG) Log.d(TAG,"start viz");
-					            setContentView(mLayout);
-					            vizActive = true;
+			            setContentView(mLayout);
+			            vizActive = true;
 
-					         // start data feeding thread for testing
-					            new Thread(new Runnable() {
-					            	public void run() { 
-				            		DataSimulator ds = new DataSimulator(dp);
-				            			ds.run();
-					            	}
-					            }).start();// debug data
+			         // start data feeding thread for testing
+			            new Thread(new Runnable() {
+			            	public void run() { 
+		            		DataSimulator ds = new DataSimulator(dp);
+		            			ds.run();
+			            	}
+			            }).start();// debug data
 			        }
 				}
 			}
@@ -161,7 +162,7 @@ public class MainActivity extends RajawaliActivity {
         return false;
     }
 
-    @Override
+	@Override
     protected void onResume() { // Activity was partially visible
         if(DEBUG) Log.d(TAG, "__onResume()__");
         registerReceiver(broadcastReceiver, intentFilter);
