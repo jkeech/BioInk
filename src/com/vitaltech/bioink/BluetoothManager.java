@@ -16,18 +16,46 @@ public class BluetoothManager {
 	BluetoothAdapter adapter = null;
 	Set<BluetoothDevice> BHDevices = null;
 	BluetoothDevice BHdevice = null;
-	//DataProcessing dataProcessing;
+	DataProcess dataProcessing;
 	BTClient _bt;
 	ZephyrProtocol _protocol;
 	NewConnectedListener _NConnListener;
 	private final int HEART_RATE = 0x100;
 	private final int RESPIRATION_RATE = 0x101;
-	private final int SKIN_TEMPERATURE = 0x102;
 	private final int POSTURE = 0x103;
 	private final int PEAK_ACCLERATION = 0x104;
-	private final Handler msgHandler;
-	
-	public BluetoothManager(BluetoothAdapter _adapter /*, DataProcessing _dataProcessing*/){
+	private final Handler msgHandler = new Handler(){
+    	public void handleMessage(Message msg)
+    	{
+    		String UID = msg.getData().getString("UID");
+    		switch (msg.what)
+    		{
+    		case HEART_RATE:
+    			float HeartRate = msg.getData().getFloat("HeartRate");
+    			dataProcessing.push(UID, BiometricType.HEARTRATE, HeartRate);
+    		break;
+    		
+    		case RESPIRATION_RATE:
+    			float RespirationRate = msg.getData().getFloat("RespirationRate");
+    			dataProcessing.push(UID, BiometricType.RESPIRATION, RespirationRate);
+    		break;
+    		
+    		case POSTURE:
+    			float Posture = msg.getData().getFloat("Posture");
+    			dataProcessing.push(UID, BiometricType.POSTURE, Posture);
+    		break;
+    		
+    		case PEAK_ACCLERATION:
+    			float PeakAcc = msg.getData().getFloat("PeakAcceleration");
+    			dataProcessing.push(UID, BiometricType.PEAKACC, PeakAcc);
+    		break;	
+    		
+    		}
+    	}
+
+    };
+		
+	public BluetoothManager(BluetoothAdapter _adapter , DataProcess _dataProcessing){
 		//Set our BT adapter object
 		adapter = _adapter;
 		
@@ -42,46 +70,11 @@ public class BluetoothManager {
 			}
 		}
 		
-	   msgHandler = new Handler(){
-	    	public void handleMessage(Message msg)
-	    	{
-	    		switch (msg.what)
-	    		{
-	    		case HEART_RATE:
-	    			String HeartRatetext = msg.getData().getString("HeartRate");
-	    			//dataProcessing.push
-	    			//public void push(String userID, DataType dtype, float value){
-	    			
-	    		break;
-	    		
-	    		case RESPIRATION_RATE:
-	    			String RespirationRatetext = msg.getData().getString("RespirationRate");    		
-	    		break;
-	    		
-	    		case SKIN_TEMPERATURE:
-	    			String SkinTemperaturetext = msg.getData().getString("SkinTemperature");
-	    		break;
-	    		
-	    		case POSTURE:
-	    			String PostureText = msg.getData().getString("Posture");
-	    		break;
-	    		
-	    		case PEAK_ACCLERATION:
-	    			String PeakAccText = msg.getData().getString("PeakAcceleration");
-	    		break;	
-	    		
-	    		
-	    		}
-	    	}
-
-	    };
-		
 		_bt = new BTClient(adapter, BHdevice.getAddress());
 		_NConnListener = new NewConnectedListener(msgHandler,msgHandler);
 		_bt.addConnectedEventListener(_NConnListener);
 		if(_bt.IsConnected()){
 			_bt.start();
 		}
-		
-	}    
+	}  
 }
