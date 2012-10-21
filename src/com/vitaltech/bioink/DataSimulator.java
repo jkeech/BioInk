@@ -1,26 +1,35 @@
 package com.vitaltech.bioink;
 
+import java.util.Random;
+
 public class DataSimulator {
-	private Scene scene;
+	private DataProcess dp;
 	
-	public DataSimulator(Scene scene){
-		this.scene = scene;
+	public DataSimulator(DataProcess dp){
+		this.dp = dp;
 	}
 	
 	public void run(){
     	try {
-    		scene.update("user1", DataType.COLOR, 1);
-        	scene.update("user1", DataType.ENERGY, 1);
-	    	Thread.sleep(4000);
-	    	scene.update("user1", DataType.X, 2);
-	    	scene.update("user1", DataType.Y, 2);
-	    	scene.update("user1", DataType.Z, 2);
-	    	Thread.sleep(1000);
-	    	scene.update("user2", DataType.COLOR, 0.5f);
-	    	scene.update("user2", DataType.ENERGY, 0.5f);
-	    	scene.update("user2", DataType.X, -2);
-	    	scene.update("user2", DataType.Y, -2);
-	    	scene.update("user2", DataType.Z, -2);
+    		Random r = new Random();
+    		
+    		while(true){
+    			float hr1 = r.nextFloat() * dp.maxHR;
+    			float rr1 = r.nextFloat() * dp.maxResp;
+    			
+    			dp.push("user1", BiometricType.HEARTRATE, hr1);
+        		dp.push("user1", BiometricType.RESPIRATION, rr1);
+        		
+        		Thread.sleep(2000);
+        		
+        		float hr2 = r.nextFloat() * dp.maxHR;
+    			float rr2 = r.nextFloat() * dp.maxResp;
+    			
+        		dp.push("user2", BiometricType.HEARTRATE, hr2);
+        		dp.push("user2", BiometricType.RESPIRATION, rr2);
+        		
+    			Thread.sleep(2000);
+    		}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
