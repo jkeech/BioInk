@@ -16,11 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import rajawali.RajawaliActivity;
 
-// user interface with master branch
-
 public class MainActivity extends RajawaliActivity {
 	private static final String TAG=MainActivity.class.getSimpleName();
-
 	public static final Boolean DEBUG=true;
 
 	private Button vizButton;
@@ -33,8 +30,7 @@ public class MainActivity extends RajawaliActivity {
     @SuppressWarnings("unused")
     //Suppressed Warnings, BTMan runs in the background
 	private BluetoothManager BTMan;
-	
-	private DataProcess dp;	// FIXME
+	private DataProcess dp;
 	private Scene scene;
 
 	// **** Start Lifecycle ****
@@ -198,21 +194,8 @@ public class MainActivity extends RajawaliActivity {
         if(DEBUG) Log.d(TAG, "__onPause()__");
         unregisterReceiver(broadcastReceiver);
     	super.onPause();
-    	// pause bluetooth traffic
-    	// stop data analysis
-    	// stop screen visualization
     }
-    
-//    public void onDestroy() { // Activity was hidden but is now being stopped altogether
-//    	if(DEBUG) Log.d(TAG, "__onDestroy()__");
-//    	super.onStop();
-//    }
     // **** End Lifecycle ****    
-
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.activity_main, (android.view.Menu) menu);
-//        return true;
-//    }
 
     private void changeRadioStatus(String stat){
     	if(vizActive){
