@@ -2,55 +2,49 @@ package com.vitaltech.bioink;
 
 import rajawali.primitives.Sphere;
 import android.graphics.Color;
-import android.opengl.GLES20;
 
 public class Blob extends Sphere {
 	// current data
 	private float _x,_y,_z; // position
 	private int _color; // color
 	private float _energy; // amount of energy on the surface of the blob
-	private float _dist; // distance from the center of the scene
 	
 	// target data to animate towards
 	public float x,y,z;
-	public int color;
-	public float radius;
+	private int color;
 	public float energy;
-	public float dist;
+	private long startTime = 0;
 	
 	// smooth out the animations with exponential decay towards the target
 	private float DECAY = 50.0f; // 1 = instantaneous, >1 for slower decay
 	
 	private BlobShader shader;
-	private int frameCount = 0;
 	
 	public Blob(){
 		super(2,60,60);
 		_x = _y = _z = x = y = z = 0;
 		_color = color = Color.BLACK;
 		_energy = energy = 0;
-		_dist = dist = 0;
+		startTime = System.currentTimeMillis();
 		
 		shader = new BlobShader();
+		//shader = new DiffuseMaterial();
 		shader.setUseColor(true);
 		setMaterial(shader);
-		setDrawingMode(GLES20.GL_LINES);
+		//setDrawingMode(GLES20.GL_LINES);
 	}
 	
 	public void draw(){
 		animate();
 		
+		setPosition(_x,_y,_z);
 		setColor(_color);
-		shader.setTime((float)frameCount++);
+		shader.setTime((float)(System.currentTimeMillis()-startTime));
 		shader.setStrength(_energy);
 	}
 	
-	public void adjustColor(float temp){
-		final float MIN_TEMP = 96.0f;
-		final float MAX_TEMP = 102.0f;
-		
-		float ratio = Math.max(0,Math.min((temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP),1.0f)); //clamp between 0 and 1
-		color = interpolateColor(Color.GREEN,Color.RED,ratio);	
+	public void adjustColor(float ratio){
+		color = interpolateColor(Color.GREEN,Color.CYAN,ratio);
 	}
 	
 	// update current data by moving towards the target
@@ -59,7 +53,6 @@ public class Blob extends Sphere {
 		_y = _y + (y-_y)/DECAY;
 		_z = _z + (z-_z)/DECAY;
 		_energy = _energy + (energy-_energy)/DECAY;
-		_dist = _dist + (dist-_dist)/DECAY;
 		_color = interpolateColor(_color,color,1/DECAY);
 	}
 	
@@ -69,12 +62,35 @@ public class Blob extends Sphere {
 	    Color.colorToHSV(a, hsva);
 	    Color.colorToHSV(b, hsvb);
 	    for (int i = 0; i < 3; i++) {
-	      hsvb[i] = interpolate(hsva[i], hsvb[i], proportion);
+	    	if(i==0)
+	    		hsvb[i] = interpolateCircular(hsva[i],hsvb[i],proportion); // hue is interpolated from [0,360) where it wraps around
+	    	else
+	    		hsvb[i] = interpolateLinear(hsva[i],hsvb[i],proportion);
 	    }
 	    return Color.HSVToColor(hsvb);
 	}
 	
-	private float interpolate(float a, float b, float proportion) {
-	    return (a + ((b - a) * proportion));
+	// interpolate linearly (usually 0-1)
+	private float interpolateLinear(float a, float b, float proportion){
+		return (a + (b-a)*proportion);
+	}
+	
+	// interpolate from [0,360) around a circle
+	private float interpolateCircular(float a, float b, float proportion) {
+		float dist = Math.min(Math.abs(b-a),Math.abs(360-b+a)); // shortest distance between these colors
+		if(Math.abs(b-a) == dist) // interpolate in the normal direction
+			return (a + (b-a)*proportion);
+		else {
+			// it wraps around the circle, so interpolate the other way
+			float value = a - (360-b+a)*proportion;
+			
+			// perform the wrap
+			if (value < 0) value += 360;
+			if (value > 360) value -= 360;
+			//Log.d("visualization","a:"+a+", b:"+b+", prop:"+proportion+", result: "+value);
+			return value;
+		}
+			
+		//return (a + ((b - a) * proportion));
 	}
 }
