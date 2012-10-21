@@ -1,5 +1,5 @@
 package com.vitaltech.bioink;
 
 public enum BiometricType {
-	HEARTRATE, RESPIRATION, RR
+	HEARTRATE, RESPIRATION, RR, POSTURE, PEAKACC
 }
