@@ -15,13 +15,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-//import rajawali.RajawaliActivity;
-
-// user interface with master branch
 
 public class MainActivity extends Activity {
 	private static final String TAG=MainActivity.class.getSimpleName();
-
 	public static final Boolean DEBUG=true;
 
 	private Button vizButton;
@@ -33,8 +29,6 @@ public class MainActivity extends Activity {
 	
 //	private kailean bluetooth		// FIXME
 	private DataProcess dp;
-//	private Scene scene;
-
 
 	// **** Start Lifecycle ****
     @Override
@@ -60,26 +54,6 @@ public class MainActivity extends Activity {
         }).start();
 
 		vizActive = false;
-
-		// START VIZ SCENE
-//	        scene = new Scene(this);
-//		scene.setSurfaceView(mSurfaceView);
-//		super.setRenderer(scene);
-		// END VIZ SCENE
-		
-//		// DISPLAY FPS
-//		if(DEBUG){
-//			LinearLayout ll = new LinearLayout(this);
-//			ll.setOrientation(LinearLayout.HORIZONTAL);
-//			TextView label = new TextView(this);
-//	        label.setTextSize(20);
-//	        ll.addView(label);
-//	        mLayout.addView(ll);
-//	        
-//	        FPSDisplay fps = new FPSDisplay(this,label);
-//	        scene.setFPSUpdateListener(fps);
-//		}
-//		// END FPS DISPLAY
 
 		// START DATA PROCESSING 
 		dp = new DataProcess(1000);
@@ -130,38 +104,22 @@ public class MainActivity extends Activity {
 			        if(vizButton.getText()=="Enable Bluetooth"){
 			            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
 			        }else{
-			            new Thread(new Runnable() { 
-			                public void run(){
-			                	if(DEBUG) Log.d(TAG,"start Bluetooth thread");
-					            // TODO Start bluetooth active thread here.
-			                }
-			            }).start(); // bluetooth
+			        	// bluetooth
+			        	
+			        	// data processing
 
-			            new Thread(new Runnable() { 
-			                public void run(){
-			                	if(DEBUG) Log.d(TAG,"start data thread");
-						        // TODO Start data processing active thread here.
-			                }
-			            }).start(); // data processing
+			            if (DEBUG) Log.d(TAG,"start viz");
+			            Intent myIntent = new Intent(v.getContext(), RajActivity.class);
+			            startActivityForResult(myIntent, 0);
+			            vizActive = true;
 
-//			            new Thread(new Runnable() { 
-//			                public void run(){
-//			                	if(DEBUG) Log.d(TAG,"start data thread");
-						            if (DEBUG) Log.d(TAG,"start viz");
-//						            setContentView(mLayout);
-						            Intent myIntent = new Intent(v.getContext(), RajActivity.class);
-					                startActivityForResult(myIntent, 0);
-						            vizActive = true;
-
-						         // start data feeding thread for testing
-						            new Thread(new Runnable() {
-						            	public void run() { 
-						            		DataSimulator ds = new DataSimulator(dp);
-					            			ds.run();
-						            	}
-						            }).start();// debug data
-//			                }
-//			            }).start(); // visualization
+			            // start data feeding thread for testing
+			            new Thread(new Runnable() {
+			            	public void run() { 
+		    	        		DataSimulator ds = new DataSimulator(dp);
+		            			ds.run();
+			            	}
+			            }).start();// debug data
 			        }
 				}
 			}
@@ -183,7 +141,7 @@ public class MainActivity extends Activity {
             }
         }else if (keyCode == KeyEvent.KEYCODE_MENU){
                 if(DEBUG) Log.d(TAG, "onCreateOptionsMenu()");
-//                getMenuInflater().inflate(R.menu.activity_main, (android.view.Menu) menu);
+// FIXME              getMenuInflater().inflate(R.menu.activity_main, (android.view.Menu) menu);
                 return true;
         }
         return false;
@@ -196,7 +154,7 @@ public class MainActivity extends Activity {
     	super.onResume();
     	if(vizActive){
             if(DEBUG) Log.d(TAG, "return to visualization");
-//            setContentView(mLayout);
+// FIXME            setContentView(mLayout);
         }else{
             if(DEBUG) Log.d(TAG, "return to menu");
             setContentView(R.layout.activity_main);
@@ -233,12 +191,6 @@ public class MainActivity extends Activity {
 //    }
     // **** End Lifecycle ****    
 
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        if(DEBUG) Log.d(TAG, "onCreateOptionsMenu()");
-//        getMenuInflater().inflate(R.menu.activity_main, (android.view.Menu) menu);
-//        return true;
-//    }
-
     private void changeRadioStatus(String stat){
     	if(vizActive){
     		Log.e(TAG, "Cannot update radio status while in visualization");
@@ -263,5 +215,4 @@ public class MainActivity extends Activity {
     	}
     }
 }
-
 
