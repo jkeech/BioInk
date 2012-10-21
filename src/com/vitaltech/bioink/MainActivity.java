@@ -32,8 +32,9 @@ public class MainActivity extends Activity {
 	private Boolean vizActive;
 	
 //	private kailean bluetooth		// FIXME
-//	private mario dataprocessing	// FIXME
+	private DataProcess dp;
 //	private Scene scene;
+
 
 	// **** Start Lifecycle ****
     @Override
@@ -80,9 +81,9 @@ public class MainActivity extends Activity {
 //		}
 //		// END FPS DISPLAY
 
-
-		// TODO INSTANTIATE DATA PROCESSING
-		// FIXME dataprocessing(scene)
+		// START DATA PROCESSING 
+		dp = new DataProcess(1000);
+		dp.addScene(scene);
 		// END DATA PROCESSING
 
 		// TODO INSTANTIATE BLUETOOTH
@@ -153,12 +154,12 @@ public class MainActivity extends Activity {
 						            vizActive = true;
 
 						         // start data feeding thread for testing
-//						            new Thread(new Runnable() {
-//						            	public void run() { 
-//						            		DataSimulator ds = new DataSimulator(scene);
-//					            			ds.run();
-//						            	}
-//						            }).start();// debug data
+						            new Thread(new Runnable() {
+						            	public void run() { 
+						            		DataSimulator ds = new DataSimulator(dp);
+					            			ds.run();
+						            	}
+						            }).start();// debug data
 //			                }
 //			            }).start(); // visualization
 			        }
