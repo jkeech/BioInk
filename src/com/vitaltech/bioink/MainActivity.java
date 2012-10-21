@@ -1,5 +1,6 @@
 package com.vitaltech.bioink;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,11 +14,11 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import rajawali.RajawaliActivity;
+//import rajawali.RajawaliActivity;
 
 // user interface with master branch
 
-public class MainActivity extends RajawaliActivity {
+public class MainActivity extends Activity {
 	private static final String TAG=MainActivity.class.getSimpleName();
 
 	public static final Boolean DEBUG=true;
@@ -31,7 +32,7 @@ public class MainActivity extends RajawaliActivity {
 	
 //	private kailean bluetooth		// FIXME
 //	private mario dataprocessing	// FIXME
-	private Scene scene;
+//	private Scene scene;
 
 	// **** Start Lifecycle ****
     @Override
@@ -58,10 +59,10 @@ public class MainActivity extends RajawaliActivity {
 
 		vizActive = false;
         // INSTANTIATE VIZ SCENE
-        scene = new Scene(this,1000);
-		scene.initScene();
-		scene.setSurfaceView(mSurfaceView);
-		super.setRenderer(scene);
+//        scene = new Scene(this,1000);
+//		scene.initScene();
+//		scene.setSurfaceView(mSurfaceView);
+//		super.setRenderer(scene);
 		// END VIZ SCENE
 
 		// TODO INSTANTIATE DATA PROCESSING
@@ -241,18 +242,6 @@ public class MainActivity extends RajawaliActivity {
     		((TextView)this.findViewById(R.id.audibleTextView)).setText("Devices audible: "+audible.toString());
     	}
     }
-
-    	
-    private void generateData(){
-    	scene.update("user1", DataType.HEARTRATE, 50);
-    	scene.update("user1", DataType.TEMP, 97);
-    	try {
-			Thread.sleep(4000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	scene.update("user1", DataType.TEMP, 105);
-    	scene.update("user1", DataType.HEARTRATE,120);
-    }
 }
+
+

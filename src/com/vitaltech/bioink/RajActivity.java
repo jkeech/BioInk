@@ -1,10 +1,8 @@
 package com.vitaltech.bioink;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.KeyEvent;
 import rajawali.RajawaliActivity;
 
 public class RajActivity extends RajawaliActivity {
@@ -12,7 +10,6 @@ public class RajActivity extends RajawaliActivity {
 	public static final Boolean DEBUG = MainActivity.DEBUG;
 
 	private Scene scene;
-	private OnClickListener onBack;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -27,13 +24,18 @@ public class RajActivity extends RajawaliActivity {
 		// END VIZ SCENE
 
 		setContentView(mLayout);
-		
-		onBack = new OnClickListener() {
-			public void onClick(View v) {
-				Intent intent = new Intent();
-				setResult(RESULT_OK, intent);
-				finish();
-			}
-		};
+    }
+    
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(DEBUG) Log.d(TAG, "keycode received " + keyCode);
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if(DEBUG) Log.d(TAG, "back keycode received, ending raj viz activity");
+            finish();
+            return true;
+        }
+        return false;
     }
 }
+
+
+
