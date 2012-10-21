@@ -131,13 +131,15 @@ public class MainActivity extends Activity {
 //			                public void run(){
 //			                	if(DEBUG) Log.d(TAG,"start data thread");
 						            if (DEBUG) Log.d(TAG,"start viz");
-						            setContentView(mLayout);
+//						            setContentView(mLayout);
+						            Intent myIntent = new Intent(v.getContext(), RajActivity.class);
+					                startActivityForResult(myIntent, 0);
 						            vizActive = true;
 
 						            // start data feeding thread for testing
 						            new Thread(new Runnable() {
 						            	public void run() { 
-						            		generateData(); 
+//						            		generateData(); 
 						            	}
 						            }).start();// debug data
 //			                }
@@ -176,7 +178,7 @@ public class MainActivity extends Activity {
     	super.onResume();
     	if(vizActive){
             if(DEBUG) Log.d(TAG, "return to visualization");
-            setContentView(mLayout);
+//            setContentView(mLayout);
         }else{
             if(DEBUG) Log.d(TAG, "return to menu");
             setContentView(R.layout.activity_main);

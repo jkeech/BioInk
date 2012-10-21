@@ -17,11 +17,18 @@ public class RajActivity extends RajawaliActivity {
         if(DEBUG) Log.d(TAG, "__onCreate()__");
         
         // INSTANTIATE VIZ SCENE
-        scene = new Scene(this,1000);
+        scene = new Scene(this);
 		scene.initScene();
 		scene.setSurfaceView(mSurfaceView);
 		super.setRenderer(scene);
 		// END VIZ SCENE
+		
+        new Thread(new Runnable() { 
+            public void run(){
+            	if(DEBUG) Log.d(TAG,"start data simulation");
+            	new DataSimulator(scene).run();
+            }
+        }).start(); // data processing
 
 		setContentView(mLayout);
     }
