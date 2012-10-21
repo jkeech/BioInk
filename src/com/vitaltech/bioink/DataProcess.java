@@ -4,6 +4,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
+import android.util.Log;
+
 public class DataProcess {
 	//List of current users
 	public ConcurrentHashMap<String,User> users;
@@ -11,16 +13,16 @@ public class DataProcess {
 	private Timer utimer = new Timer();
 	
 	//Positioning range constants
-	private final float minPos = -10;
-	private final float maxPos = 10;
+	private final float minPos = -1;
+	private final float maxPos = 1;
 	
 	//Heart rate range constant
-	private final float minHR = 0;
-	private final float maxHR = 250;
+	public final float minHR = 0;
+	public final float maxHR = 250;
 	
 	//Respiration rate 
-	private final float minResp = 0;
-	private final float maxResp = 70;
+	public final float minResp = 0;
+	public final float maxResp = 70;
 	
 	//Data Processing constructor
 	public DataProcess(int updateInterval){
@@ -102,6 +104,7 @@ public class DataProcess {
 		
 		//validation
 		x = Math.max(Math.min(x, maxPos), minPos);
+		//Log.d("dp", "uid: " + uid + " x: " + x);
 		
 		//extract user respiration rate and calculate y-axis positioning
 		temp = users.get(uid).respiration;
@@ -111,6 +114,7 @@ public class DataProcess {
 		
 		//validation
 		y = Math.max(Math.min(y, maxPos), minPos);
+		//Log.d("dp", "uid: " + uid + " y: " + y);
 		
 		//update x and y values
 		scene.update(uid, DataType.X, x);
@@ -143,8 +147,4 @@ public class DataProcess {
 		}
 	}
 	
-	/*Goes into main activity
-	 * DataProcess dp = new DataProcess(1000);
-	 * dp.addScene(scene);
-	*/
 }
