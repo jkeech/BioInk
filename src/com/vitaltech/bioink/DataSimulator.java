@@ -13,6 +13,12 @@ public class DataSimulator {
     	try {
     		Random r = new Random();
     		
+    		/*
+    		dp.push("user1", BiometricType.HEARTRATE, dp.maxHR/2);
+    		dp.push("user1", BiometricType.RESPIRATION, dp.maxResp/2);
+    		Thread.sleep(1);
+    		*/
+    		
     		while(true){
     			float hr1 = r.nextFloat() * dp.maxHR;
     			float rr1 = r.nextFloat() * dp.maxResp;
