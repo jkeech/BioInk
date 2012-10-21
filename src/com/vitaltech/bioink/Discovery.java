@@ -14,20 +14,19 @@ public class Discovery {
 	private static final String TAG=Discovery.class.getSimpleName();
 
 	// Get debug setting from MainActivity
-	public static final Boolean DEBUG=MainActivity.DEBUG;
+	public static final Boolean DEBUG = MainActivity.DEBUG;
 	
 	private BluetoothAdapter btAdapter;
 	private Context context;
 
 	public Discovery(Context _context, BluetoothAdapter _btAdapter) {
 		if(DEBUG) Log.d(TAG,"Bluetooth discovery");
-
 		context=_context;
-		findDevices(btAdapter);
+//		findDevices(btAdapter);
 	}
 	
 	public void findDevices(BluetoothAdapter _btAdapter){
-		
+		if(DEBUG) Log.d(TAG,"find devices");		
 		btAdapter=BluetoothAdapter.getDefaultAdapter();
 		if(btAdapter==null){
 			Toast.makeText(context.getApplicationContext(),"Bluetooth not available on this device",Toast.LENGTH_LONG).show();
@@ -45,7 +44,13 @@ public class Discovery {
 		Log.d(TAG, "bluetooth adapter: "+btAdapter.getName()+", state: "+btAdapter.getState()+", scanmode: "+btAdapter.getScanMode());
 
 		Set<BluetoothDevice> pairedDevices=btAdapter.getBondedDevices();
+//		btAdapter.st
 		Log.d(TAG, "bluetooth set size: "+pairedDevices.size());
+		if(pairedDevices.size()>0){
+			for(BluetoothDevice device : pairedDevices){
+				Log.d(TAG, "device: "+device.getName()+", "+device.getAddress()+", "+device.getBondState());
+			}
+		}
 
 	}
 

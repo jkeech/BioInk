@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <Button
+        android:id="@+id/ButtonConnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="96dp"
+        android:layout_marginLeft="58dp"
+        android:text="connectplz" />
+
+    <Button
+        android:id="@+id/ButtonDisconnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/ButtonConnect"
+        android:layout_alignBottom="@+id/ButtonConnect"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="64dp"
+        android:text="Button" />
+
+    <TextView
+        android:id="@+id/labelStatusMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/labelHeartRate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/ButtonConnect"
+        android:layout_below="@+id/labelStatusMsg"
+        android:layout_marginRight="26dp"
+        android:layout_marginTop="91dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/labelRespRate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/labelHeartRate"
+        android:layout_alignLeft="@+id/ButtonDisconnect"
+        android:layout_alignTop="@+id/labelHeartRate"
+        android:layout_marginLeft="25dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/labelSkinTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/labelHeartRate"
+        android:layout_below="@+id/labelHeartRate"
+        android:layout_marginTop="64dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView1"
+        android:layout_alignBottom="@+id/textView1"
+        android:layout_alignLeft="@+id/labelRespRate"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/labelPosture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ButtonDisconnect"
+        android:layout_marginBottom="33dp"
+        android:layout_toLeftOf="@+id/ButtonDisconnect"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/labelPeakAcc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/labelSkinTemp"
+        android:layout_alignBottom="@+id/labelSkinTemp"
+        android:layout_alignLeft="@+id/labelRespRate"
+        android:text="TextView" />
+     
+</RelativeLayout>
