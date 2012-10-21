@@ -66,19 +66,19 @@ public class MainActivity extends Activity {
 //		super.setRenderer(scene);
 		// END VIZ SCENE
 		
-		// DISPLAY FPS
-		if(DEBUG){
-			LinearLayout ll = new LinearLayout(this);
-			ll.setOrientation(LinearLayout.HORIZONTAL);
-			TextView label = new TextView(this);
-	        label.setTextSize(20);
-	        ll.addView(label);
-	        mLayout.addView(ll);
-	        
-	        FPSDisplay fps = new FPSDisplay(this,label);
-	        scene.setFPSUpdateListener(fps);
-		}
-		// END FPS DISPLAY
+//		// DISPLAY FPS
+//		if(DEBUG){
+//			LinearLayout ll = new LinearLayout(this);
+//			ll.setOrientation(LinearLayout.HORIZONTAL);
+//			TextView label = new TextView(this);
+//	        label.setTextSize(20);
+//	        ll.addView(label);
+//	        mLayout.addView(ll);
+//	        
+//	        FPSDisplay fps = new FPSDisplay(this,label);
+//	        scene.setFPSUpdateListener(fps);
+//		}
+//		// END FPS DISPLAY
 
 
 		// TODO INSTANTIATE DATA PROCESSING
@@ -153,12 +153,12 @@ public class MainActivity extends Activity {
 						            vizActive = true;
 
 						         // start data feeding thread for testing
-						            new Thread(new Runnable() {
-						            	public void run() { 
-						            		DataSimulator ds = new DataSimulator(scene);
-					            			ds.run();
-						            	}
-						            }).start();// debug data
+//						            new Thread(new Runnable() {
+//						            	public void run() { 
+//						            		DataSimulator ds = new DataSimulator(scene);
+//					            			ds.run();
+//						            	}
+//						            }).start();// debug data
 //			                }
 //			            }).start(); // visualization
 			        }

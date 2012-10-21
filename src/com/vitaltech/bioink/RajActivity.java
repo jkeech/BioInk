@@ -3,6 +3,8 @@ package com.vitaltech.bioink;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import rajawali.RajawaliActivity;
 
 public class RajActivity extends RajawaliActivity {
@@ -22,14 +24,27 @@ public class RajActivity extends RajawaliActivity {
 		scene.setSurfaceView(mSurfaceView);
 		super.setRenderer(scene);
 		// END VIZ SCENE
-		
-        new Thread(new Runnable() { 
+
+		// DISPLAY FPS
+		if(DEBUG){
+			LinearLayout ll = new LinearLayout(this);
+			ll.setOrientation(LinearLayout.HORIZONTAL);
+			TextView label = new TextView(this);
+	        label.setTextSize(20);
+	        ll.addView(label);
+	        mLayout.addView(ll);
+	        
+	        FPSDisplay fps = new FPSDisplay(this,label);
+	        scene.setFPSUpdateListener(fps);
+		}
+		// END FPS DISPLAY
+		new Thread(new Runnable() { 
             public void run(){
             	if(DEBUG) Log.d(TAG,"start data simulation");
             	new DataSimulator(scene).run();
             }
         }).start(); // data processing
-
+        
 		setContentView(mLayout);
     }
     
