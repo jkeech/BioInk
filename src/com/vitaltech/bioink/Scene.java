@@ -1,9 +1,6 @@
 package com.vitaltech.bioink;
 
 
-import java.util.Collection;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -17,35 +14,35 @@ import rajawali.math.Number3D;
 import rajawali.renderer.RajawaliRenderer;
 
 public class Scene extends RajawaliRenderer {
-	public ConcurrentHashMap<String,User> users = new ConcurrentHashMap<String,User>(7);
-	private Timer updater = new Timer();
+	public ConcurrentHashMap<String,Blob> users = new ConcurrentHashMap<String,Blob>(7);
 	
 	private DirectionalLight mLight;
 	private Number3D axis;
 	
-	public Scene(Context context, int updateInterval){
+	public Scene(Context context){
 		super(context);
 		setFrameRate(60);
-		updater.schedule(new CalculationTimer(), 0, updateInterval);
+		initScene();
 	}
 	
 	@Override
 	public void initScene(){
-		mLight = new DirectionalLight(0.1f, 0.2f, 1.0f); // set the direction
-		mLight.setPower(1.5f);
+		mLight = new DirectionalLight(0.3f, -0.3f, 1.0f); // set the direction
+		mLight.setPower(0.8f);
 
 		axis = new Number3D(2, 4, 1);
 		axis.normalize();
 
 		mCamera.setPosition(0, 0, -10);
+		mCamera.setLookAt(0,0,0);
 		
 		setBackgroundColor(Color.WHITE);
 	}
 	
 	@Override public void onDrawFrame(GL10 glUnused) {
 		super.onDrawFrame(glUnused);
-		for (User user : users.values()){
-			user.ink.draw();
+		for (Blob blob : users.values()){
+			blob.draw();
 		}
 	}
 	
@@ -56,50 +53,27 @@ public class Scene extends RajawaliRenderer {
 	 */
 	public void update(String id, DataType type, float val){
 		if(!users.containsKey(id)){
-			User tmp = new User();
+			Blob tmp = new Blob();
 			users.put(id,tmp); // insert into the dictionary if it does not exist
 			
 			Animation3D mAnim;
 			mAnim = new RotateAnimation3D(axis, 360);
 			mAnim.setRepeatCount(Animation3D.INFINITE);
 			mAnim.setDuration(500);
-			mAnim.setTransformable3D(tmp.ink);
+			mAnim.setTransformable3D(tmp);
 			
-			addChild(tmp.ink);
+			tmp.addLight(mLight);
+			
+			addChild(tmp);
 		}
 		
 		// update the user in the scene
 		switch(type){
-			case HEARTRATE: users.get(id).heartrate = val; break;
-			case RESPIRATION: users.get(id).respiration = val; break;
-			case TEMP: users.get(id).temp = val; break;
-			case CONDUCTIVITY: users.get(id).conductivity = val; break;	
-			case STRESS: users.get(id).stress = val; break;
-		}
-	}
-	
-	/*
-	 * This method will update each user's visualization data based on the currently set
-	 * biological data.
-	 */
-	private void adjustTargets(){
-		Collection<User> c = users.values();
-		for(User user : c)
-		{
-			Blob ink = user.ink;
-			ink.energy = user.heartrate / 100f;
-			ink.dist = user.stress;
-			ink.adjustColor(user.temp);
-		}
-	}
-	
-	/*
-	 * This TimerTask will perform the calculations that update our scene objects
-	 * on a given time interval.
-	 */
-	private class CalculationTimer extends TimerTask {
-		public void run(){
-			adjustTargets();
+			case COLOR: users.get(id).adjustColor(val); break;
+			case ENERGY: users.get(id).energy = val; break;
+			case X: users.get(id).x = val; break;
+			case Y: users.get(id).y = val; break;	
+			case Z: users.get(id).z = val; break;
 		}
 	}
 }
