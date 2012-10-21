@@ -72,11 +72,14 @@ public class BluetoothManager {
 			}
 		}
 		
-		_bt = new BTClient(adapter, BHdevice.getAddress());
-		_NConnListener = new NewConnectedListener(msgHandler,msgHandler);
-		_bt.addConnectedEventListener(_NConnListener);
-		if(_bt.IsConnected()){
-			_bt.start();
+		if(BHdevice != null){
+			_bt = new BTClient(adapter, BHdevice.getAddress());
+			_NConnListener = new NewConnectedListener(msgHandler,msgHandler);
+			_bt.addConnectedEventListener(_NConnListener);
+			if(_bt.IsConnected()){
+				_bt.start();
+			}
 		}
+		
 	}  
 }
