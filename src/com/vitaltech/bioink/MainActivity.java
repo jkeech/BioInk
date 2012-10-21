@@ -30,7 +30,6 @@ public class MainActivity extends RajawaliActivity {
 	
 	@SuppressWarnings("unused")
 	private BluetoothManager BTMan;
-	
 	private DataProcess dp;
 	private Scene scene;
 
@@ -83,9 +82,13 @@ public class MainActivity extends RajawaliActivity {
 		dp.addScene(scene);
 		// END DATA PROCESSING
 
-		// TODO INSTANTIATE BLUETOOTH
-		if(DEBUG) Log.d(TAG,"start Bluetooth");
-        BTMan = new BluetoothManager(btAdapter, dp);
+		// INSTANTIATE BLUETOOTH
+		if(BTMan == null){
+			if(DEBUG) Log.d(TAG,"start Bluetooth DISABLED");
+//			BTMan = new BluetoothManager(btAdapter, dp); // FIXME
+		}else{
+			if(DEBUG) Log.d(TAG,"Bluetooth already started");
+		}
 		// END BLUETOOTH
 
 		// Catch Bluetooth radio events
@@ -131,7 +134,19 @@ public class MainActivity extends RajawaliActivity {
 			        	if (DEBUG) Log.d(TAG,"start viz");
 			            setContentView(mLayout);
 			            vizActive = true;
-
+			            
+			            if(btAdapter.isEnabled()){
+							changeRadioStatus("on");
+							vizButton.setText("Start Visualization");
+							changeAudibleStatus(0);
+							changePairedStatus(0);
+				        }else{
+							changeRadioStatus("off");
+							vizButton.setText("Enable Bluetooth");
+							changeAudibleStatus(-1);
+							changePairedStatus(-1);
+						}
+			            
 			         // start data feeding thread for testing
 			            new Thread(new Runnable() {
 			            	public void run() { 
@@ -174,17 +189,6 @@ public class MainActivity extends RajawaliActivity {
             if(DEBUG) Log.d(TAG, "return to menu");
             setContentView(R.layout.activity_main);
             connectButton();
-            if(btAdapter.isEnabled()){
-				changeRadioStatus("on");
-				vizButton.setText("Start Visualization");
-				changeAudibleStatus(0);
-				changePairedStatus(0);
-	        }else{
-				changeRadioStatus("off");
-				vizButton.setText("Enable Bluetooth");
-				changeAudibleStatus(-1);
-				changePairedStatus(-1);
-			}
     	}
     }
 
