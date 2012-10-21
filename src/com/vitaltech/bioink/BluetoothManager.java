@@ -25,6 +25,7 @@ public class BluetoothManager {
 	private final int SKIN_TEMPERATURE = 0x102;
 	private final int POSTURE = 0x103;
 	private final int PEAK_ACCLERATION = 0x104;
+	private final Handler msgHandler;
 	
 	public BluetoothManager(BluetoothAdapter _adapter /*, DataProcessing _dataProcessing*/){
 		//Set our BT adapter object
@@ -34,12 +35,46 @@ public class BluetoothManager {
 		Set<BluetoothDevice> AllDevices = adapter.getBondedDevices();
 		for(BluetoothDevice device : AllDevices){
 			if(device.getName().startsWith("BH")){
-				BHDevices.add(device);
+				//BHDevices.add(device);
 				//Quick hack for single device
 				BHdevice = device;
 				
 			}
 		}
+		
+	   msgHandler = new Handler(){
+	    	public void handleMessage(Message msg)
+	    	{
+	    		switch (msg.what)
+	    		{
+	    		case HEART_RATE:
+	    			String HeartRatetext = msg.getData().getString("HeartRate");
+	    			//dataProcessing.push
+	    			//public void push(String userID, DataType dtype, float value){
+	    			
+	    		break;
+	    		
+	    		case RESPIRATION_RATE:
+	    			String RespirationRatetext = msg.getData().getString("RespirationRate");    		
+	    		break;
+	    		
+	    		case SKIN_TEMPERATURE:
+	    			String SkinTemperaturetext = msg.getData().getString("SkinTemperature");
+	    		break;
+	    		
+	    		case POSTURE:
+	    			String PostureText = msg.getData().getString("Posture");
+	    		break;
+	    		
+	    		case PEAK_ACCLERATION:
+	    			String PeakAccText = msg.getData().getString("PeakAcceleration");
+	    		break;	
+	    		
+	    		
+	    		}
+	    	}
+
+	    };
 		
 		_bt = new BTClient(adapter, BHdevice.getAddress());
 		_NConnListener = new NewConnectedListener(msgHandler,msgHandler);
@@ -48,42 +83,5 @@ public class BluetoothManager {
 			_bt.start();
 		}
 		
-	}
-	
-	
-        	
-    final Handler msgHandler = new Handler(){
-    	public void handleMessage(Message msg)
-    	{
-    		switch (msg.what)
-    		{
-    		case HEART_RATE:
-    			String HeartRatetext = msg.getData().getString("HeartRate");
-    			//dataProcessing.push
-    			//public void push(String userID, DataType dtype, float value){
-    			
-    		break;
-    		
-    		case RESPIRATION_RATE:
-    			String RespirationRatetext = msg.getData().getString("RespirationRate");    		
-    		break;
-    		
-    		case SKIN_TEMPERATURE:
-    			String SkinTemperaturetext = msg.getData().getString("SkinTemperature");
-    		break;
-    		
-    		case POSTURE:
-    			String PostureText = msg.getData().getString("Posture");
-    		break;
-    		
-    		case PEAK_ACCLERATION:
-    			String PeakAccText = msg.getData().getString("PeakAcceleration");
-    		break;	
-    		
-    		
-    		}
-    	}
-
-    };
-    
+	}    
 }
