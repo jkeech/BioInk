@@ -37,6 +37,7 @@ public class MainActivity extends RajawaliActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "test message");
         setContentView(R.layout.activity_main);
         if(DEBUG) Log.d(TAG, "__onCreate()__");
 
@@ -159,6 +160,10 @@ public class MainActivity extends RajawaliActivity {
                 if(DEBUG) Log.d(TAG, "ending app");
                 finish();
             }
+        }else if (keyCode == KeyEvent.KEYCODE_MENU){
+                if(DEBUG) Log.d(TAG, "onCreateOptionsMenu()");
+//                getMenuInflater().inflate(R.menu.activity_main, (android.view.Menu) menu);
+                return true;
         }
         return false;
     }
@@ -208,6 +213,7 @@ public class MainActivity extends RajawaliActivity {
     // **** End Lifecycle ****    
 
 //    public boolean onCreateOptionsMenu(Menu menu) {
+//        if(DEBUG) Log.d(TAG, "onCreateOptionsMenu()");
 //        getMenuInflater().inflate(R.menu.activity_main, (android.view.Menu) menu);
 //        return true;
 //    }
