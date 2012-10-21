@@ -31,7 +31,9 @@ public class MainActivity extends RajawaliActivity {
 	private BluetoothAdapter btAdapter;
 	private Boolean vizActive;
 	
-//	private kailean bluetooth		// FIXME
+    @SuppressWarnings("unused")
+    //Suppressed Warnings, BTMan runs in the background
+	private BluetoothManager BTMan;
 	
 	private DataProcess dp;	// FIXME
 	private Scene scene;
@@ -86,7 +88,8 @@ public class MainActivity extends RajawaliActivity {
 		// END DATA PROCESSING
 
 		// TODO INSTANTIATE BLUETOOTH
-		// FIXME bluetooth(dataprocessing)
+		if(DEBUG) Log.d(TAG,"start Bluetooth");
+        BTMan = new BluetoothManager(btAdapter, dp);
 		// END BLUETOOTH
 
 		// Catch Bluetooth radio events
@@ -129,36 +132,17 @@ public class MainActivity extends RajawaliActivity {
 			        if(vizButton.getText()=="Enable Bluetooth"){
 			            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
 			        }else{
-			            new Thread(new Runnable() { 
-			                public void run(){
-			                	if(DEBUG) Log.d(TAG,"start Bluetooth thread");
-					            // TODO Start bluetooth active thread here.
-			                }
-			            }).start(); // bluetooth
+			        	if (DEBUG) Log.d(TAG,"start viz");
+					            setContentView(mLayout);
+					            vizActive = true;
 
-			            new Thread(new Runnable() { 
-			                public void run(){
-			                	if(DEBUG) Log.d(TAG,"start data thread");
-						        // TODO Start data processing active thread here.
-			                }
-			            }).start(); // data processing
-
-//			            new Thread(new Runnable() { 
-//			                public void run(){
-//			                	if(DEBUG) Log.d(TAG,"start data thread");
-						            if (DEBUG) Log.d(TAG,"start viz");
-						            setContentView(mLayout);
-						            vizActive = true;
-
-						         // start data feeding thread for testing
-						            new Thread(new Runnable() {
-						            	public void run() { 
-						            		DataSimulator ds = new DataSimulator(dp);
-					            			ds.run();
-						            	}
-						            }).start();// debug data
-//			                }
-//			            }).start(); // visualization
+					         // start data feeding thread for testing
+					            new Thread(new Runnable() {
+					            	public void run() { 
+				            		DataSimulator ds = new DataSimulator(dp);
+				            			ds.run();
+					            	}
+					            }).start();// debug data
 			        }
 				}
 			}
