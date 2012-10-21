@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import rajawali.RajawaliActivity;
@@ -30,7 +31,8 @@ public class MainActivity extends RajawaliActivity {
 	private Boolean vizActive;
 	
 //	private kailean bluetooth		// FIXME
-//	private mario dataprocessing	// FIXME
+	
+	private DataProcess dp;	// FIXME
 	private Scene scene;
 
 	// **** Start Lifecycle ****
@@ -39,7 +41,7 @@ public class MainActivity extends RajawaliActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if(DEBUG) Log.d(TAG, "__onCreate()__");
-
+        
 		btAdapter=BluetoothAdapter.getDefaultAdapter();
 		if(btAdapter==null){
 			Toast.makeText(getApplicationContext(),"Bluetooth not available on this device",Toast.LENGTH_LONG).show();
@@ -56,15 +58,30 @@ public class MainActivity extends RajawaliActivity {
         }).start();
 
 		vizActive = false;
-        // INSTANTIATE VIZ SCENE
-        scene = new Scene(this,1000);
-		scene.initScene();
+		
+		// START VIZ SCENE
+        scene = new Scene(this);
 		scene.setSurfaceView(mSurfaceView);
 		super.setRenderer(scene);
 		// END VIZ SCENE
+		
+		// DISPLAY FPS
+		if(DEBUG){
+			LinearLayout ll = new LinearLayout(this);
+			ll.setOrientation(LinearLayout.HORIZONTAL);
+			TextView label = new TextView(this);
+	        label.setTextSize(20);
+	        ll.addView(label);
+	        mLayout.addView(ll);
+	        
+	        FPSDisplay fps = new FPSDisplay(this,label);
+	        scene.setFPSUpdateListener(fps);
+		}
+		// END FPS DISPLAY
 
-		// TODO INSTANTIATE DATA PROCESSING
-		// FIXME dataprocessing(scene)
+		// START DATA PROCESSING 
+		dp = new DataProcess(1000);
+		dp.addScene(scene);
 		// END DATA PROCESSING
 
 		// TODO INSTANTIATE BLUETOOTH
@@ -132,10 +149,11 @@ public class MainActivity extends RajawaliActivity {
 						            setContentView(mLayout);
 						            vizActive = true;
 
-						            // start data feeding thread for testing
+						         // start data feeding thread for testing
 						            new Thread(new Runnable() {
 						            	public void run() { 
-						            		generateData(); 
+						            		DataSimulator ds = new DataSimulator(dp);
+					            			ds.run();
 						            	}
 						            }).start();// debug data
 //			                }
@@ -234,19 +252,5 @@ public class MainActivity extends RajawaliActivity {
     	}else{
     		((TextView)this.findViewById(R.id.audibleTextView)).setText("Devices audible: "+audible.toString());
     	}
-    }
-
-    	
-    private void generateData(){
-    	scene.update("user1", DataType.HEARTRATE, 50);
-    	scene.update("user1", DataType.TEMP, 97);
-    	try {
-			Thread.sleep(4000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	scene.update("user1", DataType.TEMP, 105);
-    	scene.update("user1", DataType.HEARTRATE,120);
     }
 }

@@ -1,0 +1,16 @@
+master branch of development
+
+post-merge with UI
+
+add bluetooth, data, and viz modules
+
+post merge with viz
+
+TAG as V0.02
+
+
+touch for visibility in tree branches
+
+touch Master branch
+
+touch master after bringing in UI branch changes
