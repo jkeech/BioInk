@@ -1,16 +1,15 @@
 package com.vitaltech.bioink;
 
 /*
- * This class models a single user within the visualization
+ * This class models a single user within the data processing module
  */
 public class User {
 	// biological data retrieved from sensors
+	public String id;
 	public float heartrate = 0;
 	public float respiration = 0;
-	public float temp = 0;
-	public float conductivity = 0;
-	public float stress = 0; // 0 <= stress <= 1
+	public float hrv = 0;
 	
-	// each user also has a corresponding blob visualization
-	public Blob ink = new Blob();	
+	//Missing structure to store R to R interval
+	
 }
