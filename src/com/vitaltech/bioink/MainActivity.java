@@ -60,8 +60,13 @@ public class MainActivity extends Activity {
 		dp.addScene(scene);
 		// END DATA PROCESSING
 
-		// TODO INSTANTIATE BLUETOOTH
-		// FIXME bluetooth(dataprocessing)
+		// INSTANTIATE BLUETOOTH
+		if(BTMan == null){
+			if(DEBUG) Log.d(TAG,"start Bluetooth DISABLED");
+//			BTMan = new BluetoothManager(btAdapter, dp); // FIXME
+		}else{
+			if(DEBUG) Log.d(TAG,"Bluetooth already started");
+		}
 		// END BLUETOOTH
 
 		// Catch Bluetooth radio events
@@ -147,7 +152,7 @@ public class MainActivity extends Activity {
         return false;
     }
 
-    @Override
+	@Override
     protected void onResume() { // Activity was partially visible
         if(DEBUG) Log.d(TAG, "__onResume()__");
         registerReceiver(broadcastReceiver, intentFilter);
@@ -159,17 +164,6 @@ public class MainActivity extends Activity {
             if(DEBUG) Log.d(TAG, "return to menu");
             setContentView(R.layout.activity_main);
             connectButton();
-            if(btAdapter.isEnabled()){
-				changeRadioStatus("on");
-				vizButton.setText("Start Visualization");
-				changeAudibleStatus(0);
-				changePairedStatus(0);
-	        }else{
-				changeRadioStatus("off");
-				vizButton.setText("Enable Bluetooth");
-				changeAudibleStatus(-1);
-				changePairedStatus(-1);
-			}
     	}
     }
 
@@ -180,15 +174,7 @@ public class MainActivity extends Activity {
         if(DEBUG) Log.d(TAG, "__onPause()__");
         unregisterReceiver(broadcastReceiver);
     	super.onPause();
-    	// pause bluetooth traffic
-    	// stop data analysis
-    	// stop screen visualization
     }
-    
-//    public void onDestroy() { // Activity was hidden but is now being stopped altogether
-//    	if(DEBUG) Log.d(TAG, "__onDestroy()__");
-//    	super.onStop();
-//    }
     // **** End Lifecycle ****    
 
     private void changeRadioStatus(String stat){
