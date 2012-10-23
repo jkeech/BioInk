@@ -7,11 +7,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import rajawali.RajawaliActivity;
 
+@SuppressWarnings("deprecation")
 public class RajActivity extends RajawaliActivity {
-	private static final String TAG=RajActivity.class.getSimpleName();
+	private static final String TAG = RajActivity.class.getSimpleName();
 	public static final Boolean DEBUG = MainActivity.DEBUG;
 
+	private DataProcess dp;
 	private Scene scene;
+	private BluetoothManager BTMan;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,6 +28,19 @@ public class RajActivity extends RajawaliActivity {
 		super.setRenderer(scene);
 		// END VIZ SCENE
 
+		// START DATA PROCESSING 
+		dp = new DataProcess(1000);
+		dp.addScene(scene);
+		// END DATA PROCESSING
+
+		// INSTANTIATE BLUETOOTH
+		if(BTMan == null){
+			if(DEBUG) Log.d(TAG,"start Bluetooth DISABLED");
+//			BTMan = new BluetoothManager(btAdapter, dp); // FIXME
+		}else{
+			if(DEBUG) Log.d(TAG,"Bluetooth already started");
+		}
+		// END BLUETOOTH
 		// DISPLAY FPS
 		if(DEBUG){
 			LinearLayout ll = new LinearLayout(this);
@@ -38,13 +54,15 @@ public class RajActivity extends RajawaliActivity {
 	        scene.setFPSUpdateListener(fps);
 		}
 		// END FPS DISPLAY
-		new Thread(new Runnable() { 
-            public void run(){
-            	if(DEBUG) Log.d(TAG,"start data simulation");
-            	new DataSimulator(scene).run();
-            }
-        }).start(); // data processing
-        
+
+		// start data feeding thread for testing
+		new Thread(new Runnable() {
+			public void run() { 
+				DataSimulator ds = new DataSimulator(dp);
+				ds.run();
+			}
+		}).start();// debug data
+
 		setContentView(mLayout);
     }
     

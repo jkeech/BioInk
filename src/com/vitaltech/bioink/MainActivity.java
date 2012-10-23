@@ -12,7 +12,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,11 +24,8 @@ public class MainActivity extends Activity {
 	private BroadcastReceiver broadcastReceiver;
 	private IntentFilter intentFilter;
 	private BluetoothAdapter btAdapter;
-	private Boolean vizActive;
+	private Boolean vizActive = null;
 	
-//	private kailean bluetooth		// FIXME
-	private DataProcess dp;
-
 	// **** Start Lifecycle ****
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +33,10 @@ public class MainActivity extends Activity {
         Log.d(TAG, "test message");
         setContentView(R.layout.activity_main);
         if(DEBUG) Log.d(TAG, "__onCreate()__");
+        
+        if(vizActive == null){
+    		vizActive = false;
+        }
         
 		btAdapter=BluetoothAdapter.getDefaultAdapter();
 		if(btAdapter==null){
@@ -52,22 +52,6 @@ public class MainActivity extends Activity {
             	discovery.findDevices(btAdapter);
             }
         }).start();
-
-		vizActive = false;
-
-		// START DATA PROCESSING 
-		dp = new DataProcess(1000);
-		dp.addScene(scene);
-		// END DATA PROCESSING
-
-		// INSTANTIATE BLUETOOTH
-		if(BTMan == null){
-			if(DEBUG) Log.d(TAG,"start Bluetooth DISABLED");
-//			BTMan = new BluetoothManager(btAdapter, dp); // FIXME
-		}else{
-			if(DEBUG) Log.d(TAG,"Bluetooth already started");
-		}
-		// END BLUETOOTH
 
 		// Catch Bluetooth radio events
 		intentFilter=new IntentFilter();
@@ -109,22 +93,10 @@ public class MainActivity extends Activity {
 			        if(vizButton.getText()=="Enable Bluetooth"){
 			            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
 			        }else{
-			        	// bluetooth
-			        	
-			        	// data processing
-
 			            if (DEBUG) Log.d(TAG,"start viz");
 			            Intent myIntent = new Intent(v.getContext(), RajActivity.class);
 			            startActivityForResult(myIntent, 0);
 			            vizActive = true;
-
-			            // start data feeding thread for testing
-			            new Thread(new Runnable() {
-			            	public void run() { 
-		    	        		DataSimulator ds = new DataSimulator(dp);
-		            			ds.run();
-			            	}
-			            }).start();// debug data
 			        }
 				}
 			}

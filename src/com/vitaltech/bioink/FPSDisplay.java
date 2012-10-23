@@ -4,6 +4,7 @@ import android.widget.TextView;
 import rajawali.RajawaliActivity;
 import rajawali.util.FPSUpdateListener;
 
+@SuppressWarnings("deprecation")
 public class FPSDisplay implements FPSUpdateListener {
 	private TextView label;
 	private RajawaliActivity activity;
