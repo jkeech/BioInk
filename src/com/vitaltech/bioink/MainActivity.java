@@ -24,20 +24,20 @@ public class MainActivity extends Activity {
 	private BroadcastReceiver broadcastReceiver;
 	private IntentFilter intentFilter;
 	private BluetoothAdapter btAdapter;
-	private Boolean vizActive = null;
-	
+	private Boolean vizActive;// = null;
+
 	// **** Start Lifecycle ****
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(TAG, "test message");
-        setContentView(R.layout.activity_main);
-        if(DEBUG) Log.d(TAG, "__onCreate()__");
-        
-        if(vizActive == null){
-    		vizActive = false;
-        }
-        
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.d(TAG, "test message");
+		setContentView(R.layout.activity_main);
+		if(DEBUG) Log.d(TAG, "__onCreate()__");
+
+		if(vizActive == null){
+			vizActive = false;
+		}
+
 		btAdapter=BluetoothAdapter.getDefaultAdapter();
 		if(btAdapter==null){
 			Toast.makeText(getApplicationContext(),"Bluetooth not available on this device",Toast.LENGTH_LONG).show();
@@ -46,12 +46,12 @@ public class MainActivity extends Activity {
 		}
 
 		discovery=new Discovery(this, btAdapter);
-        new Thread(new Runnable() { 
-            public void run(){
-            	if(DEBUG) Log.d(TAG,"start finding devices");
-            	discovery.findDevices(btAdapter);
-            }
-        }).start();
+		new Thread(new Runnable() { 
+			public void run(){
+				if(DEBUG) Log.d(TAG,"start finding devices");
+				discovery.findDevices(btAdapter);
+			}
+		}).start();
 
 		// Catch Bluetooth radio events
 		intentFilter=new IntentFilter();
@@ -81,96 +81,96 @@ public class MainActivity extends Activity {
 			}
 		};
 		connectButton();
-    }
-    
-    private void connectButton(){
+	}
+
+	private void connectButton(){
 		// Configure single Button system
 		this.vizButton=(Button)this.findViewById(R.id.vizButton);
-        this.vizButton.setOnClickListener(
-        	new OnClickListener() {
-				public void onClick(View v) {
-			        if(DEBUG) Log.d(TAG, "Viz Button pressed");
-			        if(vizButton.getText()=="Enable Bluetooth"){
-			            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
-			        }else{
-			            if (DEBUG) Log.d(TAG,"start viz");
-			            Intent myIntent = new Intent(v.getContext(), RajActivity.class);
-			            startActivityForResult(myIntent, 0);
-			            vizActive = true;
-			        }
+		this.vizButton.setOnClickListener(
+				new OnClickListener() {
+					public void onClick(View v) {
+						if(DEBUG) Log.d(TAG, "Viz Button pressed");
+						if(vizButton.getText()=="Enable Bluetooth"){
+							startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
+						}else{
+							if (DEBUG) Log.d(TAG,"start viz");
+							Intent myIntent = new Intent(v.getContext(), RajActivity.class);
+							startActivityForResult(myIntent, 0);
+							vizActive = true;
+						}
+					}
 				}
-			}
-		);
-    }
+				);
+	}
 
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if(DEBUG) Log.d(TAG, "back keycode received");
-            if(vizActive){
-                if(DEBUG) Log.d(TAG, "turning off visualization");
-                setContentView(R.layout.activity_main);
-                vizActive = false;
-                connectButton();
-                return true;
-            }else{
-                if(DEBUG) Log.d(TAG, "ending app");
-                finish();
-            }
-        }else if (keyCode == KeyEvent.KEYCODE_MENU){
-                if(DEBUG) Log.d(TAG, "onCreateOptionsMenu()");
-// FIXME              getMenuInflater().inflate(R.menu.activity_main, (android.view.Menu) menu);
-                return true;
-        }
-        return false;
-    }
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if(DEBUG) Log.d(TAG, "back keycode received");
+			if(vizActive){
+				if(DEBUG) Log.d(TAG, "turning off visualization");
+				setContentView(R.layout.activity_main);
+				vizActive = false;
+				connectButton();
+				return true;
+			}else{
+				if(DEBUG) Log.d(TAG, "ending app");
+				finish();
+			}
+		}else if (keyCode == KeyEvent.KEYCODE_MENU){
+			if(DEBUG) Log.d(TAG, "onCreateOptionsMenu()");
+			// FIXME              getMenuInflater().inflate(R.menu.activity_main, (android.view.Menu) menu);
+			return true;
+		}
+		return false;
+	}
 
 	@Override
-    protected void onResume() { // Activity was partially visible
-        if(DEBUG) Log.d(TAG, "__onResume()__");
-        registerReceiver(broadcastReceiver, intentFilter);
-    	super.onResume();
-    	if(vizActive){
-            if(DEBUG) Log.d(TAG, "return to visualization");
-// FIXME            setContentView(mLayout);
-        }else{
-            if(DEBUG) Log.d(TAG, "return to menu");
-            setContentView(R.layout.activity_main);
-            connectButton();
-    	}
-    }
+	protected void onResume() { // Activity was partially visible
+		if(DEBUG) Log.d(TAG, "__onResume()__");
+		registerReceiver(broadcastReceiver, intentFilter);
+		super.onResume();
+		if(vizActive){
+			if(DEBUG) Log.d(TAG, "return to visualization");
+			// FIXME            setContentView(mLayout);
+		}else{
+			if(DEBUG) Log.d(TAG, "return to menu");
+			setContentView(R.layout.activity_main);
+			connectButton();
+		}
+	}
 
-    // **** Activity is running at this point ****
-    
-    @Override
-    public void onPause(){ // Activity was visible but now is now partially visible
-        if(DEBUG) Log.d(TAG, "__onPause()__");
-        unregisterReceiver(broadcastReceiver);
-    	super.onPause();
-    }
-    // **** End Lifecycle ****    
+	// **** Activity is running at this point ****
 
-    private void changeRadioStatus(String stat){
-    	if(vizActive){
-    		Log.e(TAG, "Cannot update radio status while in visualization");
-    	}else{
-    		((TextView)this.findViewById(R.id.radioTextView)).setText("Radio is "+stat);
-    	}
-    }
+	@Override
+	public void onPause(){ // Activity was visible but now is now partially visible
+		if(DEBUG) Log.d(TAG, "__onPause()__");
+		unregisterReceiver(broadcastReceiver);
+		super.onPause();
+	}
+	// **** End Lifecycle ****    
 
-    private void changePairedStatus(Integer paired){
-    	if(vizActive){
-    		Log.e(TAG, "Cannot update paired status while in visualization");
-    	}else{
-    		((TextView)this.findViewById(R.id.pairedTextView)).setText("Devices paired: "+paired.toString());
-    	}
-    }
+	private void changeRadioStatus(String stat){
+		if(vizActive){
+			Log.e(TAG, "Cannot update radio status while in visualization");
+		}else{
+			((TextView)this.findViewById(R.id.radioTextView)).setText("Radio is "+stat);
+		}
+	}
 
-    private void changeAudibleStatus(Integer audible){
-    	if(vizActive){
-    		Log.e(TAG, "Cannot update audible status while in visualization");
-    	}else{
-    		((TextView)this.findViewById(R.id.audibleTextView)).setText("Devices audible: "+audible.toString());
-    	}
-    }
+	private void changePairedStatus(Integer paired){
+		if(vizActive){
+			Log.e(TAG, "Cannot update paired status while in visualization");
+		}else{
+			((TextView)this.findViewById(R.id.pairedTextView)).setText("Devices paired: "+paired.toString());
+		}
+	}
+
+	private void changeAudibleStatus(Integer audible){
+		if(vizActive){
+			Log.e(TAG, "Cannot update audible status while in visualization");
+		}else{
+			((TextView)this.findViewById(R.id.audibleTextView)).setText("Devices audible: "+audible.toString());
+		}
+	}
 }
 
