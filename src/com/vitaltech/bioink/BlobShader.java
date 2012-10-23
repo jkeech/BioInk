@@ -40,7 +40,7 @@ public class BlobShader extends DiffuseMaterial {
 			"	vec3 normal = aNormal;\n" +
 			
 						// MY UPDATES TO THE REGULAR DIFFUSE SHADER
-						
+						"	float strength = cStrength * 0.1;\n" +
 						// -- normalized direction from the origin (0,0,0)
 						"	vec3 directionVec = normalize(vec3(aPosition));\n" +
 						// -- the angle between this vertex and the x, y, z angles
@@ -60,9 +60,9 @@ public class BlobShader extends DiffuseMaterial {
 						"	float sinz = sin(time + zangle);\n" +
 						// -- multiply all the parameters to get the final
 						//    vertex position
-						"	timeVec.x += directionVec.x * cosx * siny * cosz * cStrength;\n" +
-						"	timeVec.y += directionVec.y * sinx * cosy * sinz * cStrength;\n" +
-						"	timeVec.z += directionVec.z * sinx * cosy * cosz * cStrength;\n" +
+						"	timeVec.x += directionVec.x * cosx * siny * cosz * strength;\n" +
+						"	timeVec.y += directionVec.y * sinx * cosy * sinz * strength;\n" +
+						"	timeVec.z += directionVec.z * sinx * cosy * cosz * strength;\n" +
 						"	gl_Position = uMVPMatrix * timeVec;\n" +
 
 			"	vTextureCoord = aTextureCoord;\n" +

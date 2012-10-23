@@ -10,18 +10,15 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import rajawali.RajawaliActivity;
 
-// user interface with master branch
-
+@SuppressWarnings("deprecation")
 public class MainActivity extends RajawaliActivity {
 	private static final String TAG=MainActivity.class.getSimpleName();
-
 	public static final Boolean DEBUG=true;
 
 	private Button vizButton;
@@ -31,9 +28,9 @@ public class MainActivity extends RajawaliActivity {
 	private BluetoothAdapter btAdapter;
 	private Boolean vizActive;
 	
-//	private kailean bluetooth		// FIXME
-	
-	private DataProcess dp;	// FIXME
+	@SuppressWarnings("unused")
+	private BluetoothManager BTMan;
+	private DataProcess dp;
 	private Scene scene;
 
 	// **** Start Lifecycle ****
@@ -85,8 +82,13 @@ public class MainActivity extends RajawaliActivity {
 		dp.addScene(scene);
 		// END DATA PROCESSING
 
-		// TODO INSTANTIATE BLUETOOTH
-		// FIXME bluetooth(dataprocessing)
+		// INSTANTIATE BLUETOOTH
+		if(BTMan == null){
+			if(DEBUG) Log.d(TAG,"start Bluetooth DISABLED");
+//			BTMan = new BluetoothManager(btAdapter, dp); // FIXME
+		}else{
+			if(DEBUG) Log.d(TAG,"Bluetooth already started");
+		}
 		// END BLUETOOTH
 
 		// Catch Bluetooth radio events
@@ -129,36 +131,29 @@ public class MainActivity extends RajawaliActivity {
 			        if(vizButton.getText()=="Enable Bluetooth"){
 			            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
 			        }else{
-			            new Thread(new Runnable() { 
-			                public void run(){
-			                	if(DEBUG) Log.d(TAG,"start Bluetooth thread");
-					            // TODO Start bluetooth active thread here.
-			                }
-			            }).start(); // bluetooth
-
-			            new Thread(new Runnable() { 
-			                public void run(){
-			                	if(DEBUG) Log.d(TAG,"start data thread");
-						        // TODO Start data processing active thread here.
-			                }
-			            }).start(); // data processing
-
-//			            new Thread(new Runnable() { 
-//			                public void run(){
-//			                	if(DEBUG) Log.d(TAG,"start data thread");
-						            if (DEBUG) Log.d(TAG,"start viz");
-						            setContentView(mLayout);
-						            vizActive = true;
-
-						         // start data feeding thread for testing
-						            new Thread(new Runnable() {
-						            	public void run() { 
-						            		DataSimulator ds = new DataSimulator(dp);
-					            			ds.run();
-						            	}
-						            }).start();// debug data
-//			                }
-//			            }).start(); // visualization
+			        	if (DEBUG) Log.d(TAG,"start viz");
+			            setContentView(mLayout);
+			            vizActive = true;
+			            
+			            if(btAdapter.isEnabled()){
+							changeRadioStatus("on");
+							vizButton.setText("Start Visualization");
+							changeAudibleStatus(0);
+							changePairedStatus(0);
+				        }else{
+							changeRadioStatus("off");
+							vizButton.setText("Enable Bluetooth");
+							changeAudibleStatus(-1);
+							changePairedStatus(-1);
+						}
+			            
+			         // start data feeding thread for testing
+			            new Thread(new Runnable() {
+			            	public void run() { 
+		            		DataSimulator ds = new DataSimulator(dp);
+		            			ds.run();
+			            	}
+			            }).start();// debug data
 			        }
 				}
 			}
@@ -182,7 +177,7 @@ public class MainActivity extends RajawaliActivity {
         return false;
     }
 
-    @Override
+	@Override
     protected void onResume() { // Activity was partially visible
         if(DEBUG) Log.d(TAG, "__onResume()__");
         registerReceiver(broadcastReceiver, intentFilter);
@@ -194,13 +189,6 @@ public class MainActivity extends RajawaliActivity {
             if(DEBUG) Log.d(TAG, "return to menu");
             setContentView(R.layout.activity_main);
             connectButton();
-            if(btAdapter.isEnabled()){
-				changeRadioStatus("on");
-				vizButton.setText("Start Visualization");
-	        }else{
-				changeRadioStatus("off");
-				vizButton.setText("Enable Bluetooth");
-			}
     	}
     }
 
@@ -211,21 +199,8 @@ public class MainActivity extends RajawaliActivity {
         if(DEBUG) Log.d(TAG, "__onPause()__");
         unregisterReceiver(broadcastReceiver);
     	super.onPause();
-    	// pause bluetooth traffic
-    	// stop data analysis
-    	// stop screen visualization
     }
-    
-//    public void onDestroy() { // Activity was hidden but is now being stopped altogether
-//    	if(DEBUG) Log.d(TAG, "__onDestroy()__");
-//    	super.onStop();
-//    }
     // **** End Lifecycle ****    
-
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.activity_main, (android.view.Menu) menu);
-//        return true;
-//    }
 
     private void changeRadioStatus(String stat){
     	if(vizActive){
