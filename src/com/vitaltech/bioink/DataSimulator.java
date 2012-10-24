@@ -11,7 +11,7 @@ public class DataSimulator {
 	private String u1 = "user1";
 	private String u2 = "user2";
 	private String u3 = "user3";
-	private String u4 = "user3"; // FIXME "user4" crashes viz
+	private String u4 = "user4"; // FIXME "user4" crashes viz
 	
 	private long wait = 2500;
 
@@ -34,6 +34,8 @@ public class DataSimulator {
 				threeTypes(u3, 0.6f);
 				Thread.sleep(wait);
 				threeTypes(u4, 0.8f);
+				Thread.sleep(wait);
+				threeTypes("user5", 0.5f);
 				Thread.sleep(2 * wait);
 
 				if(DEBUG) Log.d(TAG, "two pairs");
@@ -87,26 +89,26 @@ public class DataSimulator {
 				dataProcessor.push(u1, BiometricType.HEARTRATE, 1f);
 				Thread.sleep(wait);
 				if(DEBUG) Log.d(TAG, "u2 gets 100% respirations");
-				dataProcessor.push(u1, BiometricType.RESPIRATION, 1f);
+				dataProcessor.push(u2, BiometricType.RESPIRATION, 1f);
 				Thread.sleep(wait);
 				if(DEBUG) Log.d(TAG, "u3 gets 0% respirations");
-				dataProcessor.push(u1, BiometricType.RESPIRATION, 0f);
+				dataProcessor.push(u3, BiometricType.RESPIRATION, 0f);
 				Thread.sleep(wait);
 				if(DEBUG) Log.d(TAG, "u4 gets 0% heart rate");
-				dataProcessor.push(u1, BiometricType.HEARTRATE, 0f);
+				dataProcessor.push(u4, BiometricType.HEARTRATE, 0f);
 				Thread.sleep(2 * wait);
 				
 				if(DEBUG) Log.d(TAG, "u1 gets 100% RR");
 				dataProcessor.push(u1, BiometricType.RR, 1f);
 				Thread.sleep(wait);
 				if(DEBUG) Log.d(TAG, "u2 gets 100% RR");
-				dataProcessor.push(u1, BiometricType.RR, 1f);
+				dataProcessor.push(u2, BiometricType.RR, 1f);
 				Thread.sleep(wait);
 				if(DEBUG) Log.d(TAG, "u3 gets 0% RR");
-				dataProcessor.push(u1, BiometricType.RR, 0f);
+				dataProcessor.push(u3, BiometricType.RR, 0f);
 				Thread.sleep(wait);
 				if(DEBUG) Log.d(TAG, "u4 gets 0% RR");
-				dataProcessor.push(u1, BiometricType.RR, 0f);
+				dataProcessor.push(u4, BiometricType.RR, 0f);
 				Thread.sleep(2 * wait);
 				
 			}

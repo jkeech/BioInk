@@ -39,7 +39,7 @@ public class RajActivity extends RajawaliActivity {
 			// dp.close()
 			dp = null; // should not be necessary
 		}
-		dp = new DataProcess(1000);
+		dp = new DataProcess(100);
 		dp.addScene(scene);
 		// END DATA PROCESSING
 
@@ -82,9 +82,10 @@ public class RajActivity extends RajawaliActivity {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if(DEBUG) Log.d(TAG, "back keycode received, ending raj viz activity");
 //			BTMan = null;
-//			dp = null;
-//			scene = null;
+			dp = null;
+			scene = null;
 			dataSim.interrupt();
+			System.gc();
 			finish();
 			return true;
 		}
@@ -94,6 +95,12 @@ public class RajActivity extends RajawaliActivity {
 	@Override
 	public void onPause(){
 		if(DEBUG) Log.d(TAG, "__onPause()__");
+		super.onPause();
+	}
+
+	@Override
+	public void onResume(){
+		if(DEBUG) Log.d(TAG, "__onResume()__");
 		super.onPause();
 	}
 }
