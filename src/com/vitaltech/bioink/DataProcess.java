@@ -11,6 +11,8 @@ public class DataProcess {
 	public ConcurrentHashMap<String,User> users;
 	private Scene scene;
 	private Timer utimer = new Timer();
+	private CalculationTimer task;
+	private int uinterval = 0;
 	
 	//Positioning range constants
 	private final float minPos = -1;
@@ -27,7 +29,17 @@ public class DataProcess {
 	//Data Processing constructor
 	public DataProcess(int updateInterval){
 		users = new ConcurrentHashMap<String,User>(13);
-		utimer.schedule(new CalculationTimer(), 0, updateInterval);
+		uinterval = updateInterval;
+		resume();
+	}
+	
+	public void pause(){
+		task.cancel();
+	}
+	
+	public void resume(){
+		task = new CalculationTimer();
+		utimer.schedule(task, 0, uinterval);
 	}
 	
 	public void addScene(Scene ss){
@@ -95,26 +107,39 @@ public class DataProcess {
 		float x = 0;
 		float y = 0;
 		float z = 0;
+		float magnitude = 0;
 		
-		//extract user heart rate and calculate x-axis positioning
+		//map user heart rate to [-1,1]
 		temp = users.get(uid).heartrate;
-		x = (temp - minHR ) / (maxHR - minHR);
-		x = x * (maxPos - minPos);
-		x = x + minPos;
-		
+		//x = (temp - minHR ) / (maxHR - minHR);
+		x = temp - ((maxHR + minHR) / 2);
+		x = x / ((maxHR - minHR) / 2);
 		//validation
-		x = Math.max(Math.min(x, maxPos), minPos);
-		//Log.d("dp", "uid: " + uid + " x: " + x);
+		//x = Math.max(Math.min(x, maxPos), minPos);
 		
-		//extract user respiration rate and calculate y-axis positioning
+		//map user respiration rate to [-1,1]
 		temp = users.get(uid).respiration;
-		y = (temp - minResp ) / (maxResp - minResp);
-		y = y * (maxPos - minPos);
-		y = y + minPos;
-		
+		//y = (temp - minResp ) / (maxResp - minResp);
+		y = temp - ((maxResp + minResp) / 2);
+		y = y / ((maxResp - minResp) / 2);
 		//validation
-		y = Math.max(Math.min(y, maxPos), minPos);
-		//Log.d("dp", "uid: " + uid + " y: " + y);
+		//y = Math.max(Math.min(y, maxPos), minPos);
+		
+		//normalize the data vector
+		magnitude = x * x + y * y + z * z;
+		magnitude = (float) Math.sqrt(magnitude);
+		x = x / magnitude;
+		y = y / magnitude;
+		
+		//scale to display sphere
+		y = y * (maxPos - minPos) / 2;
+		y = y + ((maxPos + minPos) / 2);
+		x = x * (maxPos - minPos) / 2;
+		x = x + ((maxPos + minPos) / 2);
+		
+		Log.d("dp", "x: " + x);
+		Log.d("dp", "y: " + y);
+		//Log.d("dp", "z: " + z);
 		
 		//update x and y values
 		scene.update(uid, DataType.X, x);
@@ -155,20 +180,23 @@ public class DataProcess {
 		ro = 1;
 		
 		x = (float) (ro * Math.sin(sigma) * Math.cos(delta));
-		x = x * (maxPos - minPos);
-		x = x + minPos;
+		x = x * (maxPos - minPos) / 2;
+		x = x + ((maxPos + minPos) / 2);
 		//validation
 		x = Math.max(Math.min(x, maxPos), minPos);
-		//Log.d("dp", "uid: " + uid + " x: " + x);
 		
 		y = (float) (ro * Math.sin(sigma) * Math.sin(delta));
-		y = y * (maxPos - minPos);
-		y = y + minPos;
+		y = y * (maxPos - minPos) / 2;
+		y = y + ((maxPos + minPos) / 2);
 		//validation
 		y = Math.max(Math.min(y, maxPos), minPos);
-		//Log.d("dp", "uid: " + uid + " y: " + y);
 		
 		z = (float) (ro * Math.cos(sigma));
+		//Z transformation from one spehere to another omitted on purpose
+		
+		Log.d("dp", "x: " + x);
+		Log.d("dp", "y: " + y);
+		//Log.d("dp", "z: " + z);
 		
 		//update x and y values
 		scene.update(uid, DataType.X, x);
@@ -189,7 +217,8 @@ public class DataProcess {
 		for(User user : c){
 			mapRespirationRate(user.id);
 			mapHeartRate(user.id);
-			mapSphericalPosition(user.id);
+			//mapSphericalPosition(user.id);
+			mapPosition(user.id);
 		}
 	}
 	
@@ -200,6 +229,10 @@ public class DataProcess {
 		public void run(){
 			calculateTargets();
 		}
+	}
+	
+	public void quitDP(){
+		utimer.cancel();
 	}
 	
 }

@@ -64,7 +64,7 @@ public class Scene extends RajawaliRenderer {
 	    mCamAnim3.setTransformable3D(container);
 	    queue.addAnimation(mCamAnim3);
 	    */
-	    queue.start();
+	    //queue.start();
 	    
 	    addChild(container);
 	}
