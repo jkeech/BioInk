@@ -18,7 +18,7 @@ public class RajActivity extends RajawaliActivity {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+//		super.onCreate(savedInstanceState);
 		if(DEBUG) Log.d(TAG, "__onCreate()__");
 		
 		// VIZ SCENE
@@ -85,6 +85,11 @@ public class RajActivity extends RajawaliActivity {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public void onPause(){
+		if(DEBUG) Log.d(TAG, "__onPause()__");
 	}
 }
 

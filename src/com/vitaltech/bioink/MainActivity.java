@@ -60,7 +60,8 @@ public class MainActivity extends Activity {
 			@Override
 			public void onReceive(Context contxt, Intent intent) {
 				if(DEBUG) Log.d(TAG, "broadcast received");
-				switch(intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)){
+				int code = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+				switch(code){
 				case BluetoothAdapter.STATE_ON:
 					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => on");
 					changeRadioStatus("on");
@@ -73,9 +74,11 @@ public class MainActivity extends Activity {
 					break;
 				case BluetoothAdapter.STATE_TURNING_OFF:
 				case BluetoothAdapter.STATE_TURNING_ON:
-				default:
 					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => changing");
 					changeRadioStatus("changing");
+					break;
+				default:
+					Log.e(TAG, "bluetooth broadcast receiver => undefined: " + code);
 					break;
 				}
 			}
