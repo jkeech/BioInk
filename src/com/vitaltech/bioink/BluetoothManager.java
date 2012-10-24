@@ -31,7 +31,6 @@ public class BluetoothManager {
 	ArrayList<BluetoothDevice> BHDevices = null;
 	DataProcess dataProcessing;
 	BTClient _bt;
-	ZephyrProtocol _protocol;
 	NewConnectedListener _NConnListener;
 	
 		
@@ -48,10 +47,8 @@ public class BluetoothManager {
 		Set<BluetoothDevice> AllDevices = adapter.getBondedDevices();
 		for(BluetoothDevice device : AllDevices){
 			if(device.getName().startsWith("BH")){
-				//BHDevices.add(device);
+				BHDevices.add(device);
 				//Quick hack for single device
-				BHdevice = device;
-				
 			}
 		}
 		
@@ -60,9 +57,6 @@ public class BluetoothManager {
 				_bt.Close();
 				_bt = null;
 			}
-			_bt = new BTClient(adapter, BHDevices[0].getAddress());
-			_NConnListener = new NewConnectedListener(msgHandler,msgHandler);
-			_bt.addConnectedEventListener(_NConnListener);
 			if(_bt.IsConnected()){
 				_bt.start();
 			}

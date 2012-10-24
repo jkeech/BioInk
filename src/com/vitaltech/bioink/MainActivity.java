@@ -104,11 +104,13 @@ public class MainActivity extends RajawaliActivity {
 					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => on");
 					changeRadioStatus("on");
 					vizButton.setText("Start Visualization");
+					BTMan.bt_enabled();
 					break;
 				case BluetoothAdapter.STATE_OFF:
 					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => off");
 					changeRadioStatus("off");
 					vizButton.setText("Enable Bluetooth");
+					BTMan.bt_disabled();
 					break;
 				case BluetoothAdapter.STATE_TURNING_OFF:
 				case BluetoothAdapter.STATE_TURNING_ON:
