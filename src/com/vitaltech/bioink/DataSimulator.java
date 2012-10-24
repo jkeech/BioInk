@@ -11,7 +11,7 @@ public class DataSimulator {
 	private String u1 = "user1";
 	private String u2 = "user2";
 	private String u3 = "user3";
-	private String u4 = "user4";
+	private String u4 = "user3"; // FIXME "user4" crashes viz
 	
 	private long wait = 2500;
 
@@ -130,4 +130,6 @@ public class DataSimulator {
 		dataProcessor.push(u3, type, value);
 		dataProcessor.push(u4, type, value);
 	}
+	
+
 }

@@ -15,10 +15,11 @@ public class RajActivity extends RajawaliActivity {
 	private DataProcess dp;
 	private Scene scene;
 	private BluetoothManager BTMan;
+	private Thread dataSim;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-//		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);
 		if(DEBUG) Log.d(TAG, "__onCreate()__");
 		
 		// VIZ SCENE
@@ -30,11 +31,7 @@ public class RajActivity extends RajawaliActivity {
 		scene = new Scene(this);
 		scene.initScene();
 		scene.setSurfaceView(mSurfaceView);
-		try{
-			super.setRenderer(scene);
-		}catch (Exception e) {
-			Log.e(TAG, e.toString());
-		}
+		super.setRenderer(scene);
 		// END VIZ SCENE
 
 		// DATA PROCESSING 
@@ -69,11 +66,12 @@ public class RajActivity extends RajawaliActivity {
 		// END FPS DISPLAY
 
 		// start data feeding thread for testing
-		new Thread(new Runnable() {
+		dataSim = new Thread(new Runnable() {
 			public void run() {
 				new DataSimulator(dp).run();
 			}
-		}).start();// debug data
+		});// debug data
+		dataSim.start();
 
 		setContentView(mLayout);
     }
@@ -83,9 +81,10 @@ public class RajActivity extends RajawaliActivity {
 		if(DEBUG) Log.d(TAG, "keycode received " + keyCode);
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if(DEBUG) Log.d(TAG, "back keycode received, ending raj viz activity");
-			BTMan = null;
-			dp = null;
-			scene = null;
+//			BTMan = null;
+//			dp = null;
+//			scene = null;
+			dataSim.interrupt();
 			finish();
 			return true;
 		}
@@ -95,6 +94,7 @@ public class RajActivity extends RajawaliActivity {
 	@Override
 	public void onPause(){
 		if(DEBUG) Log.d(TAG, "__onPause()__");
+		super.onPause();
 	}
 }
 
