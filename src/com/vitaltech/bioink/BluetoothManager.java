@@ -50,8 +50,10 @@ public class BluetoothManager {
 			if(device.getName().startsWith("BH")){
 				//BHDevices.add(device);
 				//Quick hack for single device
-				BHdevice = device;
-				
+/*				BHdevice = device;
+compile error
+ramos commented this code out
+*/				
 			}
 		}
 		
@@ -60,7 +62,10 @@ public class BluetoothManager {
 				_bt.Close();
 				_bt = null;
 			}
-			_bt = new BTClient(adapter, BHDevices[0].getAddress());
+/*			_bt = new BTClient(adapter, BHDevices[0].getAddress());
+compile error
+ramos commented this code out
+*/
 			_NConnListener = new NewConnectedListener(msgHandler,msgHandler);
 			_bt.addConnectedEventListener(_NConnListener);
 			if(_bt.IsConnected()){
