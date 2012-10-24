@@ -4,12 +4,14 @@ import java.util.Set;
 
 import zephyr.android.BioHarnessBT.BTClient;
 import zephyr.android.BioHarnessBT.ZephyrProtocol;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Handler;
 import android.os.Message;
 
 
+@SuppressLint("HandlerLeak")
 public class BluetoothManager {
     /** Called when the activity is first created. */
 	
