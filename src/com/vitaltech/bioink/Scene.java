@@ -23,7 +23,7 @@ public class Scene extends RajawaliRenderer {
 	
 	public Scene(Context context){
 		super(context);
-		setFrameRate(20);
+		setFrameRate(60);
 		initScene();
 	}
 	
@@ -72,8 +72,10 @@ public class Scene extends RajawaliRenderer {
 	@Override public void onDrawFrame(GL10 glUnused) {
 		mCamera.setLookAt(0, 0, 0);
 		super.onDrawFrame(glUnused);
-		for (Blob blob : users.values()){
-			blob.draw();
+		synchronized(users){
+			for (Blob blob : users.values()){
+				blob.draw();
+			}
 		}
 	}
 	
@@ -85,7 +87,9 @@ public class Scene extends RajawaliRenderer {
 	public void update(String id, DataType type, float val){
 		if(!users.containsKey(id)){
 			Blob tmp = new Blob();
-			users.put(id,tmp); // insert into the dictionary if it does not exist
+			synchronized(users){
+				users.put(id,tmp); // insert into the dictionary if it does not exist
+			}
 
 			tmp.addLight(mLight);			
 			container.addChild(tmp);
