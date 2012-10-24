@@ -23,13 +23,18 @@ public class RajActivity extends RajawaliActivity {
 		
 		// VIZ SCENE
 		if(scene != null){
+			if(DEBUG) Log.d(TAG, "scene not null");
 			// scene.close()
 			scene = null; // should not be necessary
 		}
 		scene = new Scene(this);
 		scene.initScene();
 		scene.setSurfaceView(mSurfaceView);
-		super.setRenderer(scene);
+		try{
+			super.setRenderer(scene);
+		}catch (Exception e) {
+			Log.e(TAG, e.toString());
+		}
 		// END VIZ SCENE
 
 		// DATA PROCESSING 

@@ -1,7 +1,5 @@
 package com.vitaltech.bioink;
 
-import java.util.Random;
-
 import android.util.Log;
 
 public class DataSimulator {
