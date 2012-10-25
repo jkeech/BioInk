@@ -81,10 +81,11 @@ public class RajActivity extends RajawaliActivity {
 		if(DEBUG) Log.d(TAG, "keycode received " + keyCode);
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if(DEBUG) Log.d(TAG, "back keycode received, ending raj viz activity");
+			dataSim.interrupt();
 //			BTMan = null;
+			dp.quitDP();
 			dp = null;
 			scene = null;
-			dataSim.interrupt();
 			System.gc();
 			finish();
 			return true;

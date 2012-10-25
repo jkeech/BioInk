@@ -86,7 +86,7 @@ public class Scene extends RajawaliRenderer {
 	 * data processing module.
 	 */
 	public void update(String id, DataType type, float val){
-		Log.d("scene", "user: " + id + ", type: " + type + ", val: " +val);
+//		Log.d("scene", "user: " + id + ", type: " + type + ", val: " +val);
 		if(!users.containsKey(id)){
 			Blob tmp = new Blob();
 			synchronized(users){

@@ -137,8 +137,8 @@ public class DataProcess {
 		x = x * (maxPos - minPos) / 2;
 		x = x + ((maxPos + minPos) / 2);
 		
-		Log.d("dp", "x: " + x);
-		Log.d("dp", "y: " + y);
+//		Log.d("dp", "x: " + x);
+//		Log.d("dp", "y: " + y);
 		//Log.d("dp", "z: " + z);
 		
 		//update x and y values
@@ -194,8 +194,8 @@ public class DataProcess {
 		z = (float) (ro * Math.cos(sigma));
 		//Z transformation from one spehere to another omitted on purpose
 		
-		Log.d("dp", "x: " + x);
-		Log.d("dp", "y: " + y);
+//		Log.d("dp", "x: " + x);
+//		Log.d("dp", "y: " + y);
 		//Log.d("dp", "z: " + z);
 		
 		//update x and y values
