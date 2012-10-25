@@ -68,7 +68,7 @@ public class RajActivity extends RajawaliActivity {
 		// start data feeding thread for testing
 		dataSim = new Thread(new Runnable() {
 			public void run() {
-				new DataSimulator(dp).run();
+				new DataSimulatorPlus(dp).run();
 			}
 		});// debug data
 		dataSim.start();
@@ -102,7 +102,7 @@ public class RajActivity extends RajawaliActivity {
 	@Override
 	public void onResume(){
 		if(DEBUG) Log.d(TAG, "__onResume()__");
-		super.onPause();
+		super.onResume();
 	}
 }
 

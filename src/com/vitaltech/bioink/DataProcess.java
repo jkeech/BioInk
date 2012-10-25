@@ -126,10 +126,10 @@ public class DataProcess {
 		//y = Math.max(Math.min(y, maxPos), minPos);
 		
 		//normalize the data vector
-		magnitude = x * x + y * y + z * z;
-		magnitude = (float) Math.sqrt(magnitude);
-		x = x / magnitude;
-		y = y / magnitude;
+//		magnitude = x * x + y * y + z * z;
+//		magnitude = (float) Math.sqrt(magnitude);
+//		x = x / magnitude;
+//		y = y / magnitude;
 		
 		//scale to display sphere
 		y = y * (maxPos - minPos) / 2;

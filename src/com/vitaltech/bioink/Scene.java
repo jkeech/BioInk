@@ -72,8 +72,8 @@ public class Scene extends RajawaliRenderer {
 	
 	@Override public void onDrawFrame(GL10 glUnused) {
 		mCamera.setLookAt(0, 0, 0);
-		super.onDrawFrame(glUnused);
 		synchronized(users){
+			super.onDrawFrame(glUnused);
 			for (Blob blob : users.values()){
 				blob.draw();
 			}
@@ -87,14 +87,13 @@ public class Scene extends RajawaliRenderer {
 	 */
 	public void update(String id, DataType type, float val){
 //		Log.d("scene", "user: " + id + ", type: " + type + ", val: " +val);
-		if(!users.containsKey(id)){
-			Blob tmp = new Blob();
-			synchronized(users){
+		synchronized(users){
+			if(!users.containsKey(id)){
+				Blob tmp = new Blob();
 				users.put(id,tmp); // insert into the dictionary if it does not exist
+				tmp.addLight(mLight);			
+				container.addChild(tmp);
 			}
-
-			tmp.addLight(mLight);			
-			container.addChild(tmp);
 		}
 		
 		// update the user in the scene
