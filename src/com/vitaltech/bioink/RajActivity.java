@@ -10,7 +10,7 @@ import rajawali.RajawaliActivity;
 @SuppressWarnings("deprecation")
 public class RajActivity extends RajawaliActivity {
 	private static final String TAG = RajActivity.class.getSimpleName();
-	public static final Boolean DEBUG = MainActivity.DEBUG;
+	private static final Boolean DEBUG = MainActivity.DEBUG;
 
 	private DataProcess dp;
 	private Scene scene;
@@ -36,7 +36,7 @@ public class RajActivity extends RajawaliActivity {
 
 		// DATA PROCESSING 
 		if(dp != null){
-			// dp.close()
+			dp.quitDP();
 			dp = null; // should not be necessary
 		}
 		dp = new DataProcess(100);
@@ -66,6 +66,10 @@ public class RajActivity extends RajawaliActivity {
 		// END FPS DISPLAY
 
 		// start data feeding thread for testing
+		if(dataSim != null){
+			dataSim.interrupt();
+			dataSim = null;
+		}
 		dataSim = new Thread(new Runnable() {
 			public void run() {
 				new DataSimulatorPlus(dp).run();
@@ -81,22 +85,28 @@ public class RajActivity extends RajawaliActivity {
 		if(DEBUG) Log.d(TAG, "keycode received " + keyCode);
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if(DEBUG) Log.d(TAG, "back keycode received, ending raj viz activity");
-			dataSim.interrupt();
-//			BTMan = null;
-			dp.quitDP();
-			dp = null;
-			scene = null;
-			System.gc();
-			finish();
+			cleanExit();
 			return true;
 		}
 		return false;
 	}
 	
+	private void cleanExit(){
+		dataSim.interrupt();
+		dataSim = null;
+//		BTMan = null;
+		dp.quitDP();
+		dp = null;
+		scene = null;
+		System.gc();
+		finish();
+	}
+
 	@Override
 	public void onPause(){
 		if(DEBUG) Log.d(TAG, "__onPause()__");
 		super.onPause();
+		cleanExit();
 	}
 
 	@Override
