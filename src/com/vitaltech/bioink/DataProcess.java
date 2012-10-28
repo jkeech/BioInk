@@ -50,9 +50,6 @@ public class DataProcess {
 		this.scene = ss;
 	}
 	
-	//flag that controls whether or not the first HRV has been calculated
-	public boolean active_hrv = false;
-	
 	//Method allows bluetooth mod to push data into data Process mod
 	//User is specified by its ID
 	public void push(String uid, BiometricType dtype, float value){
@@ -71,6 +68,7 @@ public class DataProcess {
 			break;
 		case HRV:
 			users.get(uid).hrv = value;
+			users.get(uid).hrv_active = true;
 			break;
 		case RR:
 			//To be added once the RR interval structures have been built
@@ -107,9 +105,15 @@ public class DataProcess {
 	}
 	
 	//map position of given biometrics from their own intervals to [minpos, maxpos]
-	//Note: the current biometric values are being mapped into a cube of side length maxpos - minpos
-	//aka not a sphere yet
 	public void mapPosition(String uid){
+		if(users.get(uid).hrv_active){
+			map3DPosition(uid);
+		}else{
+			map2DPosition(uid);
+		}
+	}
+	
+	public void map3DPosition(String uid){
 		float temp = 0;
 		float ratio = 1;
 		float x = 0;
@@ -138,7 +142,7 @@ public class DataProcess {
 		y = y / ((maxResp - minResp) / 2);
 		
 		//map hrv to [-1,1]
-		temp = users.get(uid).respiration;
+		temp = users.get(uid).hrv;
 		z = temp - ((maxHRV + minHRV) / 2);
 		z = z / ((maxHRV - minHRV) / 2);
 		
@@ -146,6 +150,122 @@ public class DataProcess {
 		abx = Math.abs(x);
 		aby = Math.abs(y);
 		abz = Math.abs(z);
+		
+		//case A: upper most
+		if(y > 0 && y > abx && y > abz){
+			cy = 1;
+			cx = abx / aby;
+			cz = abz / aby;
+		}
+		
+		//case B: lower most
+		if((-y > 0) && (-y > abx) && (-y > abz)){
+			cy = 1;
+			cx = abx / aby;
+			cz = abz / aby;
+		}
+		
+		//case C: right most
+		if(x > 0 && x > aby && x > abz){
+			cx = 1;
+			cy = aby / abx;
+			cz = abz / abx;
+		}
+		
+		//case D: left most
+		if((-x > 0) && (-x > aby) && (-x > abz)){
+			cx = 1;
+			cy = aby / abx;
+			cz = abz / abx;
+		}
+		
+		//case E: front
+		if(z > 0 && z > abx && z > aby){
+			cz = 1;
+			cx = abx / abz;
+			cy = aby / abz;
+		}
+		
+		//case F: back
+		if((-z > 0) && (-z > abx) && (-z > aby)){
+			cz = 1;
+			cx = abx / abz;
+			cy = aby / abz;
+		}
+		
+		//maps thing to thing
+		//TODO: fix cases for equal values
+		if(abx == aby || abz == abx || aby == abz){
+			magnitude = (float) Math.sqrt(2);
+		}else{
+			magnitude = cx * cx + cy * cy + cz * cz;
+			magnitude = (float) Math.sqrt(magnitude);
+		}
+		
+		if(magnitude == 0){
+			ratio = 1;
+		}else{
+			ratio = 1 / magnitude;
+		}
+		
+		x = x * ratio;
+		y = y * ratio;
+		z = z * ratio;
+		
+		//scale to display sphere
+		y = y * (maxPos - minPos) / 2;
+		y = y + ((maxPos + minPos) / 2);
+		x = x * (maxPos - minPos) / 2;
+		x = x + ((maxPos + minPos) / 2);
+		z = z * (maxPos - minPos) / 2;
+		z = z + ((maxPos + minPos) / 2);
+		
+		Log.d("dp", "x: " + x);
+		Log.d("dp", "y: " + y);
+		Log.d("dp", "z: " + z);
+		
+		//validation
+		//y = Math.max(Math.min(y, maxPos), minPos);
+		//x = Math.max(Math.min(x, maxPos), minPos);
+		//z = Math.max(Math.min(z, maxPos), minPos);
+		
+		//update x and y values
+		scene.update(uid, DataType.X, x);
+		scene.update(uid, DataType.Y, y);
+		scene.update(uid, DataType.Z, z);
+	}
+	
+	public void map2DPosition(String uid){
+		float temp = 0;
+		float ratio = 1;
+		float x = 0;
+		float y = 0;
+		float z = 0;
+		//mapped coordinate values
+		float cx = 0;
+		float cy = 0;
+		float cz = 0;
+		//absolute values of calculated coordinates
+		float abx = 0;
+		float aby = 0;
+		float abz = 0;
+		float magnitude = 0;
+		
+		//map user heart rate to [-1,1]
+		temp = users.get(uid).heartrate;
+		//x = (temp - minHR ) / (maxHR - minHR);
+		x = temp - ((maxHR + minHR) / 2);
+		x = x / ((maxHR - minHR) / 2);
+		
+		//map user respiration rate to [-1,1]
+		temp = users.get(uid).respiration;
+		//y = (temp - minResp ) / (maxResp - minResp);
+		y = temp - ((maxResp + minResp) / 2);
+		y = y / ((maxResp - minResp) / 2);
+		
+		//map cube to r=1 sphere 
+		abx = Math.abs(x);
+		aby = Math.abs(y);
 		
 		//case A: upper most
 		if(y > 0 && y > abx){
@@ -187,92 +307,23 @@ public class DataProcess {
 		
 		x = x * ratio;
 		y = y * ratio;
-		z = 1f;
 		
 		//scale to display sphere
 		y = y * (maxPos - minPos) / 2;
 		y = y + ((maxPos + minPos) / 2);
 		x = x * (maxPos - minPos) / 2;
 		x = x + ((maxPos + minPos) / 2);
-		z = z * (maxPos - minPos) / 2;
-		z = z + ((maxPos + minPos) / 2);
 		
 		Log.d("dp", "x: " + x);
 		Log.d("dp", "y: " + y);
-		Log.d("dp", "z: " + z);
 		
 		//validation
 		//y = Math.max(Math.min(y, maxPos), minPos);
 		//x = Math.max(Math.min(x, maxPos), minPos);
-		//z = Math.max(Math.min(z, maxPos), minPos);
 		
 		//update x and y values
 		scene.update(uid, DataType.X, x);
 		scene.update(uid, DataType.Y, y);
-		scene.update(uid, DataType.Z, z);
-		
-		if(active_hrv){
-			//calculate and update Z position value
-			z = 1;
-		}
-	}
-	
-	public void mapSphericalPosition(String uid){
-		float temp = 0;
-		
-		//coordinates
-		float x = 0;
-		float y = 0;
-		float z = 0;
-		
-		//spherical coordinates
-		float sigma = 0; //heart rate 0-180
-		float delta = 0; //respiration rate 0-360
-		float ro = 0; //hrv
-		
-		//extract user heart rate and calculate sigma positioning
-		temp = users.get(uid).heartrate;
-		sigma = (temp - minHR ) / (maxHR - minHR); //map to 0-1
-		sigma = sigma * 180;
-		sigma = (float) Math.toRadians(sigma);
-		
-		//extract user respiration rate and calculate delta positioning
-		temp = users.get(uid).respiration;
-		delta = (temp - minResp ) / (maxResp - minResp);
-		delta = delta * 360;
-		delta = (float) Math.toRadians(delta);
-		
-		//extract hrv and calculate ro position
-		ro = 1;
-		
-		x = (float) (ro * Math.sin(sigma) * Math.cos(delta));
-		x = x * (maxPos - minPos) / 2;
-		x = x + ((maxPos + minPos) / 2);
-		//validation
-		x = Math.max(Math.min(x, maxPos), minPos);
-		
-		y = (float) (ro * Math.sin(sigma) * Math.sin(delta));
-		y = y * (maxPos - minPos) / 2;
-		y = y + ((maxPos + minPos) / 2);
-		//validation
-		y = Math.max(Math.min(y, maxPos), minPos);
-		
-		z = (float) (ro * Math.cos(sigma));
-		//Z transformation from one spehere to another omitted on purpose
-		
-		Log.d("dp", "x: " + x);
-		Log.d("dp", "y: " + y);
-		//Log.d("dp", "z: " + z);
-		
-		//update x and y values
-		scene.update(uid, DataType.X, x);
-		scene.update(uid, DataType.Y, y);
-		scene.update(uid, DataType.Z, z);
-		
-		if(active_hrv){
-			//calculate and update Z position value
-			z = 1;
-		}
 	}
 	
 	/*
