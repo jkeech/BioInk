@@ -20,6 +20,8 @@ public class BlobShader extends DiffuseMaterial {
 			"uniform float cStrength;\n" +
 			// the time in which to propagate the waves
 			"uniform float uTime;\n" +
+			// the amount by which to expand the radius of the blob
+			"uniform float uRadiusMultiplier;\n" +
 
 			"attribute vec4 aPosition;\n" +
 			"attribute vec3 aNormal;\n" +
@@ -40,7 +42,7 @@ public class BlobShader extends DiffuseMaterial {
 			"	vec3 normal = aNormal;\n" +
 			
 						// MY UPDATES TO THE REGULAR DIFFUSE SHADER
-						"	float strength = cStrength * 0.1;\n" +
+						"	float strength = cStrength * uRadiusMultiplier * 0.1;\n" +
 						// -- normalized direction from the origin (0,0,0)
 						"	vec3 directionVec = normalize(vec3(aPosition));\n" +
 						// -- the angle between this vertex and the x, y, z angles
@@ -49,6 +51,10 @@ public class BlobShader extends DiffuseMaterial {
 						"	float zangle = dot(cZaxis, directionVec) * 4.5;\n" +
 						"	vec4 timeVec = aPosition;\n" +
 						"	float time = uTime * .001;\n" +
+						// change volume based on the multiplier passed in
+						"	timeVec.x *= uRadiusMultiplier;\n" +
+						"	timeVec.y *= uRadiusMultiplier;\n" +
+						"	timeVec.z *= uRadiusMultiplier;\n" +
 						// -- cos & sin calculations for each of the angles
 						//    change some numbers here & there to get the 
 						//    desired effect.
@@ -63,7 +69,7 @@ public class BlobShader extends DiffuseMaterial {
 						"	timeVec.x += directionVec.x * cosx * siny * cosz * strength;\n" +
 						"	timeVec.y += directionVec.y * sinx * cosy * sinz * strength;\n" +
 						"	timeVec.z += directionVec.z * sinx * cosy * cosz * strength;\n" +
-						"	gl_Position = uMVPMatrix * timeVec;\n" +
+						"	gl_Position = uMVPMatrix * timeVec * uRadiusMultiplier;\n" +
 
 			"	vTextureCoord = aTextureCoord;\n" +
 			"	N = normalize(uNMatrix * normal);\n" +
@@ -75,8 +81,10 @@ public class BlobShader extends DiffuseMaterial {
 	
 	protected int muTimeHandle;
 	protected int mcStrengthHandle;
+	protected int mRadiusMultiplierHandle;
 	protected float mTime;
 	protected float mStrength;
+	protected float mRadiusMultiplier;
 	
 	public BlobShader() {
 		super(mVShader, DiffuseMaterial.mFShader, false);
@@ -91,6 +99,7 @@ public class BlobShader extends DiffuseMaterial {
 		super.setShaders(vertexShader, fragmentShader);
 		muTimeHandle = getUniformLocation("uTime");
 		mcStrengthHandle = getUniformLocation("cStrength");
+		mRadiusMultiplierHandle = getUniformLocation("uRadiusMultiplier");
 	}
 	
 	public void useProgram() {
@@ -98,6 +107,7 @@ public class BlobShader extends DiffuseMaterial {
 		// -- make sure that time updates every frame
 		GLES20.glUniform1f(muTimeHandle, mTime);
 		GLES20.glUniform1f(mcStrengthHandle, mStrength);
+		GLES20.glUniform1f(mRadiusMultiplierHandle, mRadiusMultiplier);
 	}
 	
 	public void setTime(float time) {
@@ -106,5 +116,11 @@ public class BlobShader extends DiffuseMaterial {
 	
 	public void setStrength(float strength){
 		mStrength = strength;
+	}
+	
+	public void setVolumeMultiplier(float multiplier){
+		// the multiplier given if the amount of the volume increase, so we need
+		// to convert the increase in volume to an increase in radius
+		mRadiusMultiplier = (float) Math.pow(multiplier, 1.0/3);
 	}
 }
