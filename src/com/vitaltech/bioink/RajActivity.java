@@ -97,12 +97,15 @@ public class RajActivity extends RajawaliActivity {
 		}
 		dataSim = null;
 
-//		BTMan = null;
-
 		if(dp != null){
 			dp.quitDP();
 		}
 		dp = null;
+
+		if(BTMan != null){
+			BTMan.bt_disabled();
+		}
+		BTMan = null;
 
 		scene = null;
 

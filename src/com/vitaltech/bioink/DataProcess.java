@@ -71,7 +71,7 @@ public class DataProcess {
 			users.get(uid).hrv_active = true;
 			break;
 		case RR:
-			//To be added once the RR interval structures have been built
+			users.get(uid).addRR(value);
 			break;
 		default:
 			break;
@@ -123,7 +123,7 @@ public class DataProcess {
 		float cx = 0;
 		float cy = 0;
 		float cz = 0;
-		//absoulte values of calculated coordinates
+		//absolute values of calculated coordinates
 		float abx = 0;
 		float aby = 0;
 		float abz = 0;
@@ -131,13 +131,11 @@ public class DataProcess {
 		
 		//map user heart rate to [-1,1]
 		temp = users.get(uid).heartrate;
-		//x = (temp - minHR ) / (maxHR - minHR);
 		x = temp - ((maxHR + minHR) / 2);
 		x = x / ((maxHR - minHR) / 2);
 		
 		//map user respiration rate to [-1,1]
 		temp = users.get(uid).respiration;
-		//y = (temp - minResp ) / (maxResp - minResp);
 		y = temp - ((maxResp + minResp) / 2);
 		y = y / ((maxResp - minResp) / 2);
 		
@@ -219,15 +217,14 @@ public class DataProcess {
 		x = x + ((maxPos + minPos) / 2);
 		z = z * (maxPos - minPos) / 2;
 		z = z + ((maxPos + minPos) / 2);
-		
-//		Log.d("dp", "x: " + x);
-//		Log.d("dp", "y: " + y);
-//		Log.d("dp", "z: " + z);
+		/*Log.d("dp", "x: " + x);
+		Log.d("dp", "y: " + y);
+		Log.d("dp", "z: " + z);*/
 		
 		//validation
-		//y = Math.max(Math.min(y, maxPos), minPos);
-		//x = Math.max(Math.min(x, maxPos), minPos);
-		//z = Math.max(Math.min(z, maxPos), minPos);
+		y = Math.max(Math.min(y, maxPos), minPos);
+		x = Math.max(Math.min(x, maxPos), minPos);
+		z = Math.max(Math.min(z, maxPos), minPos);
 		
 		//update x and y values
 		scene.update(uid, DataType.X, x);
@@ -253,13 +250,11 @@ public class DataProcess {
 		
 		//map user heart rate to [-1,1]
 		temp = users.get(uid).heartrate;
-		//x = (temp - minHR ) / (maxHR - minHR);
 		x = temp - ((maxHR + minHR) / 2);
 		x = x / ((maxHR - minHR) / 2);
 		
 		//map user respiration rate to [-1,1]
 		temp = users.get(uid).respiration;
-		//y = (temp - minResp ) / (maxResp - minResp);
 		y = temp - ((maxResp + minResp) / 2);
 		y = y / ((maxResp - minResp) / 2);
 		
@@ -313,13 +308,13 @@ public class DataProcess {
 		y = y + ((maxPos + minPos) / 2);
 		x = x * (maxPos - minPos) / 2;
 		x = x + ((maxPos + minPos) / 2);
-		
-//		Log.d("dp", "x: " + x);
-//		Log.d("dp", "y: " + y);
+
+		/*Log.d("dp", "x: " + x);
+		Log.d("dp", "y: " + y);*/
 		
 		//validation
-		//y = Math.max(Math.min(y, maxPos), minPos);
-		//x = Math.max(Math.min(x, maxPos), minPos);
+		y = Math.max(Math.min(y, maxPos), minPos);
+		x = Math.max(Math.min(x, maxPos), minPos);
 		
 		//update x and y values
 		scene.update(uid, DataType.X, x);
@@ -334,7 +329,7 @@ public class DataProcess {
 		for(User user : c){
 			mapRespirationRate(user.id);
 			mapHeartRate(user.id);
-			//mapSphericalPosition(user.id);
+			//user.calculateHRV();
 			mapPosition(user.id);
 		}
 	}
@@ -349,7 +344,13 @@ public class DataProcess {
 	}
 	
 	public void quitDP(){
+		//stop the timer
 		utimer.cancel();
+		//clear the list storing the RR-intervals
+		Collection<User> c = users.values();
+		for(User user : c){
+			user.rrq.clear();
+		}
 	}
 	
 }
