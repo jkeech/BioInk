@@ -154,6 +154,8 @@ public class DataProcess {
 			cy = 1;
 			cx = abx / aby;
 			cz = abz / aby;
+		}else if(y > 0 && abx == abz){
+			
 		}
 		
 		//case B: lower most
@@ -192,9 +194,10 @@ public class DataProcess {
 		}
 		
 		//maps thing to thing
-		//TODO: fix cases for equal values
+		//special case for the corners of the cube. 
 		if(abx == aby || abz == abx || aby == abz){
-			magnitude = (float) Math.sqrt(2);
+			magnitude = (float) Math.sqrt(3);
+			Log.d("dp", "special case");
 		}else{
 			magnitude = cx * cx + cy * cy + cz * cz;
 			magnitude = (float) Math.sqrt(magnitude);
@@ -210,6 +213,13 @@ public class DataProcess {
 		y = y * ratio;
 		z = z * ratio;
 		
+		double mm = Math.sqrt(x * x + y * y + z * z);
+		
+		if(mm > 1) {
+			Log.e("dp", "mm: " + mm);
+			Log.e("dp", "x " + x + " y " + y + " z " + z );
+		}
+		
 		//scale to display sphere
 		y = y * (maxPos - minPos) / 2;
 		y = y + ((maxPos + minPos) / 2);
@@ -217,9 +227,10 @@ public class DataProcess {
 		x = x + ((maxPos + minPos) / 2);
 		z = z * (maxPos - minPos) / 2;
 		z = z + ((maxPos + minPos) / 2);
-		/*Log.d("dp", "x: " + x);
-		Log.d("dp", "y: " + y);
-		Log.d("dp", "z: " + z);*/
+		
+		Log.d("dp", uid + " x: " + x);
+		Log.d("dp", uid + " y: " + y);
+		Log.d("dp", uid + " z: " + z);
 		
 		//validation
 		y = Math.max(Math.min(y, maxPos), minPos);
