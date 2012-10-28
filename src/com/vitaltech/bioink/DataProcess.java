@@ -329,7 +329,7 @@ public class DataProcess {
 		for(User user : c){
 			mapRespirationRate(user.id);
 			mapHeartRate(user.id);
-			user.calculateHRV();
+			//user.calculateHRV();
 			mapPosition(user.id);
 		}
 	}

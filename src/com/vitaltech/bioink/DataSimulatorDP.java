@@ -2,10 +2,10 @@ package com.vitaltech.bioink;
 
 import java.util.Random;
 
-public class DataSimulator {
+public class DataSimulatorDP {
 	private DataProcess dp;
 	
-	public DataSimulator(DataProcess dp){
+	public DataSimulatorDP(DataProcess dp){
 		this.dp = dp;
 	}
 	
