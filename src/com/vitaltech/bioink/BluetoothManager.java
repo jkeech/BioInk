@@ -74,6 +74,7 @@ public class BluetoothManager {
 		//Check that the adapter actually exists
 		if(adapter == null){
 			Log.e(TAG, "adapter is null!");
+			return;
 		}
 		if (DEBUG)
 			Log.d(TAG, "getting bonded devices");
