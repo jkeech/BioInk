@@ -8,10 +8,12 @@ public class Blob extends Sphere {
 	private float _x,_y,_z; // position
 	private int _color; // color
 	private float _energy; // amount of energy on the surface of the blob
+	private float _volumeMultiplier; // amount to multiply the radius by
 	
 	// target data to animate towards
 	public float x,y,z;
 	private int color;
+	private int volumeMultiplier = 1;
 	public float energy;
 	private long startTime = 0;
 	
@@ -21,7 +23,7 @@ public class Blob extends Sphere {
 	private BlobShader shader;
 	
 	public Blob(){
-		super(0.2f,60,60);
+		super(0.2f,40,40);
 		_x = _y = _z = x = y = z = 0;
 		_color = color = Color.BLACK;
 		_energy = energy = 0;
@@ -41,10 +43,20 @@ public class Blob extends Sphere {
 		setColor(_color);
 		shader.setTime((float)(System.currentTimeMillis()-startTime));
 		shader.setStrength(_energy);
+		shader.setVolumeMultiplier(_volumeMultiplier);
 	}
 	
 	public void adjustColor(float ratio){
 		color = interpolateColor(Color.GREEN,Color.RED,ratio);
+	}
+	
+	public void grow(){
+		volumeMultiplier += 1;
+	}
+	
+	public void shrink(){
+		if (volumeMultiplier > 1)
+			volumeMultiplier -= 1;
 	}
 	
 	// update current data by moving towards the target
@@ -54,6 +66,7 @@ public class Blob extends Sphere {
 		_z = _z + (z-_z)/DECAY;
 		_energy = _energy + (energy-_energy)/DECAY;
 		_color = interpolateColor(_color,color,1/DECAY);
+		_volumeMultiplier = _volumeMultiplier + (volumeMultiplier-_volumeMultiplier)/DECAY;
 	}
 	
 	private int interpolateColor(int a, int b, float proportion) {

@@ -7,12 +7,15 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.opengl.GLES20;
 import rajawali.BaseObject3D;
 import rajawali.animation.Animation3D;
 import rajawali.animation.Animation3DQueue;
 import rajawali.animation.RotateAnimation3D;
 import rajawali.lights.DirectionalLight;
+import rajawali.materials.SimpleMaterial;
 import rajawali.math.Number3D.Axis;
+import rajawali.primitives.Sphere;
 import rajawali.renderer.RajawaliRenderer;
 
 public class Scene extends RajawaliRenderer {
@@ -52,7 +55,7 @@ public class Scene extends RajawaliRenderer {
 	    */
 		
 	    RotateAnimation3D mCamAnim2 = new RotateAnimation3D(Axis.Y,360);
-	    mCamAnim2.setDuration(10000);
+	    mCamAnim2.setDuration(20000);
 	    mCamAnim2.setRepeatCount(Animation3D.INFINITE);
 	    mCamAnim2.setTransformable3D(container);
 	    queue.addAnimation(mCamAnim2);	
@@ -64,16 +67,29 @@ public class Scene extends RajawaliRenderer {
 	    mCamAnim3.setTransformable3D(container);
 	    queue.addAnimation(mCamAnim3);
 	    */
-	    //queue.start();
+	    queue.start();
 	    
 	    addChild(container);
+	    
+	    Sphere bounds = new Sphere(1,20,20);
+	    bounds.setPosition(0, 0, 0);
+	    SimpleMaterial material = new SimpleMaterial();
+	    material.setUseColor(true);
+	    bounds.setColor(Color.LTGRAY);
+	    bounds.setMaterial(material);
+	    bounds.setTransparent(true);
+	    bounds.setDrawingMode(GLES20.GL_LINES);
+	    container.addChild(bounds);
+	    
 	}
 	
 	@Override public void onDrawFrame(GL10 glUnused) {
 		mCamera.setLookAt(0, 0, 0);
-		super.onDrawFrame(glUnused);
-		for (Blob blob : users.values()){
-			blob.draw();
+		synchronized(users){
+			super.onDrawFrame(glUnused);
+			for (Blob blob : users.values()){
+				blob.draw();
+			}
 		}
 	}
 	
@@ -83,12 +99,13 @@ public class Scene extends RajawaliRenderer {
 	 * data processing module.
 	 */
 	public void update(String id, DataType type, float val){
-		if(!users.containsKey(id)){
-			Blob tmp = new Blob();
-			users.put(id,tmp); // insert into the dictionary if it does not exist
-
-			tmp.addLight(mLight);			
-			container.addChild(tmp);
+		synchronized(users){
+			if(!users.containsKey(id)){
+				Blob tmp = new Blob();
+				users.put(id,tmp); // insert into the dictionary if it does not exist
+				tmp.addLight(mLight);			
+				container.addChild(tmp);
+			}
 		}
 		
 		// update the user in the scene

@@ -217,7 +217,6 @@ public class DataProcess {
 		x = x + ((maxPos + minPos) / 2);
 		z = z * (maxPos - minPos) / 2;
 		z = z + ((maxPos + minPos) / 2);
-		
 		/*Log.d("dp", "x: " + x);
 		Log.d("dp", "y: " + y);
 		Log.d("dp", "z: " + z);*/
@@ -309,7 +308,7 @@ public class DataProcess {
 		y = y + ((maxPos + minPos) / 2);
 		x = x * (maxPos - minPos) / 2;
 		x = x + ((maxPos + minPos) / 2);
-		
+
 		/*Log.d("dp", "x: " + x);
 		Log.d("dp", "y: " + y);*/
 		
