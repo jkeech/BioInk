@@ -345,7 +345,13 @@ public class DataProcess {
 	}
 	
 	public void quitDP(){
+		//stop the timer
 		utimer.cancel();
+		//clear the list storing the RR-intervals
+		Collection<User> c = users.values();
+		for(User user : c){
+			user.rrq.clear();
+		}
 	}
 	
 }
