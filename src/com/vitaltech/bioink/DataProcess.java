@@ -26,9 +26,13 @@ public class DataProcess {
 	public final float minResp = 0;
 	public final float maxResp = 70;
 	
+	//Heart rate variability
+	public final float minHRV = 0;
+	public final float maxHRV = 200;
+	
 	//Data Processing constructor
 	public DataProcess(int updateInterval){
-		users = new ConcurrentHashMap<String,User>(13);
+		users = new ConcurrentHashMap<String,User>(23);
 		uinterval = updateInterval;
 		resume();
 	}
@@ -65,7 +69,10 @@ public class DataProcess {
 		case RESPIRATION:
 			users.get(uid).respiration = value;
 			break;
-		case RR: 
+		case HRV:
+			users.get(uid).hrv = value;
+			break;
+		case RR:
 			//To be added once the RR interval structures have been built
 			break;
 		default:
@@ -104,9 +111,18 @@ public class DataProcess {
 	//aka not a sphere yet
 	public void mapPosition(String uid){
 		float temp = 0;
+		float ratio = 1;
 		float x = 0;
 		float y = 0;
 		float z = 0;
+		//mapped coordinate values
+		float cx = 0;
+		float cy = 0;
+		float cz = 0;
+		//absoulte values of calculated coordinates
+		float abx = 0;
+		float aby = 0;
+		float abz = 0;
 		float magnitude = 0;
 		
 		//map user heart rate to [-1,1]
@@ -114,36 +130,86 @@ public class DataProcess {
 		//x = (temp - minHR ) / (maxHR - minHR);
 		x = temp - ((maxHR + minHR) / 2);
 		x = x / ((maxHR - minHR) / 2);
-		//validation
-		//x = Math.max(Math.min(x, maxPos), minPos);
 		
 		//map user respiration rate to [-1,1]
 		temp = users.get(uid).respiration;
 		//y = (temp - minResp ) / (maxResp - minResp);
 		y = temp - ((maxResp + minResp) / 2);
 		y = y / ((maxResp - minResp) / 2);
-		//validation
-		//y = Math.max(Math.min(y, maxPos), minPos);
 		
-		//normalize the data vector
-		magnitude = x * x + y * y + z * z;
-		magnitude = (float) Math.sqrt(magnitude);
-		x = x / magnitude;
-		y = y / magnitude;
+		//map hrv to [-1,1]
+		temp = users.get(uid).respiration;
+		z = temp - ((maxHRV + minHRV) / 2);
+		z = z / ((maxHRV - minHRV) / 2);
+		
+		//map cube to r=1 sphere 
+		abx = Math.abs(x);
+		aby = Math.abs(y);
+		abz = Math.abs(z);
+		
+		//case A: upper most
+		if(y > 0 && y > abx){
+			cy = 1;
+			cx = abx / aby;
+		}
+		
+		//case B: lower most
+		if((-y > 0) && (-y > abx)){
+			cy = 1;
+			cx = abx / aby;
+		}
+		
+		//case C: right most
+		if(x > 0 && x > aby){
+			cx = 1;
+			cy = aby / abx;
+		}
+		
+		//case D: left most
+		if((-x > 0) && (-x > aby)){
+			cx = 1;
+			cy = aby / abx;
+		}
+		
+		//maps thing to thing
+		if(abx == aby){
+			magnitude = (float) Math.sqrt(2);
+		}else{
+			magnitude = cx * cx + cy * cy;
+			magnitude = (float) Math.sqrt(magnitude);
+		}
+		
+		if(magnitude == 0){
+			ratio = 1;
+		}else{
+			ratio = 1 / magnitude;
+		}
+		
+		x = x * ratio;
+		y = y * ratio;
+		z = 1f;
 		
 		//scale to display sphere
 		y = y * (maxPos - minPos) / 2;
 		y = y + ((maxPos + minPos) / 2);
 		x = x * (maxPos - minPos) / 2;
 		x = x + ((maxPos + minPos) / 2);
+		z = z * (maxPos - minPos) / 2;
+		z = z + ((maxPos + minPos) / 2);
 		
 		Log.d("dp", "x: " + x);
 		Log.d("dp", "y: " + y);
-		//Log.d("dp", "z: " + z);
+		Log.d("dp", "z: " + z);
+		
+		//validation
+		//y = Math.max(Math.min(y, maxPos), minPos);
+		//x = Math.max(Math.min(x, maxPos), minPos);
+		//z = Math.max(Math.min(z, maxPos), minPos);
 		
 		//update x and y values
 		scene.update(uid, DataType.X, x);
 		scene.update(uid, DataType.Y, y);
+		scene.update(uid, DataType.Z, z);
 		
 		if(active_hrv){
 			//calculate and update Z position value

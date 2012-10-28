@@ -11,14 +11,8 @@ public class DataSimulator {
 	
 	public void run(){
     	try {
-    		
-    		/*
-    		dp.push("user1", BiometricType.HEARTRATE, dp.maxHR/2);
-    		dp.push("user1", BiometricType.RESPIRATION, dp.maxResp/2);
-    		Thread.sleep(1);
-    		*/
-    		//rotationQuads(2000);
-    		randomRange(2000);
+    		rangeOverview(1500,10);
+    		//randomRange(2000);
     		
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -49,7 +43,7 @@ public class DataSimulator {
 		}
 	}
 	
-	public void rotationQuads(int interval) throws InterruptedException{
+	public void rangeOverview(int interval, int steps) throws InterruptedException{
 		int ro = 0;
 		float hr1 = 0;
 		float rr1 = 0;
@@ -61,38 +55,28 @@ public class DataSimulator {
 		float rr4 = 0;
 		
 		while(true){
-			hr1 = (float) ((ro % 4) + 1) * dp.maxHR / 4;
-			rr1 = (float) ((ro % 4) + 1) * dp.maxResp / 4;
-			
-			dp.push("user1", BiometricType.HEARTRATE, hr1);
-    		dp.push("user1", BiometricType.RESPIRATION, rr1);
-    		
-    		//Thread.sleep(interval);
-    		
-    		hr2 = (float) ((ro + 3) % 4 + 1) * dp.maxHR / 4;
-			rr2 = (float) ((ro + 1) % 4 + 1) * dp.maxResp / 4;
-			
-    		dp.push("user2", BiometricType.HEARTRATE, hr2);
-    		dp.push("user2", BiometricType.RESPIRATION, rr2);
-    		
-    		//Thread.sleep(interval);
-    		
-    		hr3 = (float) ((ro + 2) % 4 + 1) * dp.maxHR / 4;
-			rr3 = (float) ((ro + 2) % 4 + 1) * dp.maxResp / 4;
-			
-    		dp.push("user3", BiometricType.HEARTRATE, hr3);
-    		dp.push("user3", BiometricType.RESPIRATION, rr3);
-    		
-			//Thread.sleep(interval);
-			
-			hr4 = (float) ((ro + 1) % 4 + 1) * dp.maxHR / 4;
-			rr4 = (float) ((ro + 3) % 4 + 1) * dp.maxResp / 4;
-			
-    		dp.push("user4", BiometricType.HEARTRATE, hr4);
-    		dp.push("user4", BiometricType.RESPIRATION, rr4);
-    		
-    		ro++;
-			Thread.sleep(interval);
+			for(int i = 0; i <= steps; i++){
+				hr1 = i * dp.maxHR / steps;
+				rr1 = 0 * dp.maxResp / 3;
+				hr2 = hr1;
+				rr2 = 1 * dp.maxResp / 3;
+				hr3 = hr1;
+				rr3 = 2 * dp.maxResp / 3;
+				hr4 = hr1;
+				rr4 = 3 * dp.maxResp / 3;
+				
+				
+				dp.push("user1", BiometricType.HEARTRATE, hr1);
+	    		dp.push("user1", BiometricType.RESPIRATION, rr1);
+	    		dp.push("user2", BiometricType.HEARTRATE, hr2);
+	    		dp.push("user2", BiometricType.RESPIRATION, rr2);
+	    		dp.push("user3", BiometricType.HEARTRATE, hr3);
+	    		dp.push("user3", BiometricType.RESPIRATION, rr3);
+	    		dp.push("user4", BiometricType.HEARTRATE, hr4);
+	    		dp.push("user4", BiometricType.RESPIRATION, rr4);
+	    		
+	    		Thread.sleep(interval);
+			}
 		}
 	}
 }
