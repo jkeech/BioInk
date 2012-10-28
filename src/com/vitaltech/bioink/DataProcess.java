@@ -51,7 +51,7 @@ public class DataProcess {
 	}
 	
 	//Method allows bluetooth mod to push data into data Process mod
-	//User is specified by its ID
+	//User is specified by its id string
 	public void push(String uid, BiometricType dtype, float value){
 		if(!users.containsKey(uid)){
 			User tmp = new User();
