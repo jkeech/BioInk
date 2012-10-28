@@ -21,7 +21,7 @@ public class Blob extends Sphere {
 	private BlobShader shader;
 	
 	public Blob(){
-		super(0.2f,60,60);
+		super(0.2f,40,40);
 		_x = _y = _z = x = y = z = 0;
 		_color = color = Color.BLACK;
 		_energy = energy = 0;

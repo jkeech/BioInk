@@ -53,7 +53,7 @@ public class Scene extends RajawaliRenderer {
 	    */
 		
 	    RotateAnimation3D mCamAnim2 = new RotateAnimation3D(Axis.Y,360);
-	    mCamAnim2.setDuration(10000);
+	    mCamAnim2.setDuration(20000);
 	    mCamAnim2.setRepeatCount(Animation3D.INFINITE);
 	    mCamAnim2.setTransformable3D(container);
 	    queue.addAnimation(mCamAnim2);	
@@ -65,7 +65,7 @@ public class Scene extends RajawaliRenderer {
 	    mCamAnim3.setTransformable3D(container);
 	    queue.addAnimation(mCamAnim3);
 	    */
-//	    queue.start();
+	    queue.start();
 	    
 	    addChild(container);
 	}
