@@ -7,13 +7,15 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
+import android.opengl.GLES20;
 import rajawali.BaseObject3D;
 import rajawali.animation.Animation3D;
 import rajawali.animation.Animation3DQueue;
 import rajawali.animation.RotateAnimation3D;
 import rajawali.lights.DirectionalLight;
+import rajawali.materials.SimpleMaterial;
 import rajawali.math.Number3D.Axis;
+import rajawali.primitives.Sphere;
 import rajawali.renderer.RajawaliRenderer;
 
 public class Scene extends RajawaliRenderer {
@@ -65,9 +67,20 @@ public class Scene extends RajawaliRenderer {
 	    mCamAnim3.setTransformable3D(container);
 	    queue.addAnimation(mCamAnim3);
 	    */
-	    //queue.start();
+	    queue.start();
 	    
 	    addChild(container);
+	    
+	    Sphere bounds = new Sphere(1,20,20);
+	    bounds.setPosition(0, 0, 0);
+	    SimpleMaterial material = new SimpleMaterial();
+	    material.setUseColor(true);
+	    bounds.setColor(Color.LTGRAY);
+	    bounds.setMaterial(material);
+	    bounds.setTransparent(true);
+	    bounds.setDrawingMode(GLES20.GL_LINES);
+	    container.addChild(bounds);
+	    
 	}
 	
 	@Override public void onDrawFrame(GL10 glUnused) {
