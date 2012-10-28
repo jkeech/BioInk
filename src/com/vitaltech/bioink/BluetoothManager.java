@@ -21,6 +21,7 @@ public class BluetoothManager {
 	private final int RESPIRATION_RATE = 0x101;
 	private final int POSTURE = 0x103;
 	private final int PEAK_ACCLERATION = 0x104;
+	private final int RtoR_Interval = 0x105;
 
 	//Needed Globals
 	ArrayList<Bioharness> BHDevices;
@@ -113,7 +114,13 @@ public class BluetoothManager {
 				float PeakAcc = msg.getData().getFloat("PeakAcceleration");
 				dataProcessing.push(UID, BiometricType.PEAKACC, PeakAcc);
 				break;
-
+				
+			case RtoR_Interval:
+				byte[] rtor = msg.getData().getByteArray("RtoR");
+				for(int sample = 0; sample < 35; sample=+2){
+					dataProcessing.push(UID, BiometricType.RR, BitOps.ZBTS(rtor[sample], rtor[sample+1]));
+				}
+				break;
 			}
 		}
 
