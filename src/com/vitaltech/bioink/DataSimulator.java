@@ -26,7 +26,7 @@ public class DataSimulator {
     			dp.push("user1", BiometricType.HEARTRATE, hr1);
         		dp.push("user1", BiometricType.RESPIRATION, rr1);
         		
-        		Thread.sleep(2000);
+        		Thread.sleep(200);
         		
         		float hr2 = r.nextFloat() * dp.maxHR;
     			float rr2 = r.nextFloat() * dp.maxResp;
@@ -34,7 +34,7 @@ public class DataSimulator {
         		dp.push("user2", BiometricType.HEARTRATE, hr2);
         		dp.push("user2", BiometricType.RESPIRATION, rr2);
         		
-    			Thread.sleep(2000);
+    			Thread.sleep(200);
     		}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block

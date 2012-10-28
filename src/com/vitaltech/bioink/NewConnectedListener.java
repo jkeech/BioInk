@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import zephyr.android.BioHarnessBT.*;
 
+@SuppressWarnings("unused")
 public class NewConnectedListener extends ConnectListenerImpl
 {
 	private Handler _OldHandler;
