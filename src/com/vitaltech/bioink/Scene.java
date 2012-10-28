@@ -7,6 +7,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import rajawali.BaseObject3D;
 import rajawali.animation.Animation3D;
 import rajawali.animation.Animation3DQueue;
@@ -64,15 +65,15 @@ public class Scene extends RajawaliRenderer {
 	    mCamAnim3.setTransformable3D(container);
 	    queue.addAnimation(mCamAnim3);
 	    */
-	    queue.start();
+	    //queue.start();
 	    
 	    addChild(container);
 	}
 	
 	@Override public void onDrawFrame(GL10 glUnused) {
 		mCamera.setLookAt(0, 0, 0);
-		super.onDrawFrame(glUnused);
 		synchronized(users){
+			super.onDrawFrame(glUnused);
 			for (Blob blob : users.values()){
 				blob.draw();
 			}
@@ -85,14 +86,14 @@ public class Scene extends RajawaliRenderer {
 	 * data processing module.
 	 */
 	public void update(String id, DataType type, float val){
-		if(!users.containsKey(id)){
-			Blob tmp = new Blob();
-			synchronized(users){
+		synchronized(users){
+			if(!users.containsKey(id)){
+				Blob tmp = new Blob();
 				users.put(id,tmp); // insert into the dictionary if it does not exist
+	
+				tmp.addLight(mLight);			
+				container.addChild(tmp);
 			}
-
-			tmp.addLight(mLight);			
-			container.addChild(tmp);
 		}
 		
 		// update the user in the scene

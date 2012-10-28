@@ -19,22 +19,19 @@ public class DataSimulator {
     		Thread.sleep(1);
     		*/
     		
+    		int NUM_USERS = 4;
+    		
+    		int cur = 0;
     		while(true){
-    			float hr1 = r.nextFloat() * dp.maxHR;
-    			float rr1 = r.nextFloat() * dp.maxResp;
+    			float hr = r.nextFloat() * dp.maxHR;
+    			float rr = r.nextFloat() * dp.maxResp;
     			
-    			dp.push("user1", BiometricType.HEARTRATE, hr1);
-        		dp.push("user1", BiometricType.RESPIRATION, rr1);
+    			dp.push("user"+cur, BiometricType.HEARTRATE, hr);
+        		dp.push("user"+cur, BiometricType.RESPIRATION, rr);
         		
-        		Thread.sleep(200);
-        		
-        		float hr2 = r.nextFloat() * dp.maxHR;
-    			float rr2 = r.nextFloat() * dp.maxResp;
-    			
-        		dp.push("user2", BiometricType.HEARTRATE, hr2);
-        		dp.push("user2", BiometricType.RESPIRATION, rr2);
-        		
-    			Thread.sleep(200);
+        		if(++cur == NUM_USERS)
+        			cur = 0;
+        		Thread.sleep(100);
     		}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
