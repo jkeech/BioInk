@@ -70,7 +70,7 @@ public class Scene extends RajawaliRenderer {
 	    queue.start();
 	    
 	    addChild(container);
-	    
+	    /*
 	    Sphere bounds = new Sphere(1,20,20);
 	    bounds.setPosition(0, 0, 0);
 	    SimpleMaterial material = new SimpleMaterial();
@@ -80,7 +80,8 @@ public class Scene extends RajawaliRenderer {
 	    bounds.setTransparent(true);
 	    bounds.setDrawingMode(GLES20.GL_LINES);
 	    container.addChild(bounds);
-	    
+	    */
+	    container.setShowBoundingVolume(true);
 	}
 	
 	@Override public void onDrawFrame(GL10 glUnused) {
@@ -115,6 +116,7 @@ public class Scene extends RajawaliRenderer {
 			case X: users.get(id).x = val; break;
 			case Y: users.get(id).y = val; break;	
 			case Z: users.get(id).z = val; break;
+			case VOLUME: users.get(id).setVolume(val); break;
 		}
 	}
 }
