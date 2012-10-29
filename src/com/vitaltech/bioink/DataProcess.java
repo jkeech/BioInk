@@ -197,7 +197,7 @@ public class DataProcess {
 		//special case for the corners of the cube. 
 		if(abx == aby || abz == abx || aby == abz){
 			magnitude = (float) Math.sqrt(3);
-			Log.d("dp", "special case");
+//			Log.d("dp", "special case");
 		}else{
 			magnitude = cx * cx + cy * cy + cz * cz;
 			magnitude = (float) Math.sqrt(magnitude);
@@ -228,9 +228,9 @@ public class DataProcess {
 		z = z * (maxPos - minPos) / 2;
 		z = z + ((maxPos + minPos) / 2);
 		
-		Log.d("dp", uid + " x: " + x);
-		Log.d("dp", uid + " y: " + y);
-		Log.d("dp", uid + " z: " + z);
+//		Log.d("dp", uid + " x: " + x);
+//		Log.d("dp", uid + " y: " + y);
+//		Log.d("dp", uid + " z: " + z);
 		
 		//validation
 		y = Math.max(Math.min(y, maxPos), minPos);
