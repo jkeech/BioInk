@@ -13,7 +13,7 @@ public class Blob extends Sphere {
 	// target data to animate towards
 	public float x,y,z;
 	private int color;
-	private int volumeMultiplier = 1;
+	private float volumeMultiplier = 1;
 	public float energy;
 	private long startTime = 0;
 	
@@ -50,13 +50,14 @@ public class Blob extends Sphere {
 		color = interpolateColor(Color.GREEN,Color.RED,ratio);
 	}
 	
-	public void grow(){
-		volumeMultiplier += 1;
-	}
-	
-	public void shrink(){
-		if (volumeMultiplier > 1)
-			volumeMultiplier -= 1;
+	// adjust the volume of the blob
+	public void setVolume(float size){
+		if(size < 1){
+			setVisible(false);
+		} else {
+			setVisible(true);
+			volumeMultiplier = size;
+		}
 	}
 	
 	// update current data by moving towards the target
@@ -69,6 +70,8 @@ public class Blob extends Sphere {
 		_volumeMultiplier = _volumeMultiplier + (volumeMultiplier-_volumeMultiplier)/DECAY;
 	}
 	
+	// calculate an interpolated color given a start and end color and the
+	// proportion of the distance between them
 	private int interpolateColor(int a, int b, float proportion) {
 	    float[] hsva = new float[3];
 	    float[] hsvb = new float[3];
