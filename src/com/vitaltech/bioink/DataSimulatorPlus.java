@@ -22,8 +22,9 @@ public class DataSimulatorPlus {
 	public void run(){
 		if(DEBUG) Log.d(TAG, "Starting simulator");
 		int loop = 0;
+		Boolean run = true;
 		try {
-			while(true){
+			while(run){
 				if(DEBUG) Log.d(TAG, "simulator loop " + loop++);
 				fourCorners();	// no Z plane
 				fourCornersZ();	// in Z plane
@@ -119,9 +120,13 @@ public class DataSimulatorPlus {
 				
 			}
 		} catch (InterruptedException e) {
-			Log.e(TAG, e.toString());
+			run = false;
+			Log.e(TAG, "caught interrupt exception : " + e.toString());
+		} finally {
+			run = false;
+			Log.d(TAG, "finally after " + loop);
 		}
-		Log.e(TAG, "exiting simulator after " + loop);
+		Log.d(TAG, "exiting after " + loop);
 	}
 	
 	// single user gets one value across three types
