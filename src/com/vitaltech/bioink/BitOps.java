@@ -1,3 +1,4 @@
+package com.vitaltech.bioink;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class BitOps {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		System.out.println("HELLO.");
 		Set<Byte> bytes = new LinkedHashSet<Byte>();
 		
 		bytes.add((byte)  1);	// 0000 0001 => 00000 00001 =    1		 1
@@ -90,6 +92,16 @@ public class BitOps {
 			);
 			System.out.print("\n");
 		}
+		
+		for(int x = 0; x < 256; x++){
+			for(int y = 0; y < 256; y++){
+				System.out.println(String.valueOf(ZBTS((byte) y, (byte) x)));
+				if((ZBTS((byte) y, (byte) x) > Float.MAX_VALUE)){
+					System.out.println("OMG");
+					return;
+				}
+			}
+		}
 	}
 
 	// Turn a Set of 8-bit Bytes into a List of 10-bit Longs
@@ -118,5 +130,14 @@ public class BitOps {
 		
 		return decoded;
 	}
+	public static float ZBTS(byte b1, byte b2) {
+		//Zephyr states that the first byte is LS
+		//Next one is MS
+		long MS = b2;
+		long LS = b1;
+		long number = (0xFFFF & ((MS & 0xFF) << 8) | (LS & 0xFF));
+		return Float.parseFloat(String.valueOf(number));
+		//return (short) ((b2 << 8) | (b1 & 0xFF));
+}
 
 }
