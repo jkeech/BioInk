@@ -197,7 +197,6 @@ public class DataProcess {
 		//special case for the corners of the cube. 
 		if(abx == aby || abz == abx || aby == abz){
 			magnitude = (float) Math.sqrt(3);
-			Log.d("dp", "special case");
 		}else{
 			magnitude = cx * cx + cy * cy + cz * cz;
 			magnitude = (float) Math.sqrt(magnitude);
@@ -212,13 +211,6 @@ public class DataProcess {
 		x = x * ratio;
 		y = y * ratio;
 		z = z * ratio;
-		
-		double mm = Math.sqrt(x * x + y * y + z * z);
-		
-		if(mm > 1) {
-			Log.e("dp", "mm: " + mm);
-			Log.e("dp", "x " + x + " y " + y + " z " + z );
-		}
 		
 		//scale to display sphere
 		y = y * (maxPos - minPos) / 2;
@@ -248,15 +240,12 @@ public class DataProcess {
 		float ratio = 1;
 		float x = 0;
 		float y = 0;
-		float z = 0;
 		//mapped coordinate values
 		float cx = 0;
 		float cy = 0;
-		float cz = 0;
 		//absolute values of calculated coordinates
 		float abx = 0;
 		float aby = 0;
-		float abz = 0;
 		float magnitude = 0;
 		
 		//map user heart rate to [-1,1]

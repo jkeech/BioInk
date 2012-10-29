@@ -67,7 +67,6 @@ public class User {
 			    	}else{
 			    		//calculate consecutive difference
 			    		float diff = rri + previous;
-			    		//Log.d("hrv", "rri " + rri);
 			    		diff = diff * diff;
 			    		//add the new square difference to the total
 			    		ssd = ssd + diff;
@@ -78,7 +77,6 @@ public class User {
 			}
 			//calculate the MSSD
 			ssd = ssd / (qsize - 1);
-			//Log.d("hrv", "ssd is " + ssd);
 			//calculate the RMSSD value and update it to the HRV of the user
 			rmssd = (float) Math.sqrt(ssd);
 			this.hrv = rmssd;
