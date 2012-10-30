@@ -24,6 +24,8 @@ public class NewConnectedListener extends ConnectListenerImpl
 	private final int SKIN_TEMPERATURE = 0x102;
 	private final int POSTURE = 0x103;
 	private final int PEAK_ACCLERATION = 0x104;
+	private final int RtoR_Interval = 0x105;
+	
 	/*Creating the different Objects for different types of Packets*/
 	private GeneralPacketInfo GPInfo = new GeneralPacketInfo();
 	private ECGPacketInfo ECGInfoPacket = new ECGPacketInfo();
@@ -121,7 +123,12 @@ public class NewConnectedListener extends ConnectListenerImpl
 					break;
 					case RtoR_MSG_ID:
 					/*Do what you want. Printing Sequence Number for now*/
-					//RtoRInfoPacket.GetRtoRSamples(Payload)
+					byte[] ByteSamples = null;
+					int[] RtoRSamples = RtoRInfoPacket.GetRtoRSamples(ByteSamples);
+					text1 = _aNewHandler.obtainMessage(RtoR_Interval);
+					b1.putString("RtoR", String.valueOf(ByteSamples));
+					text1.setData(b1);
+					_aNewHandler.sendMessage(text1);
 					System.out.println("R to R Packet Sequence Number is "+RtoRInfoPacket.GetSeqNum(DataArray));
 					break;
 					case ACCEL_100mg_MSG_ID:

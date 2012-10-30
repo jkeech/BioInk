@@ -92,13 +92,23 @@ public class RajActivity extends RajawaliActivity {
 	}
 	
 	private void cleanExit(){
-		dataSim.interrupt();
+		if(dataSim != null){
+			dataSim.interrupt();
+		}
 		dataSim = null;
-		BTMan.bt_disabled();
-		BTMan = null;
-		dp.quitDP();
+
+		if(dp != null){
+			dp.quitDP();
+		}
 		dp = null;
+
+		if(BTMan != null){
+			BTMan.bt_disabled();
+		}
+		BTMan = null;
+
 		scene = null;
+
 		System.gc();
 		finish();
 	}
