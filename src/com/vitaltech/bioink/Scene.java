@@ -1,6 +1,7 @@
 package com.vitaltech.bioink;
 
 
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -8,15 +9,19 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.graphics.Color;
 import android.opengl.GLES20;
+import android.util.FloatMath;
+import android.util.Log;
 import rajawali.BaseObject3D;
 import rajawali.animation.Animation3D;
 import rajawali.animation.Animation3DQueue;
 import rajawali.animation.RotateAnimation3D;
 import rajawali.lights.DirectionalLight;
 import rajawali.materials.SimpleMaterial;
+import rajawali.math.Number3D;
 import rajawali.math.Number3D.Axis;
 import rajawali.primitives.Sphere;
 import rajawali.renderer.RajawaliRenderer;
+import rajawali.bounds.BoundingSphere;
 
 public class Scene extends RajawaliRenderer {
 	public ConcurrentHashMap<String,Blob> users = new ConcurrentHashMap<String,Blob>(7);
@@ -46,8 +51,8 @@ public class Scene extends RajawaliRenderer {
 		
 		Animation3DQueue queue = new Animation3DQueue();
 		
-		/*
-		RotateAnimation3D mCamAnim = new RotateAnimation3D(Axis.X,360);
+		
+		/*RotateAnimation3D mCamAnim = new RotateAnimation3D(Axis.X,360);
 	    mCamAnim.setDuration(5000);
 	    mCamAnim.setRepeatCount(Animation3D.INFINITE);
 	    mCamAnim.setTransformable3D(container);
@@ -70,7 +75,7 @@ public class Scene extends RajawaliRenderer {
 	    queue.start();
 	    
 	    addChild(container);
-	    /*
+	    
 	    Sphere bounds = new Sphere(1,20,20);
 	    bounds.setPosition(0, 0, 0);
 	    SimpleMaterial material = new SimpleMaterial();
@@ -80,8 +85,7 @@ public class Scene extends RajawaliRenderer {
 	    bounds.setTransparent(true);
 	    bounds.setDrawingMode(GLES20.GL_LINES);
 	    container.addChild(bounds);
-	    */
-	    container.setShowBoundingVolume(true);
+	    
 	}
 	
 	@Override public void onDrawFrame(GL10 glUnused) {
@@ -91,8 +95,27 @@ public class Scene extends RajawaliRenderer {
 			for (Blob blob : users.values()){
 				blob.draw();
 			}
+			zoomCamera();
 		}
 	}
+	
+	// zooms the camera in and out to fill the screen with the blobs in the scene
+	private void zoomCamera(){
+		float maxDistFromOrigin = 0;
+		for (Blob blob : users.values()){
+			BoundingSphere sphere = blob.getGeometry().getBoundingSphere();
+			sphere.transform(blob.getModelMatrix());
+			maxDistFromOrigin = Math.max(maxDistFromOrigin, distanceFromOrigin(sphere));
+		}
+		mCamera.setZ(-2.5f*maxDistFromOrigin);
+	}
+	
+	// calculates the distance of the farthest point in a sphere from the origin
+	private float distanceFromOrigin(BoundingSphere s){
+		Number3D pos = s.getPosition();
+		return FloatMath.sqrt(pos.x*pos.x + pos.y*pos.y + pos.z*pos.z) + s.getRadius();
+	}
+	
 	
 	/*
 	 * This method updates a certain DataType value for one user. The user object
