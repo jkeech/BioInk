@@ -61,7 +61,7 @@ public class Blob extends Sphere {
 	}
 	
 	public float getRadius(){
-		return (float) Math.pow(volumeMultiplier, 1.0/3) * getGeometry().getBoundingSphere().getRadius();
+		return (float) Math.pow(_volumeMultiplier, 1.0/3) * getGeometry().getBoundingSphere().getRadius();
 	}
 	
 	// update current data by moving towards the target
