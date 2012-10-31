@@ -1,6 +1,7 @@
 package com.vitaltech.bioink;
 
 
+import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -9,9 +10,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.opengl.GLES20;
 import android.util.FloatMath;
+import android.util.Log;
 import rajawali.BaseObject3D;
 import rajawali.animation.Animation3D;
 import rajawali.animation.RotateAnimation3D;
+import rajawali.lights.ALight;
 import rajawali.lights.DirectionalLight;
 import rajawali.materials.SimpleMaterial;
 import rajawali.math.Number3D;
@@ -24,7 +27,7 @@ public class Scene extends RajawaliRenderer {
 	public ConcurrentHashMap<String,Blob> users = new ConcurrentHashMap<String,Blob>(7);
 	
 	private BaseObject3D container;
-	private DirectionalLight mLight;
+	private Stack<ALight> lights;
 	
 	private boolean DEBUG = MainActivity.DEBUG;
 	
@@ -36,17 +39,34 @@ public class Scene extends RajawaliRenderer {
 	
 	@Override
 	public void initScene(){
-		mLight = new DirectionalLight(0.3f, -0.3f, 1.0f); // set the direction
-		mLight.setPower(0.8f);
-
+		//set the background color
+		setBackgroundColor(Color.WHITE);
+		
+		// add lights to the scene
+		DirectionalLight light = new DirectionalLight();
+		light.setPosition(-1, 1, -1);
+		light.setLookAt(0, 0, 0);
+		lights.add(light);
+		
+		light = new DirectionalLight();
+		light.setPosition(1, 0, 0);
+		light.setLookAt(0, 0, 0);
+		lights.add(light);
+		
+		light = new DirectionalLight();
+		light.setPosition(0, -1, 1);
+		light.setLookAt(0, 0, 0);
+		lights.add(light);
+		
+		// add the container that will hold all of the blobs
+	    container = new BaseObject3D();
+		container.isContainer(true);
+	    addChild(container);
+	    
+	    // setup the camera
 		mCamera.setNearPlane(0.01f);
 		mCamera.setLookAt(0, 0, 0);
 		mCamera.setPosition(0, 0, -2.5f);
-		
-		setBackgroundColor(Color.WHITE);
-		
-		container = new BaseObject3D();
-		container.isContainer(true);
 		
 		// Start rotating the camera/scene
 	    RotateAnimation3D cameraAnimation = new RotateAnimation3D(Axis.Y,360);
@@ -54,8 +74,6 @@ public class Scene extends RajawaliRenderer {
 	    cameraAnimation.setRepeatCount(Animation3D.INFINITE);
 	    cameraAnimation.setTransformable3D(container);	
 	    cameraAnimation.start();
-	    
-	    addChild(container);
 	    
 	    if(DEBUG){
 	    	// show bounding sphere of the entire coordinate space
@@ -73,7 +91,6 @@ public class Scene extends RajawaliRenderer {
 	}
 	
 	@Override public void onDrawFrame(GL10 glUnused) {
-		mCamera.setLookAt(0, 0, 0);
 		synchronized(users){
 			super.onDrawFrame(glUnused);
 			for (Blob blob : users.values()){
@@ -85,21 +102,31 @@ public class Scene extends RajawaliRenderer {
 	
 	// zooms the camera in and out to fill the screen with the blobs in the scene
 	private void zoomCamera(){
-		float maxDistFromOrigin = 0;
+		float maxDist = 0;
 		int numUsers = 0;
 		Number3D avg = new Number3D();
 		for (Blob blob : users.values()){
 			BoundingSphere sphere = blob.getGeometry().getBoundingSphere();
 			sphere.transform(blob.getModelMatrix());
-			Number3D pos = sphere.getPosition();
-			maxDistFromOrigin = Math.max(maxDistFromOrigin, pos.distanceTo(new Number3D(0,0,0)) + sphere.getRadius());
 			numUsers++;
-			avg.add(pos);
+			avg.add(sphere.getPosition());
 		}
 		if(numUsers > 0)
 			avg.multiply(1.0f/numUsers);
+		for (Blob blob : users.values()){
+			BoundingSphere sphere = blob.getGeometry().getBoundingSphere();
+			maxDist = Math.max(maxDist, sphere.getPosition().distanceTo(avg) + blob.getRadius());
+		}
+		float distFromCamera = 2.5f*maxDist;
+		float distXY = FloatMath.sqrt(avg.x*avg.x + avg.y*avg.y);
+		float z = avg.z - FloatMath.sqrt(distFromCamera*distFromCamera - distXY*distXY);
+		
+		if(DEBUG){
+			Log.d("viz","Looking at: "+avg.x + " " + avg.y + " " + avg.z + "; Z position: " + z);
+		}
+		
 		mCamera.setLookAt(avg);
-		mCamera.setZ(-2.5f*maxDistFromOrigin);
+		mCamera.setZ(z);
 	}
 	
 	/*
@@ -112,7 +139,7 @@ public class Scene extends RajawaliRenderer {
 			if(!users.containsKey(id)){
 				Blob tmp = new Blob();
 				users.put(id,tmp); // insert into the dictionary if it does not exist
-				tmp.addLight(mLight);			
+				tmp.setLights(lights);
 				container.addChild(tmp);
 			}
 		}
