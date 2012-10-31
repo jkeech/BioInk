@@ -11,7 +11,6 @@ import android.opengl.GLES20;
 import android.util.FloatMath;
 import rajawali.BaseObject3D;
 import rajawali.animation.Animation3D;
-import rajawali.animation.Animation3DQueue;
 import rajawali.animation.RotateAnimation3D;
 import rajawali.lights.DirectionalLight;
 import rajawali.materials.SimpleMaterial;
@@ -26,6 +25,8 @@ public class Scene extends RajawaliRenderer {
 	
 	private BaseObject3D container;
 	private DirectionalLight mLight;
+	
+	private boolean DEBUG = MainActivity.DEBUG;
 	
 	public Scene(Context context){
 		super(context);
@@ -47,42 +48,27 @@ public class Scene extends RajawaliRenderer {
 		container = new BaseObject3D();
 		container.isContainer(true);
 		
-		Animation3DQueue queue = new Animation3DQueue();
-		
-		
-		/*RotateAnimation3D mCamAnim = new RotateAnimation3D(Axis.X,360);
-	    mCamAnim.setDuration(5000);
-	    mCamAnim.setRepeatCount(Animation3D.INFINITE);
-	    mCamAnim.setTransformable3D(container);
-	    queue.addAnimation(mCamAnim);	    
-	    */
-		
-	    RotateAnimation3D mCamAnim2 = new RotateAnimation3D(Axis.Y,360);
-	    mCamAnim2.setDuration(20000);
-	    mCamAnim2.setRepeatCount(Animation3D.INFINITE);
-	    mCamAnim2.setTransformable3D(container);
-	    queue.addAnimation(mCamAnim2);	
-	    
-	    /*
-	    RotateAnimation3D mCamAnim3 = new RotateAnimation3D(Axis.Z,360);
-	    mCamAnim3.setDuration(3000);
-	    mCamAnim3.setRepeatCount(Animation3D.INFINITE);
-	    mCamAnim3.setTransformable3D(container);
-	    queue.addAnimation(mCamAnim3);
-	    */
-	    queue.start();
+		// Start rotating the camera/scene
+	    RotateAnimation3D cameraAnimation = new RotateAnimation3D(Axis.Y,360);
+	    cameraAnimation.setDuration(20000);
+	    cameraAnimation.setRepeatCount(Animation3D.INFINITE);
+	    cameraAnimation.setTransformable3D(container);	
+	    cameraAnimation.start();
 	    
 	    addChild(container);
 	    
-	    Sphere bounds = new Sphere(1,20,20);
-	    bounds.setPosition(0, 0, 0);
-	    SimpleMaterial material = new SimpleMaterial();
-	    material.setUseColor(true);
-	    bounds.setColor(Color.LTGRAY);
-	    bounds.setMaterial(material);
-	    bounds.setTransparent(true);
-	    bounds.setDrawingMode(GLES20.GL_LINES);
-	    container.addChild(bounds);
+	    if(DEBUG){
+	    	// show bounding sphere of the entire coordinate space
+		    Sphere bounds = new Sphere(1,20,20);
+		    bounds.setPosition(0, 0, 0);
+		    SimpleMaterial material = new SimpleMaterial();
+		    material.setUseColor(true);
+		    bounds.setColor(Color.LTGRAY);
+		    bounds.setMaterial(material);
+		    bounds.setTransparent(true);
+		    bounds.setDrawingMode(GLES20.GL_LINES);
+		    container.addChild(bounds);
+	    }
 	    
 	}
 	
@@ -100,20 +86,21 @@ public class Scene extends RajawaliRenderer {
 	// zooms the camera in and out to fill the screen with the blobs in the scene
 	private void zoomCamera(){
 		float maxDistFromOrigin = 0;
+		int numUsers = 0;
+		Number3D avg = new Number3D();
 		for (Blob blob : users.values()){
 			BoundingSphere sphere = blob.getGeometry().getBoundingSphere();
 			sphere.transform(blob.getModelMatrix());
-			maxDistFromOrigin = Math.max(maxDistFromOrigin, distanceFromOrigin(sphere));
+			Number3D pos = sphere.getPosition();
+			maxDistFromOrigin = Math.max(maxDistFromOrigin, pos.distanceTo(new Number3D(0,0,0)) + sphere.getRadius());
+			numUsers++;
+			avg.add(pos);
 		}
+		if(numUsers > 0)
+			avg.multiply(1.0f/numUsers);
+		mCamera.setLookAt(avg);
 		mCamera.setZ(-2.5f*maxDistFromOrigin);
 	}
-	
-	// calculates the distance of the farthest point in a sphere from the origin
-	private float distanceFromOrigin(BoundingSphere s){
-		Number3D pos = s.getPosition();
-		return FloatMath.sqrt(pos.x*pos.x + pos.y*pos.y + pos.z*pos.z) + s.getRadius();
-	}
-	
 	
 	/*
 	 * This method updates a certain DataType value for one user. The user object
