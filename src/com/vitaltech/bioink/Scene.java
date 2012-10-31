@@ -101,8 +101,8 @@ public class Scene extends RajawaliRenderer {
 	}
 	
 	// zooms the camera in and out to fill the screen with the blobs in the scene
-	private void zoomCamera(){
-		float maxDist = 0;
+	private void zoomCamera(){		
+		// compute the centroid of all blobs
 		int numUsers = 0;
 		Number3D avg = new Number3D();
 		for (Blob blob : users.values()){
@@ -113,11 +113,20 @@ public class Scene extends RajawaliRenderer {
 		}
 		if(numUsers > 0)
 			avg.multiply(1.0f/numUsers);
+		
+		// compute the distance that the camera should be from the centroid by using
+		// a multiple of the max distance from any blob to the centroid
+		float maxDist = 0;
 		for (Blob blob : users.values()){
 			BoundingSphere sphere = blob.getGeometry().getBoundingSphere();
+			sphere.transform(blob.getModelMatrix());
 			maxDist = Math.max(maxDist, sphere.getPosition().distanceTo(avg) + blob.getRadius());
 		}
 		float distFromCamera = 2.5f*maxDist;
+		
+		// use the Pythagorean Theorem plus the z value of the centroid to calculate
+		// the position of the camera along the z-axis so that the distance from
+		// the camera to the centroid is correct
 		float distXY = FloatMath.sqrt(avg.x*avg.x + avg.y*avg.y);
 		float z = avg.z - FloatMath.sqrt(distFromCamera*distFromCamera - distXY*distXY);
 		
@@ -125,6 +134,7 @@ public class Scene extends RajawaliRenderer {
 			Log.d("viz","Looking at: "+avg.x + " " + avg.y + " " + avg.z + "; Z position: " + z);
 		}
 		
+		// finally, set the position of the camera and the location for the camera to look at
 		mCamera.setLookAt(avg);
 		mCamera.setZ(z);
 	}

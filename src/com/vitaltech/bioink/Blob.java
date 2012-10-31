@@ -30,10 +30,8 @@ public class Blob extends Sphere {
 		startTime = System.currentTimeMillis();
 		
 		shader = new BlobShader();
-		//shader = new DiffuseMaterial();
 		shader.setUseColor(true);
 		setMaterial(shader);
-		//setDrawingMode(GLES20.GL_LINES);
 	}
 	
 	public void draw(){
@@ -107,10 +105,7 @@ public class Blob extends Sphere {
 			// perform the wrap
 			if (value < 0) value += 360;
 			if (value > 360) value -= 360;
-			//Log.d("visualization","a:"+a+", b:"+b+", prop:"+proportion+", result: "+value);
 			return value;
 		}
-			
-		//return (a + ((b - a) * proportion));
 	}
 }
