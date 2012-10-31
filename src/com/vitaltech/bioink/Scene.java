@@ -1,7 +1,6 @@
 package com.vitaltech.bioink;
 
 
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -10,7 +9,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.opengl.GLES20;
 import android.util.FloatMath;
-import android.util.Log;
 import rajawali.BaseObject3D;
 import rajawali.animation.Animation3D;
 import rajawali.animation.Animation3DQueue;
