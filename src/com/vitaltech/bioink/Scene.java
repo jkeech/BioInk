@@ -29,6 +29,9 @@ public class Scene extends RajawaliRenderer {
 	private BaseObject3D container;
 	private Stack<ALight> lights = new Stack<ALight>();
 	
+	private Number3D cameraLookAt = new Number3D(0,0,0);
+	private float cameraZPos = -2.5f;
+	
 	private boolean DEBUG = MainActivity.DEBUG;
 	
 	public Scene(Context context){
@@ -69,12 +72,12 @@ public class Scene extends RajawaliRenderer {
 	    
 	    // setup the camera
 		mCamera.setNearPlane(0.01f);
-		mCamera.setLookAt(0, 0, 0);
-		mCamera.setPosition(0, 0, -2.5f);
+		mCamera.setLookAt(cameraLookAt);
+		mCamera.setPosition(0,0,cameraZPos);
 		
 		// Start rotating the camera/scene
 	    RotateAnimation3D cameraAnimation = new RotateAnimation3D(Axis.Y,360);
-	    cameraAnimation.setDuration(20000);
+	    cameraAnimation.setDuration(60000);
 	    cameraAnimation.setRepeatCount(Animation3D.INFINITE);
 	    cameraAnimation.setTransformable3D(container);	
 	    cameraAnimation.start();
@@ -134,13 +137,31 @@ public class Scene extends RajawaliRenderer {
 		float distXY = FloatMath.sqrt(avg.x*avg.x + avg.y*avg.y);
 		float z = avg.z - FloatMath.sqrt(distFromCamera*distFromCamera - distXY*distXY);
 		
-		if(DEBUG){
-			Log.d("viz","Looking at: "+avg.x + " " + avg.y + " " + avg.z + "; Z position: " + z);
+		// finally, set the position of the camera and the location for the camera to look at
+		animateCamera(avg,z);
+	}
+	
+	private void animateCamera(Number3D lookAt, float zPos){
+		// animate from the current position towards the target position
+		// by linearly interpolating the position to look at as well as
+		// the Z position of the camera
+		
+		final float DECAY = 10.0f;
+		cameraLookAt.add(lookAt.add(cameraLookAt.clone().multiply(-1.0f)).multiply(1.0f/DECAY));
+		cameraZPos += (zPos-cameraZPos)/DECAY;
+		
+		// prevent a weird bug where cameraZPos ended up being NaN after a few minutes
+		if(Float.isNaN(cameraZPos)) {
+			if(DEBUG)
+				Log.e("viz","cameraZPos is NaN! Resetting to 0");
+			cameraZPos = 0;
 		}
 		
-		// finally, set the position of the camera and the location for the camera to look at
-		mCamera.setLookAt(avg);
-		mCamera.setZ(z);
+		mCamera.setLookAt(cameraLookAt);
+		mCamera.setZ(cameraZPos);
+		
+		if(DEBUG)
+			Log.d("viz","Looking at: "+cameraLookAt.x + " " + cameraLookAt.y + " " + cameraLookAt.z + "; Z position: " + cameraZPos);
 	}
 	
 	/*
