@@ -1,5 +1,8 @@
 package com.vitaltech.bioink;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,6 +12,7 @@ import android.util.Log;
 public class DataProcess {
 	//List of current users
 	public ConcurrentHashMap<String,User> users;
+	public List<MergedUser> merged;
 	private Scene scene;
 	private Timer utimer = new Timer();
 	private CalculationTimer task;
@@ -30,9 +34,13 @@ public class DataProcess {
 	public final float minHRV = 0;
 	public final float maxHRV = 200;
 	
+	//Distance that determines if two users are similar
+	public final float mdis = 0.1f;
+	
 	//Data Processing constructor
 	public DataProcess(int updateInterval){
 		users = new ConcurrentHashMap<String,User>(23);
+		merged = Collections.synchronizedList(new ArrayList<MergedUser>());
 		uinterval = updateInterval;
 		resume();
 	}
@@ -220,9 +228,9 @@ public class DataProcess {
 		z = z * (maxPos - minPos) / 2;
 		z = z + ((maxPos + minPos) / 2);
 		
-		Log.d("dp", uid + " x: " + x);
+		/*Log.d("dp", uid + " x: " + x);
 		Log.d("dp", uid + " y: " + y);
-		Log.d("dp", uid + " z: " + z);
+		Log.d("dp", uid + " z: " + z);*/
 		
 		//validation
 		y = Math.max(Math.min(y, maxPos), minPos);
@@ -322,7 +330,8 @@ public class DataProcess {
 	}
 	
 	/*
-	 * This method calculates the biometric and positional mappings
+	 * This method calls for the biometric and positional mappings and pushes the values
+	 * onto the rendering engine
 	 */
 	public void calculateTargets(){
 		Collection<User> c = users.values();
@@ -330,8 +339,128 @@ public class DataProcess {
 			mapRespirationRate(user.id);
 			mapHeartRate(user.id);
 			//user.calculateHRV();
+			
+			//check if needs to be split
+			splitUsers();
+			//check if needs to be merged
+			mergeUsers();
+			
+			//push position for blobs
+			//if merged, push the average or some shit
+			//if not merged, push normal 
 			mapPosition(user.id);
 		}
+	}
+	
+	//This method goes through every group of merged users 
+	//and calculates the average of their biometrics 
+	private void updateMergedUsers(){
+		for(MergedUser mu: merged){
+			updateMergedMetrics(mu);
+		}
+	}
+	
+	private void splitUsers(){
+		for(MergedUser mu: merged){
+			boolean changed = false;
+			
+			for(String uu: mu.members){
+				float dis = distance(mu, uu);
+				
+				//user is no longer within mdis of the average
+				if(dis < mdis){
+					users.get(uu).merged = false;
+					mu.members.remove(uu);
+					changed = true;
+				}
+			}
+			
+			//if an user was removed, need to recalculate the average of the metrics
+			if(changed){
+				updateMergedMetrics(mu);
+			}
+		}
+	}
+	
+	private void mergeUsers(){
+		//cycle through non-merged users
+		Collection<User> c = users.values();
+		for(User user : c){
+			if(!user.merged){
+				for(MergedUser mu: merged){
+					float dis = distance(mu, user.id);
+					//the user is close to a merged user
+					if(dis < mdis){
+						user.merged = true;
+						mu.members.add(user.id);
+						updateMergedMetrics(mu);
+						break;
+					}
+				}
+			}
+		}
+		
+		//cycle through pairs of unmerged users
+		//untested method for traversing values on a hash table twice
+		for(User u1: c){
+			for(User u2: c){
+				float dis = distance(u1.id, u2.id);
+				//new pair of similar users discovered
+				if(dis < mdis){
+					u1.merged = true;
+					u2.merged = true;
+					MergedUser temp = new MergedUser(u1.id, u2.id);
+					updateMergedMetrics(temp);
+					merged.add(temp);
+				}
+			}
+		}
+	}
+	
+	public float distance(String u1, String u2){
+		float dd = 0;
+		float hr1 = users.get(u1).heartrate;
+		float hr2 = users.get(u2).heartrate;
+		float re1 = users.get(u1).respiration;
+		float re2 = users.get(u2).respiration;
+		float hv1 = users.get(u1).hrv;
+		float hv2 = users.get(u2).hrv;
+		
+		dd = (hr1 - hr2) * (hr1 - hr2) + (re1 - re2) * (re1 - re2) + (hv1 - hv2) * (hv1 - hv2);
+		dd = (float) Math.sqrt(dd);
+		
+		return dd;
+	}
+	
+	public float distance(MergedUser mu, String uu){
+		float dd = 0;
+		float hr1 = mu.heartrate;
+		float hr2 = users.get(uu).heartrate;
+		float re1 = mu.respiration;
+		float re2 = users.get(uu).respiration;
+		float hv1 = mu.hrv;
+		float hv2 = users.get(uu).hrv;
+		
+		dd = (hr1 - hr2) * (hr1 - hr2) + (re1 - re2) * (re1 - re2) + (hv1 - hv2) * (hv1 - hv2);
+		dd = (float) Math.sqrt(dd);
+		
+		return dd;
+	}
+	
+	public void updateMergedMetrics(MergedUser mu){
+		float hr = 0;
+		float re = 0;
+		float hv = 0;
+		
+		for(String uu: mu.members){
+			hr = hr + users.get(uu).heartrate;
+			re = re + users.get(uu).respiration;
+			hv = hv + users.get(uu).hrv;
+		}
+		
+		mu.heartrate = hr / mu.members.size();
+		mu.respiration = re / mu.members.size();
+		mu.hrv = hv / mu.members.size();
 	}
 	
 	/*

@@ -17,6 +17,7 @@ public class User {
 	public float respiration = 0;
 	public float hrv = 0;
 	public boolean hrv_active = false;
+	public boolean merged = false;
 	public List<Float> rrq;
 	
 	public final int qsize = 10;
