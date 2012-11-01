@@ -27,7 +27,7 @@ public class Scene extends RajawaliRenderer {
 	public ConcurrentHashMap<String,Blob> users = new ConcurrentHashMap<String,Blob>(7);
 	
 	private BaseObject3D container;
-	private Stack<ALight> lights;
+	private Stack<ALight> lights = new Stack<ALight>();
 	
 	private boolean DEBUG = MainActivity.DEBUG;
 	
@@ -46,17 +46,21 @@ public class Scene extends RajawaliRenderer {
 		DirectionalLight light = new DirectionalLight();
 		light.setPosition(-1, 1, -1);
 		light.setLookAt(0, 0, 0);
+		light.setPower(0.2f);
 		lights.add(light);
 		
 		light = new DirectionalLight();
-		light.setPosition(1, 0, 0);
+		light.setPosition(1, -1, 1);
 		light.setLookAt(0, 0, 0);
+		light.setPower(0.2f);
 		lights.add(light);
 		
 		light = new DirectionalLight();
-		light.setPosition(0, -1, 1);
+		light.setPosition(0, 0, -1);
 		light.setLookAt(0, 0, 0);
+		light.setPower(0.1f);
 		lights.add(light);
+		
 		
 		// add the container that will hold all of the blobs
 	    container = new BaseObject3D();
