@@ -52,7 +52,7 @@ public class Blob extends Sphere {
 	
 	// adjust the volume of the blob
 	public void setVolume(float size){
-		if(size < 1){
+		if(size == 0){
 			setVisible(false);
 		} else {
 			setVisible(true);
