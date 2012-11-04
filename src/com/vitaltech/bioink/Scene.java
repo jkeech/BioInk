@@ -1,7 +1,7 @@
 package com.vitaltech.bioink;
 
 
-import java.util.ArrayList;
+import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -13,8 +13,8 @@ import android.util.FloatMath;
 import android.util.Log;
 import rajawali.BaseObject3D;
 import rajawali.animation.Animation3D;
-import rajawali.animation.Animation3DQueue;
 import rajawali.animation.RotateAnimation3D;
+import rajawali.lights.ALight;
 import rajawali.lights.DirectionalLight;
 import rajawali.materials.SimpleMaterial;
 import rajawali.math.Number3D;
@@ -27,7 +27,12 @@ public class Scene extends RajawaliRenderer {
 	public ConcurrentHashMap<String,Blob> users = new ConcurrentHashMap<String,Blob>(7);
 	
 	private BaseObject3D container;
-	private DirectionalLight mLight;
+	private Stack<ALight> lights = new Stack<ALight>();
+	
+	private Number3D cameraLookAt = new Number3D(0,0,0);
+	private float cameraZPos = -2.5f;
+	
+	private boolean DEBUG = MainActivity.DEBUG;
 	
 	public Scene(Context context){
 		super(context);
@@ -37,59 +42,62 @@ public class Scene extends RajawaliRenderer {
 	
 	@Override
 	public void initScene(){
-		mLight = new DirectionalLight(0.3f, -0.3f, 1.0f); // set the direction
-		mLight.setPower(0.8f);
-
-		mCamera.setNearPlane(0.01f);
-		mCamera.setLookAt(0, 0, 0);
-		mCamera.setPosition(0, 0, -2.5f);
-		
+		//set the background color
 		setBackgroundColor(Color.WHITE);
 		
-		container = new BaseObject3D();
+		// add lights to the scene
+		DirectionalLight light = new DirectionalLight();
+		light.setPosition(-1, 1, -1);
+		light.setLookAt(0, 0, 0);
+		light.setPower(0.2f);
+		lights.add(light);
+		
+		light = new DirectionalLight();
+		light.setPosition(1, -1, 1);
+		light.setLookAt(0, 0, 0);
+		light.setPower(0.2f);
+		lights.add(light);
+		
+		light = new DirectionalLight();
+		light.setPosition(0, 0, -1);
+		light.setLookAt(0, 0, 0);
+		light.setPower(0.1f);
+		lights.add(light);
+		
+		
+		// add the container that will hold all of the blobs
+	    container = new BaseObject3D();
 		container.isContainer(true);
-		
-		Animation3DQueue queue = new Animation3DQueue();
-		
-		
-		/*RotateAnimation3D mCamAnim = new RotateAnimation3D(Axis.X,360);
-	    mCamAnim.setDuration(5000);
-	    mCamAnim.setRepeatCount(Animation3D.INFINITE);
-	    mCamAnim.setTransformable3D(container);
-	    queue.addAnimation(mCamAnim);	    
-	    */
-		
-	    RotateAnimation3D mCamAnim2 = new RotateAnimation3D(Axis.Y,360);
-	    mCamAnim2.setDuration(20000);
-	    mCamAnim2.setRepeatCount(Animation3D.INFINITE);
-	    mCamAnim2.setTransformable3D(container);
-	    queue.addAnimation(mCamAnim2);	
-	    
-	    /*
-	    RotateAnimation3D mCamAnim3 = new RotateAnimation3D(Axis.Z,360);
-	    mCamAnim3.setDuration(3000);
-	    mCamAnim3.setRepeatCount(Animation3D.INFINITE);
-	    mCamAnim3.setTransformable3D(container);
-	    queue.addAnimation(mCamAnim3);
-	    */
-	    queue.start();
-	    
 	    addChild(container);
 	    
-	    Sphere bounds = new Sphere(1,20,20);
-	    bounds.setPosition(0, 0, 0);
-	    SimpleMaterial material = new SimpleMaterial();
-	    material.setUseColor(true);
-	    bounds.setColor(Color.LTGRAY);
-	    bounds.setMaterial(material);
-	    bounds.setTransparent(true);
-	    bounds.setDrawingMode(GLES20.GL_LINES);
-	    container.addChild(bounds);
+	    // setup the camera
+		mCamera.setNearPlane(0.01f);
+		mCamera.setLookAt(cameraLookAt);
+		mCamera.setPosition(0,0,cameraZPos);
+		
+		// Start rotating the camera/scene
+	    RotateAnimation3D cameraAnimation = new RotateAnimation3D(Axis.Y,360);
+	    cameraAnimation.setDuration(60000);
+	    cameraAnimation.setRepeatCount(Animation3D.INFINITE);
+	    cameraAnimation.setTransformable3D(container);	
+	    cameraAnimation.start();
+	    
+	    if(DEBUG){
+	    	// show bounding sphere of the entire coordinate space
+		    Sphere bounds = new Sphere(1,20,20);
+		    bounds.setPosition(0, 0, 0);
+		    SimpleMaterial material = new SimpleMaterial();
+		    material.setUseColor(true);
+		    bounds.setColor(Color.LTGRAY);
+		    bounds.setMaterial(material);
+		    bounds.setTransparent(true);
+		    bounds.setDrawingMode(GLES20.GL_LINES);
+		    container.addChild(bounds);
+	    }
 	    
 	}
 	
 	@Override public void onDrawFrame(GL10 glUnused) {
-		mCamera.setLookAt(0, 0, 0);
 		synchronized(users){
 			super.onDrawFrame(glUnused);
 			for (Blob blob : users.values()){
@@ -100,22 +108,61 @@ public class Scene extends RajawaliRenderer {
 	}
 	
 	// zooms the camera in and out to fill the screen with the blobs in the scene
-	private void zoomCamera(){
-		float maxDistFromOrigin = 0;
+	private void zoomCamera(){		
+		// compute the centroid of all blobs
+		int numUsers = 0;
+		Number3D avg = new Number3D();
 		for (Blob blob : users.values()){
 			BoundingSphere sphere = blob.getGeometry().getBoundingSphere();
 			sphere.transform(blob.getModelMatrix());
-			maxDistFromOrigin = Math.max(maxDistFromOrigin, distanceFromOrigin(sphere));
+			numUsers++;
+			avg.add(sphere.getPosition());
 		}
-		mCamera.setZ(-2.5f*maxDistFromOrigin);
+		if(numUsers > 0)
+			avg.multiply(1.0f/numUsers);
+		
+		// compute the distance that the camera should be from the centroid by using
+		// a multiple of the max distance from any blob to the centroid
+		float maxDist = 0;
+		for (Blob blob : users.values()){
+			BoundingSphere sphere = blob.getGeometry().getBoundingSphere();
+			sphere.transform(blob.getModelMatrix());
+			maxDist = Math.max(maxDist, sphere.getPosition().distanceTo(avg) + blob.getRadius());
+		}
+		float distFromCamera = 2.5f*maxDist;
+		
+		// use the Pythagorean Theorem plus the z value of the centroid to calculate
+		// the position of the camera along the z-axis so that the distance from
+		// the camera to the centroid is correct
+		float distXY = FloatMath.sqrt(avg.x*avg.x + avg.y*avg.y);
+		float z = avg.z - FloatMath.sqrt(distFromCamera*distFromCamera - distXY*distXY);
+		
+		// finally, set the position of the camera and the location for the camera to look at
+		animateCamera(avg,z);
 	}
 	
-	// calculates the distance of the farthest point in a sphere from the origin
-	private float distanceFromOrigin(BoundingSphere s){
-		Number3D pos = s.getPosition();
-		return FloatMath.sqrt(pos.x*pos.x + pos.y*pos.y + pos.z*pos.z) + s.getRadius();
+	private void animateCamera(Number3D lookAt, float zPos){
+		// animate from the current position towards the target position
+		// by linearly interpolating the position to look at as well as
+		// the Z position of the camera
+		
+		final float DECAY = 10.0f;
+		cameraLookAt.add(lookAt.add(cameraLookAt.clone().multiply(-1.0f)).multiply(1.0f/DECAY));
+		cameraZPos += (zPos-cameraZPos)/DECAY;
+		
+		// prevent a weird bug where cameraZPos ended up being NaN after a few minutes
+		if(Float.isNaN(cameraZPos)) {
+			if(DEBUG)
+				Log.e("viz","cameraZPos is NaN! Resetting to 0");
+			cameraZPos = 0;
+		}
+		
+		mCamera.setLookAt(cameraLookAt);
+		mCamera.setZ(cameraZPos);
+		
+		if(DEBUG)
+			Log.d("viz","Looking at: "+cameraLookAt.x + " " + cameraLookAt.y + " " + cameraLookAt.z + "; Z position: " + cameraZPos);
 	}
-	
 	
 	/*
 	 * This method updates a certain DataType value for one user. The user object
@@ -127,7 +174,7 @@ public class Scene extends RajawaliRenderer {
 			if(!users.containsKey(id)){
 				Blob tmp = new Blob();
 				users.put(id,tmp); // insert into the dictionary if it does not exist
-				tmp.addLight(mLight);			
+				tmp.setLights(lights);
 				container.addChild(tmp);
 			}
 		}
