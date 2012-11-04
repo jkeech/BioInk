@@ -58,7 +58,7 @@ public class DataSimulatorDP {
 		return old;
 	}
 	
-	public float generateRR(float old){
+	public static float generateRR(float old){
 		Random r = new Random();
 		float rando = r.nextFloat();
 		float neeu = 0;

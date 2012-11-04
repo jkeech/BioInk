@@ -72,7 +72,7 @@ public class RajActivity extends RajawaliActivity {
 		}
 		dataSim = new Thread(new Runnable() {
 			public void run() {
-				new DataSimulatorPlus(dp).run();
+				new DataSimulatorPlusPlus(dp, 5).run();
 			}
 		});// debug data
 		dataSim.start();
