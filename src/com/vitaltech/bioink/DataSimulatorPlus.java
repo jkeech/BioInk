@@ -183,6 +183,34 @@ public class DataSimulatorPlus {
 		dataProcessor.push("staticDz", BiometricType.RESPIRATION, 1 * dataProcessor.maxResp);
 		dataProcessor.push("staticDz", BiometricType.HRV,  1f * dataProcessor.maxHRV);
 	}
+	
+	private void realistic(){
+		float rtor_a = 600;
+		float rtor_b = 600;
+		float rtor_c = 600;
+		float rtor_d = 600;
+		
+		dataProcessor.push("staticA", BiometricType.HEARTRATE, 80f);
+		dataProcessor.push("staticA", BiometricType.RESPIRATION, 14f);
+		dataProcessor.push("staticA", BiometricType.RR, rtor_a);
+		rtor_a = DataSimulatorDP.generateRR(rtor_a);
+		
+		dataProcessor.push("staticB", BiometricType.HEARTRATE, 70f);
+		dataProcessor.push("staticB", BiometricType.RESPIRATION, 16f);
+		dataProcessor.push("staticB", BiometricType.RR, rtor_b);
+		rtor_b = DataSimulatorDP.generateRR(rtor_b);
+		
+		dataProcessor.push("staticC", BiometricType.HEARTRATE, 66.6f);
+		dataProcessor.push("staticC", BiometricType.RESPIRATION, 19f);
+		dataProcessor.push("staticC", BiometricType.RR, rtor_c);
+		rtor_c = DataSimulatorDP.generateRR(rtor_c);
+		
+		dataProcessor.push("staticD", BiometricType.HEARTRATE, 75f);
+		dataProcessor.push("staticD", BiometricType.RESPIRATION, 18f);
+		dataProcessor.push("staticD", BiometricType.RR, rtor_d);
+		rtor_d = DataSimulatorDP.generateRR(rtor_d);
+		
+	}
 
 	private void walkabout(){
 		Log.d(TAG, "walkabout started");
