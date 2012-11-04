@@ -25,15 +25,13 @@ public class Blob extends Sphere {
 	public Blob(){
 		super(0.2f,40,40);
 		_x = _y = _z = x = y = z = 0;
-		_color = color = Color.BLACK;
+		_color = color = Color.WHITE;
 		_energy = energy = 0;
 		startTime = System.currentTimeMillis();
 		
 		shader = new BlobShader();
-		//shader = new DiffuseMaterial();
 		shader.setUseColor(true);
 		setMaterial(shader);
-		//setDrawingMode(GLES20.GL_LINES);
 	}
 	
 	public void draw(){
@@ -58,6 +56,10 @@ public class Blob extends Sphere {
 			setVisible(true);
 			volumeMultiplier = size;
 		}
+	}
+	
+	public float getRadius(){
+		return (float) Math.pow(_volumeMultiplier, 1.0/3) * getGeometry().getBoundingSphere().getRadius();
 	}
 	
 	// update current data by moving towards the target
@@ -103,10 +105,7 @@ public class Blob extends Sphere {
 			// perform the wrap
 			if (value < 0) value += 360;
 			if (value > 360) value -= 360;
-			//Log.d("visualization","a:"+a+", b:"+b+", prop:"+proportion+", result: "+value);
 			return value;
 		}
-			
-		//return (a + ((b - a) * proportion));
 	}
 }
