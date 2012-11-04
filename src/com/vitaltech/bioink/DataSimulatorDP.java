@@ -12,7 +12,7 @@ public class DataSimulatorDP {
 	public void run(){
     	try {
     		//rangeOverview(500, 40, true);
-    		randomRange(500);
+    		randomRange(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -54,11 +54,15 @@ public class DataSimulatorDP {
 		dp.push(uid, BiometricType.RR, old);
 		old = generateRR(old);
 		dp.push(uid, BiometricType.RR, -old);
+		old = generateRR(old);
+		dp.push(uid, BiometricType.RR, old);
+		old = generateRR(old);
+		dp.push(uid, BiometricType.RR, -old);
 		
 		return old;
 	}
 	
-	public float generateRR(float old){
+	public static float generateRR(float old){
 		Random r = new Random();
 		float rando = r.nextFloat();
 		float neeu = 0;

@@ -15,9 +15,7 @@ public class RajActivity extends RajawaliActivity {
 	private DataProcess dp;
 	private Scene scene;
 	private BluetoothManager BTMan;
-
-	private Thread dataSimThread;
-	private DataSimulatorPlus dataSim;
+	private Thread dataSim;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -69,20 +67,16 @@ public class RajActivity extends RajawaliActivity {
 
 		// start data feeding thread for testing
 		if(dataSim != null){
-			dataSim.stop();
+			dataSim.interrupt();
 			dataSim = null;
 		}
-		if(dataSimThread != null){
-			dataSimThread.interrupt();
-			dataSimThread = null;
-		}
-		dataSim = new DataSimulatorPlus(dp);
-		dataSimThread = new Thread(new Runnable() {
+		dataSim = new Thread(new Runnable() {
 			public void run() {
-				dataSim.run();
+				new DataSimulatorPlusPlus(dp, 5).run();
+				//new DataSimulatorDP(dp).run();
 			}
 		});// debug data
-		dataSimThread.start();
+		dataSim.start();
 
 		setContentView(mLayout);
     }
@@ -99,17 +93,10 @@ public class RajActivity extends RajawaliActivity {
 	}
 	
 	private void cleanExit(){
-		if(DEBUG) Log.d(TAG, "clean exit");
 		if(dataSim != null){
-			dataSim.stop();
-			dataSim = null;
-		}
-		if(dataSimThread != null){
-			dataSimThread.interrupt();
-			dataSimThread = null;
+			dataSim.interrupt();
 		}
 		dataSim = null;
-		dataSimThread = null;
 
 		if(dp != null){
 			dp.quitDP();
