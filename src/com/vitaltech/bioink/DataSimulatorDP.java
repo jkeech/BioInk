@@ -12,7 +12,7 @@ public class DataSimulatorDP {
 	public void run(){
     	try {
     		//rangeOverview(500, 40, true);
-    		randomRange(500);
+    		randomRange(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
