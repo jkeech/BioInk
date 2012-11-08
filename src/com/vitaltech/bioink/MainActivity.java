@@ -20,6 +20,7 @@ public class MainActivity extends Activity {
 	public static final Boolean DEBUG=true;
 
 	private Button vizButton;
+	private Button menuButton;
 	private Discovery discovery;
 	private BroadcastReceiver broadcastReceiver;
 	private IntentFilter intentFilter;
@@ -105,7 +106,16 @@ public class MainActivity extends Activity {
 						}
 					}
 				}
-				);
+		);
+
+		this.menuButton = (Button)this.findViewById(R.id.menuButton);
+		this.menuButton.setOnClickListener(
+				new OnClickListener() {
+					public void onClick(View v) {
+						Log.d(TAG, "there be dragons 're");
+					}
+				}
+		);
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

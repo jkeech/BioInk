@@ -11,5 +11,6 @@
     <string name="devices_paired">devices paired null</string>
     <string name="devices_audible">devices audible null</string>
     <string name="viz_button">Start visualization</string>
+    <string name="menu_button">Advanced</string>
     
 </resources>
