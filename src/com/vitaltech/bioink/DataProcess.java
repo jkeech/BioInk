@@ -124,8 +124,13 @@ public class DataProcess {
 			}
 		}
 		
+		if(value < getMin(dtype))
+			value = getMin(dtype);
+		if(value > getMax(dtype))
+			value = getMax(dtype);
+		
 		switch(dtype){
-		case HEARTRATE: 
+		case HEARTRATE:
 			users.get(uid).heartrate = value;
 			break;
 		case RESPIRATION:
