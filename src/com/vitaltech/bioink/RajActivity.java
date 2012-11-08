@@ -41,6 +41,16 @@ public class RajActivity extends RajawaliActivity {
 		}
 		dp = new DataProcess(100);
 		dp.addScene(scene);
+		
+		/*
+		dp.setMinHR(40f);
+		dp.setMaxHR(150f);
+		dp.setMinResp(5f);
+		dp.setMaxResp(30f);
+		dp.setColor(BiometricType.HEARTRATE);
+		dp.setEnergy(BiometricType.RESPIRATION);
+		*/
+		
 		// END DATA PROCESSING
 
 		// BLUETOOTH

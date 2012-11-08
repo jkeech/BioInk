@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import android.util.Log;
-
 /*
  * This class models a single user within the data processing module
  */

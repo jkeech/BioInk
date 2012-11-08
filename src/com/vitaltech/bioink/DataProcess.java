@@ -1,13 +1,10 @@
 package com.vitaltech.bioink;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
-
-import android.util.Log;
 
 public class DataProcess {
 	//List of current users
@@ -616,52 +613,14 @@ public class DataProcess {
 	}
 	
 	public float distance(String u1, String u2){
-		float dd = 0;
-		float hr1 = users.get(u1).heartrate;
-		float hr2 = users.get(u2).heartrate;
-		float re1 = users.get(u1).respiration;
-		float re2 = users.get(u2).respiration;
-		float hv1 = users.get(u1).hrv;
-		float hv2 = users.get(u2).hrv;
-		
-		//scale all metrics to [0,1]
-		hr1 = (hr1 - minHR ) / (maxHR - minHR);
-		hr2 = (hr2 - minHR ) / (maxHR - minHR);
-		re1 = (re1 - minResp ) / (maxResp - minResp);
-		re2 = (re2 - minResp ) / (maxResp - minResp);
-		hv1 = (hv1 - minHRV ) / (maxHRV - minHRV);
-		hv2 = (hv2 - minHRV ) / (maxHRV - minHRV);
-		
-		dd = (hr1 - hr2) * (hr1 - hr2) + (re1 - re2) * (re1 - re2) + (hv1 - hv2) * (hv1 - hv2);
-		dd = (float) Math.sqrt(dd);
-		
-		return dd;
+		return distance(users.get(u1),users.get(u2));
 	}
 	
 	public float distance(MergedUser mu, String uu){
-		float dd = 0;
-		float hr1 = mu.heartrate;
-		float hr2 = users.get(uu).heartrate;
-		float re1 = mu.respiration;
-		float re2 = users.get(uu).respiration;
-		float hv1 = mu.hrv;
-		float hv2 = users.get(uu).hrv;
-		
-		//scale all metrics to [0,1]
-		hr1 = (hr1 - minHR ) / (maxHR - minHR);
-		hr2 = (hr2 - minHR ) / (maxHR - minHR);
-		re1 = (re1 - minResp ) / (maxResp - minResp);
-		re2 = (re2 - minResp ) / (maxResp - minResp);
-		hv1 = (hv1 - minHRV ) / (maxHRV - minHRV);
-		hv2 = (hv2 - minHRV ) / (maxHRV - minHRV);
-		
-		dd = (hr1 - hr2) * (hr1 - hr2) + (re1 - re2) * (re1 - re2) + (hv1 - hv2) * (hv1 - hv2);
-		dd = (float) Math.sqrt(dd);
-		
-		return dd;
+		return distance(mu,users.get(uu));
 	}
 	
-	public float distance(MergedUser mu1, MergedUser mu2){
+	public float distance(User mu1, User mu2){
 		float dd = 0;
 		float hr1 = mu1.heartrate;
 		float hr2 = mu2.heartrate;
