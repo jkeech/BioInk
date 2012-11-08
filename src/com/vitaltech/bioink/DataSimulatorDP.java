@@ -45,8 +45,8 @@ public class DataSimulatorDP {
 		Random r = new Random();
 		
 		float old = ddd;
-		float hr1 = r.nextFloat() * dp.maxHR;
-		float rr1 = r.nextFloat() * dp.maxResp;
+		float hr1 = r.nextFloat() * dp.MAX_HR;
+		float rr1 = r.nextFloat() * dp.MAX_RESP;
 		
 		dp.push(uid, BiometricType.HEARTRATE, hr1);
 		dp.push(uid, BiometricType.RESPIRATION, rr1);
@@ -112,13 +112,13 @@ public class DataSimulatorDP {
 		
 		while(true){
 			for(int i = 0; i <= steps; i++){
-				hr1 = i * dp.maxHR / steps;
+				hr1 = i * dp.MAX_HR / steps;
 				hr4 = hr3 = hr2 = hr1;
-				rr1 = 0 * dp.maxResp / 3;
-				rr2 = 1 * dp.maxResp / 3;
-				rr3 = 2 * dp.maxResp / 3;
-				rr4 = 3 * dp.maxResp / 3;
-				hv1 = dp.maxHRV / 2;
+				rr1 = 0 * dp.MAX_RESP / 3;
+				rr2 = 1 * dp.MAX_RESP / 3;
+				rr3 = 2 * dp.MAX_RESP / 3;
+				rr4 = 3 * dp.MAX_RESP / 3;
+				hv1 = dp.MAX_HRV / 2;
 				hv4 = hv3 = hv2 = hv1;
 				
 				dp.push("user1", BiometricType.HEARTRATE, hr1);
@@ -142,13 +142,13 @@ public class DataSimulatorDP {
 			Thread.sleep(2 * interval);
 			
 			for(int i = 0; i <= steps; i++){
-				hr1 = 0 * dp.maxHR / 3;
-				hr2 = 1 * dp.maxHR / 3;
-				hr3 = 2 * dp.maxHR / 3;
-				hr4 = 3 * dp.maxHR / 3;
-				rr1 = i * dp.maxResp / steps;
+				hr1 = 0 * dp.MAX_HR / 3;
+				hr2 = 1 * dp.MAX_HR / 3;
+				hr3 = 2 * dp.MAX_HR / 3;
+				hr4 = 3 * dp.MAX_HR / 3;
+				rr1 = i * dp.MAX_RESP / steps;
 				rr4 = rr3 = rr2 = rr1;
-				hv1 = dp.maxHRV / 2;
+				hv1 = dp.MAX_HRV / 2;
 				hv4 = hv3 = hv2 = hv1;
 				
 				dp.push("user1", BiometricType.HEARTRATE, hr1);
@@ -172,13 +172,13 @@ public class DataSimulatorDP {
 			Thread.sleep(2 * interval);
 			
 			for(int i = 0; i <= steps; i++){
-				hv1 = i * dp.maxHR / steps;
+				hv1 = i * dp.MAX_HR / steps;
 				hv4 = hv3 = hv2 = hv1;
-				rr1 = 0 * dp.maxResp / 3;
-				rr2 = 1 * dp.maxResp / 3;
-				rr3 = 2 * dp.maxResp / 3;
-				rr4 = 3 * dp.maxResp / 3;
-				hr1 = dp.maxHRV / 2;
+				rr1 = 0 * dp.MAX_RESP / 3;
+				rr2 = 1 * dp.MAX_RESP / 3;
+				rr3 = 2 * dp.MAX_RESP / 3;
+				rr4 = 3 * dp.MAX_RESP / 3;
+				hr1 = dp.MAX_HRV / 2;
 				hr4 = hr3 = hr2 = hr1;
 				
 				dp.push("user1", BiometricType.HEARTRATE, hr1);

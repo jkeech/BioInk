@@ -50,6 +50,16 @@ public class User {
 		}
 	}
 	
+	// returns the value of a given biometric type for the user
+	public float get(BiometricType t){
+		switch(t){
+			case HEARTRATE: return heartrate;
+			case RESPIRATION: return respiration;
+			case HRV: return hrv;
+			default: return 0;
+		}
+	}
+	
 	public float calculateHRV(){
 		float rmssd = 0f;
 		

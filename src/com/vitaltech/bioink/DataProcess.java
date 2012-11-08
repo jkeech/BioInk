@@ -17,25 +17,35 @@ public class DataProcess {
 	private Timer utimer = new Timer();
 	private CalculationTimer task;
 	private int uinterval = 0;
+
+	public final float MIN_HR = 0;
+	public final float MAX_HR = 250;
+	public final float MIN_RESP = 0;
+	public final float MAX_RESP = 70;
+	public final float MIN_HRV = 0;
+	public final float MAX_HRV = 200;	
+
+	//Distance that determines if two users are similar
+	public final float mdis = 0.08f;
 	
 	//Positioning range constants
 	private final float minPos = -1;
 	private final float maxPos = 1;
 	
 	//Heart rate range constant
-	public final float minHR = 0;
-	public final float maxHR = 250;
+	private float minHR = MIN_HR;
+	private float maxHR = MAX_HR;
 	
 	//Respiration rate 
-	public final float minResp = 0;
-	public final float maxResp = 70;
+	private float minResp = MIN_RESP;
+	private float maxResp = MAX_RESP;
 	
 	//Heart rate variability
-	public final float minHRV = 0;
-	public final float maxHRV = 200;
+	private float minHRV = MIN_HRV;
+	private float maxHRV = MAX_HRV;
 	
-	//Distance that determines if two users are similar
-	public final float mdis = 0.08f;
+	private BiometricType colorMapper = BiometricType.RESPIRATION;
+	private BiometricType energyMapper = BiometricType.HEARTRATE;
 	
 	//Data Processing constructor
 	public DataProcess(int updateInterval){
@@ -57,6 +67,50 @@ public class DataProcess {
 	
 	public void addScene(Scene ss){
 		this.scene = ss;
+	}
+	
+	public void setMinHR(float value){
+		if (value < MIN_HR)
+			minHR = MIN_HR;
+		else if (value > MAX_HR)
+			minHR = MAX_HR;
+		else
+			minHR = value;
+	}
+	
+	public void setMaxHR(float value){
+		if (value < MIN_HR)
+			maxHR = MIN_HR;
+		else if (value > MAX_HR)
+			maxHR = MAX_HR;
+		else
+			maxHR = value;
+	}
+	
+	public void setMinResp(float value){
+		if (value < MIN_RESP)
+			minResp = MIN_RESP;
+		else if (value > MAX_RESP)
+			minResp = MAX_RESP;
+		else
+			minResp = value;
+	}
+	
+	public void setMaxResp(float value){
+		if (value < MIN_RESP)
+			maxResp = MIN_RESP;
+		else if (value > MAX_RESP)
+			maxResp = MAX_RESP;
+		else
+			maxResp = value;
+	}
+	
+	public void setColor(BiometricType t){
+		colorMapper = t;
+	}
+	
+	public void setEnergy(BiometricType t){
+		energyMapper = t;
 	}
 	
 	//Method allows bluetooth mod to push data into data Process mod
@@ -90,10 +144,41 @@ public class DataProcess {
 		
 	}
 	
+	private float getMin(BiometricType t){
+		switch(t){
+			case HEARTRATE: return minHR;
+			case RESPIRATION: return minResp;
+			case HRV: return minHRV;
+			default: return 0;
+		}
+	}
+	
+	private float getMax(BiometricType t){
+		switch(t){
+			case HEARTRATE: return maxHR;
+			case RESPIRATION: return maxResp;
+			case HRV: return maxHRV;
+			default: return 0;
+		}
+	}
+	
+	// returns the proportion from [0,1] where a given user's biometric type t
+	// falls within the minimum and maximum thresholds for that biometric type
+	private float getProportion(String uid, BiometricType t){
+		float min = getMin(t);
+		float max = getMax(t);
+		
+		if(min == max){
+			// do not divide by 0
+			return (users.get(uid).get(t) - min)/(.0000001f);
+		}
+		
+		return (users.get(uid).get(t) - min)/(max-min);
+	}
+	
 	//map respiration rate from [minhr, maxhr] to [0, 1]
-	public float mapHeartRate(String uid){
-		float temp = 0;
-		temp = (users.get(uid).heartrate - minHR ) / (maxHR - minHR);
+	public float mapEnergy(String uid){
+		float temp = getProportion(uid,energyMapper);
 		
 		//validation
 		temp = Math.max(Math.min(temp, 1), 0);
@@ -104,9 +189,8 @@ public class DataProcess {
 	}
 	
 	//map respiration rate from [minresp, maxresp] to [0, 1]
-	public float mapRespirationRate(String uid){
-		float temp = 0;
-		temp = (users.get(uid).respiration - minResp ) / (maxResp - minResp);
+	public float mapColor(String uid){
+		float temp = getProportion(uid,colorMapper);
 		
 		//validation
 		temp = Math.max(Math.min(temp, 1), 0);
@@ -511,8 +595,8 @@ public class DataProcess {
 		synchronized(users){
 			Collection<User> c = users.values();
 			for(User user : c){
-				mapRespirationRate(user.id);
-				mapHeartRate(user.id);
+				mapColor(user.id);
+				mapEnergy(user.id);
 				//user.calculateHRV();
 				
 				if(!user.merged){

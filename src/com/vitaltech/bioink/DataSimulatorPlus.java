@@ -33,14 +33,14 @@ public class DataSimulatorPlus {
 				Thread.sleep(2 * wait);
 				
 				if(DEBUG) Log.d(TAG, "four sides");
-				dataProcessor.push(u1, BiometricType.HEARTRATE, 0.5f * dataProcessor.maxHR);
-				dataProcessor.push(u1, BiometricType.RESPIRATION, 0.2f * dataProcessor.maxResp);
-				dataProcessor.push(u2, BiometricType.HEARTRATE, 0.5f * dataProcessor.maxHR);
-				dataProcessor.push(u2, BiometricType.RESPIRATION, 0.8f * dataProcessor.maxResp);
-				dataProcessor.push(u3, BiometricType.HEARTRATE, 0.2f * dataProcessor.maxHR);
-				dataProcessor.push(u3, BiometricType.RESPIRATION, 0.5f * dataProcessor.maxResp);
-				dataProcessor.push(u4, BiometricType.HEARTRATE, 0.8f * dataProcessor.maxHR);
-				dataProcessor.push(u4, BiometricType.RESPIRATION, 0.5f * dataProcessor.maxResp);
+				dataProcessor.push(u1, BiometricType.HEARTRATE, 0.5f * dataProcessor.MAX_HR);
+				dataProcessor.push(u1, BiometricType.RESPIRATION, 0.2f * dataProcessor.MAX_RESP);
+				dataProcessor.push(u2, BiometricType.HEARTRATE, 0.5f * dataProcessor.MAX_HR);
+				dataProcessor.push(u2, BiometricType.RESPIRATION, 0.8f * dataProcessor.MAX_RESP);
+				dataProcessor.push(u3, BiometricType.HEARTRATE, 0.2f * dataProcessor.MAX_HR);
+				dataProcessor.push(u3, BiometricType.RESPIRATION, 0.5f * dataProcessor.MAX_RESP);
+				dataProcessor.push(u4, BiometricType.HEARTRATE, 0.8f * dataProcessor.MAX_HR);
+				dataProcessor.push(u4, BiometricType.RESPIRATION, 0.5f * dataProcessor.MAX_RESP);
 				Thread.sleep(4 * wait);
 
 				if(DEBUG) Log.d(TAG, "two pairs");
@@ -69,33 +69,33 @@ public class DataSimulatorPlus {
 				Thread.sleep(2 * wait);
 				
 				if(DEBUG) Log.d(TAG, "all 90% heart rate");
-				syncUsers(BiometricType.HEARTRATE, 0.9f * dataProcessor.maxHR);
+				syncUsers(BiometricType.HEARTRATE, 0.9f * dataProcessor.MAX_HR);
 				Thread.sleep(2 * wait);
 
 				if(DEBUG) Log.d(TAG, "all 10% respiration rate");
-				syncUsers(BiometricType.RESPIRATION, 0.1f * dataProcessor.maxResp);
+				syncUsers(BiometricType.RESPIRATION, 0.1f * dataProcessor.MAX_RESP);
 				Thread.sleep(2 * wait);
 
 // FIXME disabled 3rd axis
 //				if(DEBUG) Log.d(TAG, "all 10% HRV");
-//				syncUsers(BiometricType.RR, 0.1f * dataProcessor.maxResp);
+//				syncUsers(BiometricType.RR, 0.1f * dataProcessor.MAX_RESP);
 //				Thread.sleep(2 * wait);
 
 				if(DEBUG) Log.d(TAG, "all 10% heart rate");
-				syncUsers(BiometricType.HEARTRATE, 0.1f * dataProcessor.maxHR);
+				syncUsers(BiometricType.HEARTRATE, 0.1f * dataProcessor.MAX_HR);
 				Thread.sleep(2 * wait);
 
 				if(DEBUG) Log.d(TAG, "center all");
-				syncUsers(BiometricType.HEARTRATE, 0.5f * dataProcessor.maxHR);
-				syncUsers(BiometricType.RESPIRATION, 0.5f * dataProcessor.maxResp);
+				syncUsers(BiometricType.HEARTRATE, 0.5f * dataProcessor.MAX_HR);
+				syncUsers(BiometricType.RESPIRATION, 0.5f * dataProcessor.MAX_RESP);
 // FIXME disabled 3rd axis				syncUsers(BiometricType.RR, 0.5f * dataProcessor.maxRR);
 				Thread.sleep(2 * wait);
 				
 				if(DEBUG) Log.d(TAG, "u1 gets 100% heart rate");
-				dataProcessor.push(u1, BiometricType.HEARTRATE, 1f * dataProcessor.maxHR);
+				dataProcessor.push(u1, BiometricType.HEARTRATE, 1f * dataProcessor.MAX_HR);
 				Thread.sleep(wait);
 				if(DEBUG) Log.d(TAG, "u2 gets 100% respirations");
-				dataProcessor.push(u2, BiometricType.RESPIRATION, 1f * dataProcessor.maxResp);
+				dataProcessor.push(u2, BiometricType.RESPIRATION, 1f * dataProcessor.MAX_RESP);
 				Thread.sleep(wait);
 				if(DEBUG) Log.d(TAG, "u3 gets 0% respirations");
 				dataProcessor.push(u3, BiometricType.RESPIRATION, 0f);
@@ -131,8 +131,8 @@ public class DataSimulatorPlus {
 	
 	// single user gets one value across three types
 	private void threeTypes(String user, float value){
-		dataProcessor.push(user, BiometricType.HEARTRATE, value * dataProcessor.maxHR);
-		dataProcessor.push(user, BiometricType.RESPIRATION, value * dataProcessor.maxResp);
+		dataProcessor.push(user, BiometricType.HEARTRATE, value * dataProcessor.MAX_HR);
+		dataProcessor.push(user, BiometricType.RESPIRATION, value * dataProcessor.MAX_RESP);
 // FIXME: disabled 3rd axis		dataProcessor.push(user, BiometricType.RR, value * 1.0f);
 	}
 
@@ -150,38 +150,38 @@ public class DataSimulatorPlus {
 		dataProcessor.push("staticA", BiometricType.HRV, 0f);
 		
 		dataProcessor.push("staticB", BiometricType.HEARTRATE,   0f);	// 0,1
-		dataProcessor.push("staticB", BiometricType.RESPIRATION, 1f * dataProcessor.maxResp);
+		dataProcessor.push("staticB", BiometricType.RESPIRATION, 1f * dataProcessor.MAX_RESP);
 		dataProcessor.push("staticB", BiometricType.HRV, 0f);
 		
-		dataProcessor.push("staticC", BiometricType.HEARTRATE,   1f * dataProcessor.maxHR);	// 1,0
+		dataProcessor.push("staticC", BiometricType.HEARTRATE,   1f * dataProcessor.MAX_HR);	// 1,0
 		dataProcessor.push("staticC", BiometricType.RESPIRATION, 0f);
 		dataProcessor.push("staticC", BiometricType.HRV, 0f);
 
-		dataProcessor.push("staticD", BiometricType.HEARTRATE,   1f * dataProcessor.maxHR);	// 1,1
-		dataProcessor.push("staticD", BiometricType.RESPIRATION, 1f * dataProcessor.maxResp);
+		dataProcessor.push("staticD", BiometricType.HEARTRATE,   1f * dataProcessor.MAX_HR);	// 1,1
+		dataProcessor.push("staticD", BiometricType.RESPIRATION, 1f * dataProcessor.MAX_RESP);
 		dataProcessor.push("staticD", BiometricType.HRV, 0f);
 		
-		dataProcessor.push("center", BiometricType.HEARTRATE,    0.5f * dataProcessor.maxHR);
-		dataProcessor.push("center", BiometricType.RESPIRATION,  0.5f * dataProcessor.maxResp);
-		dataProcessor.push("center", BiometricType.HRV,  0.5f * dataProcessor.maxHRV);
+		dataProcessor.push("center", BiometricType.HEARTRATE,    0.5f * dataProcessor.MAX_HR);
+		dataProcessor.push("center", BiometricType.RESPIRATION,  0.5f * dataProcessor.MAX_RESP);
+		dataProcessor.push("center", BiometricType.HRV,  0.5f * dataProcessor.MAX_HRV);
 	}
 
 	private void fourCornersZ(){
 		dataProcessor.push("staticAz", BiometricType.HEARTRATE,   0f);	// 0,0
 		dataProcessor.push("staticAz", BiometricType.RESPIRATION, 0f);
-		dataProcessor.push("staticAz", BiometricType.HRV,  1f * dataProcessor.maxHRV);
+		dataProcessor.push("staticAz", BiometricType.HRV,  1f * dataProcessor.MAX_HRV);
 		
 		dataProcessor.push("staticBz", BiometricType.HEARTRATE,   0f);	// 0,1
-		dataProcessor.push("staticBz", BiometricType.RESPIRATION, 1f * dataProcessor.maxResp);
-		dataProcessor.push("staticBz", BiometricType.HRV,  1f * dataProcessor.maxHRV);
+		dataProcessor.push("staticBz", BiometricType.RESPIRATION, 1f * dataProcessor.MAX_RESP);
+		dataProcessor.push("staticBz", BiometricType.HRV,  1f * dataProcessor.MAX_HRV);
 		
-		dataProcessor.push("staticCz", BiometricType.HEARTRATE,   1f * dataProcessor.maxHR);	// 1,0
+		dataProcessor.push("staticCz", BiometricType.HEARTRATE,   1f * dataProcessor.MAX_HR);	// 1,0
 		dataProcessor.push("staticCz", BiometricType.RESPIRATION, 0f);
-		dataProcessor.push("staticCz", BiometricType.HRV,  1f * dataProcessor.maxHRV);
+		dataProcessor.push("staticCz", BiometricType.HRV,  1f * dataProcessor.MAX_HRV);
 
-		dataProcessor.push("staticDz", BiometricType.HEARTRATE,   1 * dataProcessor.maxHR);	// 1,1
-		dataProcessor.push("staticDz", BiometricType.RESPIRATION, 1 * dataProcessor.maxResp);
-		dataProcessor.push("staticDz", BiometricType.HRV,  1f * dataProcessor.maxHRV);
+		dataProcessor.push("staticDz", BiometricType.HEARTRATE,   1 * dataProcessor.MAX_HR);	// 1,1
+		dataProcessor.push("staticDz", BiometricType.RESPIRATION, 1 * dataProcessor.MAX_RESP);
+		dataProcessor.push("staticDz", BiometricType.HRV,  1f * dataProcessor.MAX_HRV);
 	}
 	
 	private void realistic(){
@@ -215,80 +215,80 @@ public class DataSimulatorPlus {
 	private void walkabout(){
 		Log.d(TAG, "walkabout started");
 		try {
-			dataProcessor.push(u1, BiometricType.HEARTRATE,   0 * dataProcessor.maxHR);	// 0,0
-			dataProcessor.push(u1, BiometricType.RESPIRATION, 0 * dataProcessor.maxResp);
+			dataProcessor.push(u1, BiometricType.HEARTRATE,   0 * dataProcessor.MAX_HR);	// 0,0
+			dataProcessor.push(u1, BiometricType.RESPIRATION, 0 * dataProcessor.MAX_RESP);
 			Thread.sleep(2 * wait);
 		
-//			dataProcessor.push(u1, BiometricType.HEARTRATE,   0 * dataProcessor.maxHR);	// 0,1
-			dataProcessor.push(u1, BiometricType.RESPIRATION, 1 * dataProcessor.maxResp);
+//			dataProcessor.push(u1, BiometricType.HEARTRATE,   0 * dataProcessor.MAX_HR);	// 0,1
+			dataProcessor.push(u1, BiometricType.RESPIRATION, 1 * dataProcessor.MAX_RESP);
 			Thread.sleep(2 * wait);
 			
-			dataProcessor.push(u1, BiometricType.HEARTRATE,   1 * dataProcessor.maxHR);	// 1,0
-			dataProcessor.push(u1, BiometricType.RESPIRATION, 0 * dataProcessor.maxResp);
+			dataProcessor.push(u1, BiometricType.HEARTRATE,   1 * dataProcessor.MAX_HR);	// 1,0
+			dataProcessor.push(u1, BiometricType.RESPIRATION, 0 * dataProcessor.MAX_RESP);
 			Thread.sleep(2 * wait);
 			
-//			dataProcessor.push(u1, BiometricType.HEARTRATE,   1 * dataProcessor.maxHR);	// 1,1
-			dataProcessor.push(u1, BiometricType.RESPIRATION, 1 * dataProcessor.maxResp);
+//			dataProcessor.push(u1, BiometricType.HEARTRATE,   1 * dataProcessor.MAX_HR);	// 1,1
+			dataProcessor.push(u1, BiometricType.RESPIRATION, 1 * dataProcessor.MAX_RESP);
 			Thread.sleep(2 * wait);
 
 			Log.d(TAG, "intervals");
-			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.9f * dataProcessor.maxHR);
+			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.9f * dataProcessor.MAX_HR);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.8f * dataProcessor.maxHR);
+			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.8f * dataProcessor.MAX_HR);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.7f * dataProcessor.maxHR);
+			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.7f * dataProcessor.MAX_HR);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.6f * dataProcessor.maxHR);
+			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.6f * dataProcessor.MAX_HR);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.5f * dataProcessor.maxHR);
+			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.5f * dataProcessor.MAX_HR);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.4f * dataProcessor.maxHR);
+			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.4f * dataProcessor.MAX_HR);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.3f * dataProcessor.maxHR);
+			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.3f * dataProcessor.MAX_HR);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.2f * dataProcessor.maxHR);
+			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.2f * dataProcessor.MAX_HR);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.1f * dataProcessor.maxHR);
+			dataProcessor.push(u1, BiometricType.HEARTRATE,   0.1f * dataProcessor.MAX_HR);
 			Thread.sleep(1 * wait);
 			dataProcessor.push(u1, BiometricType.HEARTRATE,   0f);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.9f * dataProcessor.maxResp);
+			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.9f * dataProcessor.MAX_RESP);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.8f * dataProcessor.maxResp);
+			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.8f * dataProcessor.MAX_RESP);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.7f * dataProcessor.maxResp);
+			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.7f * dataProcessor.MAX_RESP);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.6f * dataProcessor.maxResp);
+			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.6f * dataProcessor.MAX_RESP);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.5f * dataProcessor.maxResp);
+			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.5f * dataProcessor.MAX_RESP);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.4f * dataProcessor.maxResp);
+			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.4f * dataProcessor.MAX_RESP);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.3f * dataProcessor.maxResp);
+			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.3f * dataProcessor.MAX_RESP);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.2f * dataProcessor.maxResp);
+			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.2f * dataProcessor.MAX_RESP);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.1f * dataProcessor.maxResp);
+			dataProcessor.push(u1, BiometricType.RESPIRATION,   0.1f * dataProcessor.MAX_RESP);
 			Thread.sleep(1 * wait);
 			dataProcessor.push(u1, BiometricType.RESPIRATION,   0f);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HRV,   0.9f * dataProcessor.maxHRV);
+			dataProcessor.push(u1, BiometricType.HRV,   0.9f * dataProcessor.MAX_HRV);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HRV,   0.8f * dataProcessor.maxHRV);
+			dataProcessor.push(u1, BiometricType.HRV,   0.8f * dataProcessor.MAX_HRV);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HRV,   0.7f * dataProcessor.maxHRV);
+			dataProcessor.push(u1, BiometricType.HRV,   0.7f * dataProcessor.MAX_HRV);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HRV,   0.6f * dataProcessor.maxHRV);
+			dataProcessor.push(u1, BiometricType.HRV,   0.6f * dataProcessor.MAX_HRV);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HRV,   0.5f * dataProcessor.maxHRV);
+			dataProcessor.push(u1, BiometricType.HRV,   0.5f * dataProcessor.MAX_HRV);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HRV,   0.4f * dataProcessor.maxHRV);
+			dataProcessor.push(u1, BiometricType.HRV,   0.4f * dataProcessor.MAX_HRV);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HRV,   0.3f * dataProcessor.maxHRV);
+			dataProcessor.push(u1, BiometricType.HRV,   0.3f * dataProcessor.MAX_HRV);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HRV,   0.2f * dataProcessor.maxHRV);
+			dataProcessor.push(u1, BiometricType.HRV,   0.2f * dataProcessor.MAX_HRV);
 			Thread.sleep(1 * wait);
-			dataProcessor.push(u1, BiometricType.HRV,   0.1f * dataProcessor.maxHRV);
+			dataProcessor.push(u1, BiometricType.HRV,   0.1f * dataProcessor.MAX_HRV);
 			Thread.sleep(1 * wait);
 			dataProcessor.push(u1, BiometricType.HRV,   0f);
 			Log.d(TAG, "walkabout complete");
