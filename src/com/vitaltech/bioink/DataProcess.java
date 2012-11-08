@@ -134,7 +134,12 @@ public class DataProcess {
 		float uhv = mu.hrv;
 		
 		for(String uu: mu.members){
-			map3DPosition(uu, uhr, ure, uhv);
+			
+			if(users.get(uu).hrv_active){
+				map3DPosition(uu, uhr, ure, uhv);
+			}else{
+				map2DPosition(uu, uhr, ure);
+			}
 			
 			if(mu.members.indexOf(uu) == 0){
 				//first element on the member list
@@ -177,13 +182,12 @@ public class DataProcess {
 		aby = Math.abs(y);
 		abz = Math.abs(z);
 		
+		//individual cases for the six faces of the cube
 		//case A: upper most
 		if(y > 0 && y > abx && y > abz){
 			cy = 1;
 			cx = abx / aby;
 			cz = abz / aby;
-		}else if(y > 0 && abx == abz){
-			
 		}
 		
 		//case B: lower most
@@ -221,9 +225,34 @@ public class DataProcess {
 			cy = aby / abz;
 		}
 		
-		//maps thing to thing
-		//special case for the corners of the cube. 
-		if(abx == aby || abz == abx || aby == abz){
+		//individual cases for pairs of coordinates being equal
+		if(abx == aby && abx != abz){
+			if(abx > abz){
+				cx = 1;
+				cy = 1;
+				cz = abz / abx;
+			}//else case already being man handled
+		}
+		
+		if(abx == abz && abx != aby){
+			if(abx > aby){
+				cx = 1;
+				cz = 1;
+				cy = aby / abx;
+			}
+		}
+		
+		if(aby == abz && aby != abx){
+			if(aby > abx){
+				cy = 1;
+				cz = 1;
+				cx = aby / abx;
+			}
+		}
+		
+		//maps square to sphere using ratio
+		//special case, all 3 coordinates are equal 
+		if(abx == aby && aby == abz){
 			magnitude = (float) Math.sqrt(3);
 		}else{
 			magnitude = cx * cx + cy * cy + cz * cz;
@@ -311,7 +340,7 @@ public class DataProcess {
 			cy = aby / abx;
 		}
 		
-		//maps thing to thing
+		//maps square to circle using ratio
 		if(abx == aby){
 			magnitude = (float) Math.sqrt(2);
 		}else{
