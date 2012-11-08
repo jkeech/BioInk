@@ -15,12 +15,12 @@ public class DataProcess {
 	private CalculationTimer task;
 	private int uinterval = 0;
 
-	public final float MIN_HR = 0;
-	public final float MAX_HR = 250;
-	public final float MIN_RESP = 0;
-	public final float MAX_RESP = 70;
-	public final float MIN_HRV = 0;
-	public final float MAX_HRV = 200;	
+	public final static float MIN_HR = 0;
+	public final static float MAX_HR = 250;
+	public final static float MIN_RESP = 0;
+	public final static float MAX_RESP = 70;
+	public final static float MIN_HRV = 0;
+	public final static float MAX_HRV = 200;	
 
 	//Distance that determines if two users are similar
 	public final float mdis = 0.08f;

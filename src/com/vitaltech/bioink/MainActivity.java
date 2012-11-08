@@ -20,6 +20,7 @@ public class MainActivity extends Activity {
 	public static final Boolean DEBUG=true;
 
 	private Button vizButton;
+	private Button settingsButton;
 	private Discovery discovery;
 	private BroadcastReceiver broadcastReceiver;
 	private IntentFilter intentFilter;
@@ -106,6 +107,18 @@ public class MainActivity extends Activity {
 					}
 				}
 				);
+		
+		this.settingsButton=(Button)this.findViewById(R.id.settingsButton);
+		this.settingsButton.setOnClickListener(
+				new OnClickListener() {
+					public void onClick(View v) {
+						if (DEBUG) Log.d(TAG,"start settings");
+						Intent myIntent = new Intent(v.getContext(), SettingsMenu.class);
+						startActivityForResult(myIntent, 0);
+					}
+				}
+				);
+		
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
