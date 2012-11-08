@@ -166,21 +166,21 @@ public class DataProcess {
 	
 	// returns the proportion from [0,1] where a given user's biometric type t
 	// falls within the minimum and maximum thresholds for that biometric type
-	private float getProportion(String uid, BiometricType t){
+	private float getProportion(User u, BiometricType t){
 		float min = getMin(t);
 		float max = getMax(t);
 		
 		if(min == max){
 			// do not divide by 0
-			return (users.get(uid).get(t) - min)/(.0000001f);
+			return (u.get(t) - min)/(.0000001f);
 		}
 		
-		return (users.get(uid).get(t) - min)/(max-min);
+		return (u.get(t) - min)/(max-min);
 	}
 	
 	//map respiration rate from [minhr, maxhr] to [0, 1]
 	public float mapEnergy(String uid){
-		float temp = getProportion(uid,energyMapper);
+		float temp = getProportion(users.get(uid),energyMapper);
 		
 		//validation
 		temp = Math.max(Math.min(temp, 1), 0);
@@ -192,7 +192,7 @@ public class DataProcess {
 	
 	//map respiration rate from [minresp, maxresp] to [0, 1]
 	public float mapColor(String uid){
-		float temp = getProportion(uid,colorMapper);
+		float temp = getProportion(users.get(uid),colorMapper);
 		
 		//validation
 		temp = Math.max(Math.min(temp, 1), 0);
@@ -620,22 +620,15 @@ public class DataProcess {
 		return distance(mu,users.get(uu));
 	}
 	
-	public float distance(User mu1, User mu2){
+	public float distance(User u1, User u2){
 		float dd = 0;
-		float hr1 = mu1.heartrate;
-		float hr2 = mu2.heartrate;
-		float re1 = mu1.respiration;
-		float re2 = mu2.respiration;
-		float hv1 = mu1.hrv;
-		float hv2 = mu2.hrv;
 		
-		//scale all metrics to [0,1]
-		hr1 = (hr1 - minHR ) / (maxHR - minHR);
-		hr2 = (hr2 - minHR ) / (maxHR - minHR);
-		re1 = (re1 - minResp ) / (maxResp - minResp);
-		re2 = (re2 - minResp ) / (maxResp - minResp);
-		hv1 = (hv1 - minHRV ) / (maxHRV - minHRV);
-		hv2 = (hv2 - minHRV ) / (maxHRV - minHRV);
+		float hr1 = getProportion(u1,BiometricType.HEARTRATE);
+		float hr2 = getProportion(u2,BiometricType.HEARTRATE);
+		float re1 = getProportion(u1,BiometricType.RESPIRATION);
+		float re2 = getProportion(u2,BiometricType.RESPIRATION);
+		float hv1 = getProportion(u1,BiometricType.HRV);
+		float hv2 = getProportion(u2,BiometricType.HRV);
 		
 		dd = (hr1 - hr2) * (hr1 - hr2) + (re1 - re2) * (re1 - re2) + (hv1 - hv2) * (hv1 - hv2);
 		dd = (float) Math.sqrt(dd);
