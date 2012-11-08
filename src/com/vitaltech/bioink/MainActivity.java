@@ -9,9 +9,12 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -113,6 +116,17 @@ public class MainActivity extends Activity {
 				new OnClickListener() {
 					public void onClick(View v) {
 						Log.d(TAG, "there be dragons 're");
+//						LinearLayout ll = (LinearLayout)findViewById(R.menu.advanced_menu);
+//						v.inflate(getApplicationContext(), R.menu.advanced_menu, (ViewGroup) v);
+						
+//						LinearLayout mainLayout = (LinearLayout) findViewById(R.layout.activity_main);
+//						LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//						View menuLayout = inflater.inflate(R.menu.advanced_menu, mainLayout, true);
+						
+//						setContentView(R.layout.advanced_menu);
+						
+						LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+						View view1= inflater.inflate(R.layout.advanced_menu, null);
 					}
 				}
 		);
