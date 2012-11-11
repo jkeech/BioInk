@@ -26,6 +26,7 @@ public class DataProcess {
 
 	//Distance that determines if two users are similar
 	public final float mdis = 0.08f;
+	public final float udis = 0.06f;
 	
 	//Positioning range constants
 	private final float minPos = -1;
@@ -502,7 +503,7 @@ public class DataProcess {
 				float dis = distance(mu, uu);
 				
 				//user is no longer within mdis of the average
-				if(dis > mdis){
+				if(dis > udis){
 					users.get(uu).merged = false;
 					scene.update(uu, DataType.VOLUME, 1);
 					removeduu = uu;
