@@ -101,25 +101,24 @@ public class MainActivity extends Activity {
 		// Configure single Button system
 		this.vizButton=(Button)this.findViewById(R.id.vizButton);
 		this.vizButton.setOnClickListener(
-				new OnClickListener() {
-					public void onClick(View v) {
-						if(DEBUG) Log.d(TAG, "Viz Button pressed");
-						if(vizButton.getText()=="Enable Bluetooth"){
-							startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
-						}else{
-							if (DEBUG) Log.d(TAG,"start viz");
-							Intent myIntent = new Intent(v.getContext(), RajActivity.class);
-							startActivityForResult(myIntent, 0);
-							vizActive = true;
-						}
+			new OnClickListener() {
+				public void onClick(View v) {
+					if(DEBUG) Log.d(TAG, "Viz Button pressed");
+					if(vizButton.getText()=="Enable Bluetooth"){
+						startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
+					}else{
+						if (DEBUG) Log.d(TAG,"start viz");
+						Intent myIntent = new Intent(v.getContext(), RajActivity.class);
+						startActivityForResult(myIntent, 0);
+						vizActive = true;
 					}
 				}
+			}
 		);
 
 
 		linearControl = (LinearLayout) findViewById(R.id.linearControl);
 		linearAdvanced = (LinearLayout) findViewById(R.id.linearAdvanced);
-		linearStub = (LinearLayout) findViewById(R.id.linearStub);
 		acceptButton = (Button) findViewById(R.id.accept_button);
 
 		this.menuButton = (Button)this.findViewById(R.id.menuButton);
@@ -131,7 +130,12 @@ public class MainActivity extends Activity {
 					linearControl.setVisibility(LinearLayout.GONE);
 					linearAdvanced.setVisibility(LinearLayout.VISIBLE);
 
-					
+					if(linearStub == null){
+						linearStub = (LinearLayout) findViewById(R.id.linearStub);
+						TextView newText = new TextView(getApplicationContext());
+						newText.setText("new text view");
+						linearStub.addView(newText);
+					}
 
 					acceptButton.setOnClickListener(
 						new OnClickListener() {
