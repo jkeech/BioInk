@@ -142,10 +142,6 @@ public class MainActivity extends Activity {
 					public void onClick(View v) {
 						if (DEBUG) Log.d(TAG,"start settings");
 						toggleMenu();
-						/*
-						Intent myIntent = new Intent(v.getContext(), SettingsMenu.class);
-						startActivityForResult(myIntent, 0);
-						*/
 					}
 				}
 				);
