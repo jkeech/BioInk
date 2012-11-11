@@ -47,12 +47,8 @@ public class RajActivity extends RajawaliActivity {
 		dp.setMaxHR(settings.getFloat("maxHR"));
 		dp.setMinResp(settings.getFloat("minResp"));
 		dp.setMaxResp(settings.getFloat("maxResp"));
-		
-		/*
-		dp.setColor(BiometricType.HEARTRATE);
-		dp.setEnergy(BiometricType.RESPIRATION);
-		*/
-		
+		dp.setColor((BiometricType)settings.getSerializable("colorType"));
+		dp.setEnergy((BiometricType)settings.getSerializable("energyType"));
 		// END DATA PROCESSING
 
 		// BLUETOOTH

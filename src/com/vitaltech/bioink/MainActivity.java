@@ -13,8 +13,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +40,8 @@ public class MainActivity extends Activity {
 	private float maxHR = DataProcess.MAX_HR;
 	private float minResp = DataProcess.MIN_RESP;
 	private float maxResp = DataProcess.MAX_RESP;
+	private BiometricType colorType = BiometricType.RESPIRATION;
+	private BiometricType energyType = BiometricType.HEARTRATE;
 	private LinearLayout settingsLayout;
 	private LinearLayout.LayoutParams settingsParams;
 
@@ -121,6 +126,8 @@ public class MainActivity extends Activity {
 							myIntent.putExtra("maxHR", maxHR);
 							myIntent.putExtra("minResp", minResp);
 							myIntent.putExtra("maxResp", maxResp);
+							myIntent.putExtra("colorType", colorType);
+							myIntent.putExtra("energyType", energyType);
 							
 							startActivityForResult(myIntent, 0);
 							vizActive = true;
@@ -189,9 +196,47 @@ public class MainActivity extends Activity {
 	              }
 	            }
 	          });
+	        
+	        final String[] biometricTypes = { "Heartrate", "Respiration" };
+	        ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,biometricTypes);
+	        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);	        
+	        
+	        Spinner colorSpinner = new Spinner(this);
+	        colorSpinner.setAdapter(aa);
+	        colorSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener(){
+	        	public void onItemSelected(AdapterView<?> parent, View v, int position,
+	        			long id) {
+	        		if(biometricTypes[position].equals("Heartrate")){
+	        			colorType = BiometricType.HEARTRATE;
+	        		}
+	        		if(biometricTypes[position].equals("Respiration")){
+	        			colorType = BiometricType.RESPIRATION;
+	        		}
+	        	}
+
+	        	public void onNothingSelected(AdapterView<?> parent) {}
+	        });
+	        
+	        Spinner energySpinner = new Spinner(this);
+	        energySpinner.setAdapter(aa);
+	        energySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener(){
+	        	public void onItemSelected(AdapterView<?> parent, View v, int position,
+	        			long id) {
+	        		if(biometricTypes[position].equals("Heartrate")){
+	        			energyType = BiometricType.HEARTRATE;
+	        		}
+	        		if(biometricTypes[position].equals("Respiration")){
+	        			energyType = BiometricType.RESPIRATION;
+	        		}
+	        	}
+
+	        	public void onNothingSelected(AdapterView<?> parent) {}
+	        });
 
 	        settingsLayout.addView(seekBarHR);
 	        settingsLayout.addView(seekBarResp);
+	        settingsLayout.addView(colorSpinner);
+	        settingsLayout.addView(energySpinner);
 	        settingsLayout.addView(saveBtn);
 	}
 	
