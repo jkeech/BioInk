@@ -165,7 +165,46 @@ public class MainActivity extends Activity {
 	        // Defining the LinearLayout layout parameters to fill the parent.
 	        settingsParams = new LinearLayout.LayoutParams(
 	            LinearLayout.LayoutParams.FILL_PARENT,
-	            LinearLayout.LayoutParams.FILL_PARENT);
+	            LinearLayout.LayoutParams.WRAP_CONTENT);
+	        settingsParams.weight = 1;
+	        
+	        LinearLayout HRLayout = new LinearLayout(this);
+	        HRLayout.setOrientation(LinearLayout.HORIZONTAL);
+	        LinearLayout RespLayout = new LinearLayout(this);
+	        RespLayout.setOrientation(LinearLayout.HORIZONTAL);
+	        LinearLayout ColorLayout = new LinearLayout(this);
+	        ColorLayout.setOrientation(LinearLayout.HORIZONTAL);
+	        LinearLayout EnergyLayout = new LinearLayout(this);
+	        EnergyLayout.setOrientation(LinearLayout.HORIZONTAL);
+	        
+	        TextView HRText = new TextView(this);
+	        final TextView minHRText = new TextView(this);
+	        final TextView maxHRText = new TextView(this);
+	        TextView RespText = new TextView(this);
+	        final TextView minRespText = new TextView(this);
+	        final TextView maxRespText = new TextView(this);
+	        TextView colorText = new TextView(this);
+	        TextView energyText = new TextView(this);
+	        	        
+	        HRText.setWidth(150);
+	        RespText.setWidth(150);
+	        colorText.setWidth(150);
+	        energyText.setWidth(150);
+	        
+	        minHRText.setWidth(50);
+	        maxHRText.setWidth(50);
+	        minRespText.setWidth(50);
+	        maxRespText.setWidth(50);
+	        
+	        minHRText.setText(String.format("%d", (int)minHR));
+	        maxHRText.setText(String.format("%d", (int)maxHR));
+	        minRespText.setText(String.format("%d", (int)minResp));
+	        maxRespText.setText(String.format("%d", (int)maxResp));
+	        
+	        HRText.setText("Heartrate:");
+	        RespText.setText("Respiration:");
+	        colorText.setText("Color:");
+	        energyText.setText("Energy:");
 	        
 	        // create RangeSeekBar as Float for Heartrate
 	        RangeSeekBar<Float> seekBarHR = new RangeSeekBar<Float>(DataProcess.MIN_HR, DataProcess.MAX_HR, context);
@@ -173,6 +212,8 @@ public class MainActivity extends Activity {
 	                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
 	                        minHR = minValue;
 	                        maxHR = maxValue;
+	                        minHRText.setText(String.format("%d", (int)minHR));
+	            	        maxHRText.setText(String.format("%d", (int)maxHR));
 	                        if(DEBUG) Log.d("menu","minHR: "+minHR+", maxHR: "+maxHR);
 	                }
 	        });
@@ -183,6 +224,8 @@ public class MainActivity extends Activity {
 	                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
 	                        minResp = minValue;
 	                        maxResp = maxValue;
+	                        minRespText.setText(String.format("%d", (int)minResp));
+	            	        maxRespText.setText(String.format("%d", (int)maxResp));
 	                        if(DEBUG) Log.d("menu","minResp: "+minResp+", maxResp: "+maxResp);
 	                }
 	        });
@@ -238,11 +281,27 @@ public class MainActivity extends Activity {
 	        	public void onNothingSelected(AdapterView<?> parent) {}
 	        });
 
-	        settingsLayout.addView(seekBarHR);
-	        settingsLayout.addView(seekBarResp);
-	        settingsLayout.addView(colorSpinner);
-	        settingsLayout.addView(energySpinner);
-	        settingsLayout.addView(saveBtn);
+	        HRLayout.addView(HRText);
+	        HRLayout.addView(minHRText);
+	        HRLayout.addView(seekBarHR,settingsParams);
+	        HRLayout.addView(maxHRText);
+	        
+	        RespLayout.addView(RespText);
+	        RespLayout.addView(minRespText);
+	        RespLayout.addView(seekBarResp,settingsParams);
+	        RespLayout.addView(maxRespText);
+	        
+	        ColorLayout.addView(colorText);
+	        ColorLayout.addView(colorSpinner,settingsParams);
+	        
+	        EnergyLayout.addView(energyText);
+	        EnergyLayout.addView(energySpinner,settingsParams);
+	        
+	        settingsLayout.addView(HRLayout);
+	        settingsLayout.addView(RespLayout);
+	        settingsLayout.addView(ColorLayout);
+	        settingsLayout.addView(EnergyLayout);
+	        settingsLayout.addView(saveBtn,settingsParams);
 	}
 	
 	private void toggleMenu(){
