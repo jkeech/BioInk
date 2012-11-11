@@ -12,4 +12,6 @@
     <string name="devices_audible">devices audible null</string>
     <string name="viz_button">Start visualization</string>
     
+    <string name="save_button">Save Settings</string>
+    
 </resources>

@@ -1,5 +1,7 @@
 package com.vitaltech.bioink;
 
+import com.vitaltech.bioink.RangeSeekBar.OnRangeSeekBarChangeListener;
+
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -12,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +29,16 @@ public class MainActivity extends Activity {
 	private IntentFilter intentFilter;
 	private BluetoothAdapter btAdapter;
 	private Boolean vizActive;// = null;
+	
+	private boolean settingsVisible = false;
+	
+	// Settings
+	private float minHR = DataProcess.MIN_HR;
+	private float maxHR = DataProcess.MAX_HR;
+	private float minResp = DataProcess.MIN_RESP;
+	private float maxResp = DataProcess.MAX_RESP;
+	private LinearLayout settingsLayout;
+	private LinearLayout.LayoutParams settingsParams;
 
 	// **** Start Lifecycle ****
 	@Override
@@ -87,6 +100,7 @@ public class MainActivity extends Activity {
 			}
 		};
 		connectButton();
+		setupSettingsMenu();
 	}
 
 	private void connectButton(){
@@ -113,12 +127,78 @@ public class MainActivity extends Activity {
 				new OnClickListener() {
 					public void onClick(View v) {
 						if (DEBUG) Log.d(TAG,"start settings");
+						toggleMenu();
+						/*
 						Intent myIntent = new Intent(v.getContext(), SettingsMenu.class);
 						startActivityForResult(myIntent, 0);
+						*/
 					}
 				}
 				);
 		
+	}
+	
+	private void setupSettingsMenu(){	         
+	        // Grabbing the Application context
+	        final Context context = getApplication();
+	         
+	        // Creating a new LinearLayout
+	        settingsLayout = new LinearLayout(this);
+	         
+	        // Setting the orientation to vertical
+	        settingsLayout.setOrientation(LinearLayout.VERTICAL);
+	         
+	        // Defining the LinearLayout layout parameters to fill the parent.
+	        settingsParams = new LinearLayout.LayoutParams(
+	            LinearLayout.LayoutParams.FILL_PARENT,
+	            LinearLayout.LayoutParams.FILL_PARENT);
+	        
+	        // create RangeSeekBar as Float for Heartrate
+	        RangeSeekBar<Float> seekBarHR = new RangeSeekBar<Float>(DataProcess.MIN_HR, DataProcess.MAX_HR, context);
+	        seekBarHR.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Float>() {
+	                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
+	                        minHR = minValue;
+	                        maxHR = maxValue;
+	                }
+	        });
+	        
+	        // create RangeSeekBar as Float for Respiration
+	        RangeSeekBar<Float> seekBarResp = new RangeSeekBar<Float>(DataProcess.MIN_RESP, DataProcess.MAX_RESP, context);
+	        seekBarResp.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Float>() {
+	                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
+	                        minResp = minValue;
+	                        maxResp = maxValue;
+	                }
+	        });
+	        
+	        Button saveBtn = new Button(this);
+	        saveBtn.setText(R.string.save_button);
+	        saveBtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+	        saveBtn.setOnClickListener(new Button.OnClickListener() {
+	            public void onClick(View v) {
+	              try {
+	                toggleMenu();
+	              } catch (Exception e) {	  
+	              }
+	            }
+	          });
+
+	        settingsLayout.addView(seekBarHR);
+	        settingsLayout.addView(seekBarResp);
+	        settingsLayout.addView(saveBtn);
+	}
+	
+	private void toggleMenu(){
+		if(settingsVisible){
+			Log.d("menu","switching to Main Menu");
+			setContentView(R.layout.activity_main);
+			connectButton();
+			settingsVisible = false;
+		} else {
+			Log.d("menu","switching to Settings Menu");
+			setContentView(settingsLayout,settingsParams);
+			settingsVisible = true;
+		}
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
