@@ -51,6 +51,12 @@ public class RajActivity extends RajawaliActivity {
 		dp.setEnergy((BiometricType)settings.getSerializable("energyType"));
 		// END DATA PROCESSING
 
+		if(DEBUG){
+			Log.d(TAG, "minHR = " + settings.getFloat("minHR") + ", maxHR = " + settings.getFloat("maxHR"));
+			Log.d(TAG, "minResp = " + settings.getFloat("minResp") + ", maxResp = " + settings.getFloat("maxResp"));
+			Log.d(TAG, "color = " + settings.getSerializable("colorType").toString());
+			Log.d(TAG, "energy = " + settings.getSerializable("energyType").toString());
+		}
 		// BLUETOOTH
 		if(BTMan != null){
 			// BTMan.close()

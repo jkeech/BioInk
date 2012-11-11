@@ -119,26 +119,25 @@ public class MainActivity extends Activity {
 		// Configure single Button system
 		this.vizButton=(Button)this.findViewById(R.id.vizButton);
 		this.vizButton.setOnClickListener(
-				new OnClickListener() {
-					public void onClick(View v) {
-						if(DEBUG) Log.d(TAG, "Viz Button pressed");
-						if(vizButton.getText()=="Enable Bluetooth"){
-							startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
-						}else{
-							if (DEBUG) Log.d(TAG,"start viz");
-							Intent myIntent = new Intent(v.getContext(), RajActivity.class);
-							
-							// transfer settings to RajActivity
-							myIntent.putExtra("minHR", minHR);
-							myIntent.putExtra("maxHR", maxHR);
-							myIntent.putExtra("minResp", minResp);
-							myIntent.putExtra("maxResp", maxResp);
-							myIntent.putExtra("colorType", colorType);
-							myIntent.putExtra("energyType", energyType);
-							
-							startActivityForResult(myIntent, 0);
-							vizActive = true;
-						}
+			new OnClickListener() {
+				public void onClick(View v) {
+					if(DEBUG) Log.d(TAG, "Viz Button pressed");
+					if(vizButton.getText()=="Enable Bluetooth"){
+						startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
+					}else{
+						if (DEBUG) Log.d(TAG,"start viz");
+						Intent myIntent = new Intent(v.getContext(), RajActivity.class);
+						
+						// transfer settings to RajActivity
+						myIntent.putExtra("minHR", minHR);
+						myIntent.putExtra("maxHR", maxHR);
+						myIntent.putExtra("minResp", minResp);
+						myIntent.putExtra("maxResp", maxResp);
+						myIntent.putExtra("colorType", colorType);
+						myIntent.putExtra("energyType", energyType);
+						
+						startActivityForResult(myIntent, 0);
+						vizActive = true;
 					}
 				}
 			}
@@ -160,9 +159,7 @@ public class MainActivity extends Activity {
 
 					if(linearStub == null){
 						linearStub = (LinearLayout) findViewById(R.id.linearStub);
-						TextView newText = new TextView(getApplicationContext());
-						newText.setText("new text view");
-						linearStub.addView(newText);
+						setupSettingsMenu(linearStub);
 					}
 
 					acceptButton.setOnClickListener(
@@ -180,12 +177,13 @@ public class MainActivity extends Activity {
 		);
 	}
 	
-	private void setupSettingsMenu(){	         
+	private void setupSettingsMenu(LinearLayout ll_stub){
 	        // Grabbing the Application context
 	        final Context context = getApplication();
 	         
 	        // Creating a new LinearLayout
-	        settingsLayout = new LinearLayout(this);
+//	        settingsLayout = new LinearLayout(this);
+	        settingsLayout = ll_stub;
 	         
 	        // Setting the orientation to vertical
 	        settingsLayout.setOrientation(LinearLayout.VERTICAL);
@@ -258,17 +256,17 @@ public class MainActivity extends Activity {
 	                }
 	        });
 	        
-	        Button saveBtn = new Button(this);
-	        saveBtn.setText(R.string.save_button);
-	        saveBtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-	        saveBtn.setOnClickListener(new Button.OnClickListener() {
-	            public void onClick(View v) {
-	              try {
-	                toggleMenu();
-	              } catch (Exception e) {	  
-	              }
-	            }
-	          });
+//	        Button saveBtn = new Button(this);
+//	        saveBtn.setText(R.string.save_button);
+//	        saveBtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+//	        saveBtn.setOnClickListener(new Button.OnClickListener() {
+//	            public void onClick(View v) {
+//	              try {
+//	                toggleMenu();
+//	              } catch (Exception e) {	  
+//	              }
+//	            }
+//	          });
 	        
 	        final String[] biometricTypes = { "Heartrate", "Respiration" };
 	        ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,biometricTypes);
@@ -329,21 +327,21 @@ public class MainActivity extends Activity {
 	        settingsLayout.addView(RespLayout);
 	        settingsLayout.addView(ColorLayout);
 	        settingsLayout.addView(EnergyLayout);
-	        settingsLayout.addView(saveBtn,settingsParams);
+//	        settingsLayout.addView(saveBtn,settingsParams);
 	}
 	
-	private void toggleMenu(){
-		if(settingsVisible){
-			if(DEBUG) Log.d("menu","switching to Main Menu");
-			setContentView(R.layout.activity_main);
-			connectButton();
-			settingsVisible = false;
-		} else {
-			if(DEBUG) Log.d("menu","switching to Settings Menu");
-			setContentView(settingsLayout,settingsParams);
-			settingsVisible = true;
-		}
-	}
+//	private void toggleMenu(){
+//		if(settingsVisible){
+//			if(DEBUG) Log.d("menu","switching to Main Menu");
+//			setContentView(R.layout.activity_main);
+//			connectButton();
+//			settingsVisible = false;
+//		} else {
+//			if(DEBUG) Log.d("menu","switching to Settings Menu");
+//			setContentView(settingsLayout,settingsParams);
+//			settingsVisible = true;
+//		}
+//	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
