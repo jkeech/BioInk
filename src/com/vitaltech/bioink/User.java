@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import android.util.Log;
-
 /*
  * This class models a single user within the data processing module
  */
@@ -15,7 +13,7 @@ public class User {
 	public String id;
 	public float heartrate = 0;
 	public float respiration = 0;
-	public float hrv = 0;
+	public float hrv = 100;
 	public boolean hrv_active = false;
 	public boolean merged = false;
 	public List<Float> rrq;
@@ -50,6 +48,16 @@ public class User {
 		}
 	}
 	
+	// returns the value of a given biometric type for the user
+	public float get(BiometricType t){
+		switch(t){
+			case HEARTRATE: return heartrate;
+			case RESPIRATION: return respiration;
+			case HRV: return hrv;
+			default: return 0;
+		}
+	}
+	
 	public float calculateHRV(){
 		float rmssd = 0f;
 		
@@ -80,6 +88,7 @@ public class User {
 			ssd = ssd / (qsize - 1);
 			//calculate the RMSSD value and update it to the HRV of the user
 			rmssd = (float) Math.sqrt(ssd);
+			rmssd = Math.max(Math.min(rmssd, 200), 0);
 			this.hrv = rmssd;
 		}
 		

@@ -13,4 +13,6 @@
     <string name="viz_button">Start visualization</string>
     <string name="menu_button">Advanced</string>
     
+    <string name="save_button">OK</string>
+    
 </resources>
