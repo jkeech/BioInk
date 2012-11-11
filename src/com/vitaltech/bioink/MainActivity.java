@@ -173,6 +173,7 @@ public class MainActivity extends Activity {
 	                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
 	                        minHR = minValue;
 	                        maxHR = maxValue;
+	                        if(DEBUG) Log.d("menu","minHR: "+minHR+", maxHR: "+maxHR);
 	                }
 	        });
 	        
@@ -182,6 +183,7 @@ public class MainActivity extends Activity {
 	                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
 	                        minResp = minValue;
 	                        maxResp = maxValue;
+	                        if(DEBUG) Log.d("menu","minResp: "+minResp+", maxResp: "+maxResp);
 	                }
 	        });
 	        
@@ -203,6 +205,7 @@ public class MainActivity extends Activity {
 	        
 	        Spinner colorSpinner = new Spinner(this);
 	        colorSpinner.setAdapter(aa);
+	        colorSpinner.setSelection(1); // start this one with Respiration selected instead of heartrate
 	        colorSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener(){
 	        	public void onItemSelected(AdapterView<?> parent, View v, int position,
 	        			long id) {
@@ -212,6 +215,7 @@ public class MainActivity extends Activity {
 	        		if(biometricTypes[position].equals("Respiration")){
 	        			colorType = BiometricType.RESPIRATION;
 	        		}
+	        		if(DEBUG) Log.d("menu","colorType: "+colorType);
 	        	}
 
 	        	public void onNothingSelected(AdapterView<?> parent) {}
@@ -228,6 +232,7 @@ public class MainActivity extends Activity {
 	        		if(biometricTypes[position].equals("Respiration")){
 	        			energyType = BiometricType.RESPIRATION;
 	        		}
+	        		if(DEBUG) Log.d("menu","energyType: "+energyType);
 	        	}
 
 	        	public void onNothingSelected(AdapterView<?> parent) {}
@@ -242,12 +247,12 @@ public class MainActivity extends Activity {
 	
 	private void toggleMenu(){
 		if(settingsVisible){
-			Log.d("menu","switching to Main Menu");
+			if(DEBUG) Log.d("menu","switching to Main Menu");
 			setContentView(R.layout.activity_main);
 			connectButton();
 			settingsVisible = false;
 		} else {
-			Log.d("menu","switching to Settings Menu");
+			if(DEBUG) Log.d("menu","switching to Settings Menu");
 			setContentView(settingsLayout,settingsParams);
 			settingsVisible = true;
 		}
