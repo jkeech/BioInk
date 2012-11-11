@@ -115,6 +115,13 @@ public class MainActivity extends Activity {
 						}else{
 							if (DEBUG) Log.d(TAG,"start viz");
 							Intent myIntent = new Intent(v.getContext(), RajActivity.class);
+							
+							// transfer settings to RajActivity
+							myIntent.putExtra("minHR", minHR);
+							myIntent.putExtra("maxHR", maxHR);
+							myIntent.putExtra("minResp", minResp);
+							myIntent.putExtra("maxResp", maxResp);
+							
 							startActivityForResult(myIntent, 0);
 							vizActive = true;
 						}

@@ -33,6 +33,8 @@ public class RajActivity extends RajawaliActivity {
 		scene.setSurfaceView(mSurfaceView);
 		super.setRenderer(scene);
 		// END VIZ SCENE
+		
+		Bundle settings = this.getIntent().getExtras();
 
 		// DATA PROCESSING 
 		if(dp != null){
@@ -41,12 +43,12 @@ public class RajActivity extends RajawaliActivity {
 		}
 		dp = new DataProcess(100);
 		dp.addScene(scene);
+		dp.setMinHR(settings.getFloat("minHR"));
+		dp.setMaxHR(settings.getFloat("maxHR"));
+		dp.setMinResp(settings.getFloat("minResp"));
+		dp.setMaxResp(settings.getFloat("maxResp"));
 		
 		/*
-		dp.setMinHR(40f);
-		dp.setMaxHR(150f);
-		dp.setMinResp(5f);
-		dp.setMaxResp(30f);
 		dp.setColor(BiometricType.HEARTRATE);
 		dp.setEnergy(BiometricType.RESPIRATION);
 		*/
