@@ -6,6 +6,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
+import android.util.Log;
+
 public class DataProcess {
 	//List of current users
 	public ConcurrentHashMap<String,User> users;
@@ -41,8 +43,14 @@ public class DataProcess {
 	private float minHRV = MIN_HRV;
 	private float maxHRV = MAX_HRV;
 	
+	//R to R interval
+	private float minRR = -1250;
+	private float maxRR = 1250;
+	
 	private BiometricType colorMapper = BiometricType.RESPIRATION;
 	private BiometricType energyMapper = BiometricType.HEARTRATE;
+	
+	private boolean DEBUG = MainActivity.DEBUG;
 	
 	//Data Processing constructor
 	public DataProcess(int updateInterval){
@@ -76,7 +84,7 @@ public class DataProcess {
 	}
 	
 	public void setMaxHR(float value){
-		if (value < MIN_HR)
+		if (value < minHR)
 			maxHR = MIN_HR;
 		else if (value > MAX_HR)
 			maxHR = MAX_HR;
@@ -151,6 +159,7 @@ public class DataProcess {
 			case HEARTRATE: return minHR;
 			case RESPIRATION: return minResp;
 			case HRV: return minHRV;
+			case RR: return minRR;
 			default: return 0;
 		}
 	}
@@ -160,6 +169,7 @@ public class DataProcess {
 			case HEARTRATE: return maxHR;
 			case RESPIRATION: return maxResp;
 			case HRV: return maxHRV;
+			case RR: return maxRR;
 			default: return 0;
 		}
 	}
@@ -169,34 +179,28 @@ public class DataProcess {
 	private float getProportion(User u, BiometricType t){
 		float min = getMin(t);
 		float max = getMax(t);
+		float temp;
 		
 		if(min == max){
 			// do not divide by 0
-			return (u.get(t) - min)/(.0000001f);
+			temp = (u.get(t) - min)/(.0000001f);
+		}else{
+			temp = (u.get(t) - min)/(max-min);
 		}
 		
-		return (u.get(t) - min)/(max-min);
+		return Math.max(Math.min(temp, 1), 0);
 	}
 	
 	//map respiration rate from [minhr, maxhr] to [0, 1]
 	public float mapEnergy(String uid){
 		float temp = getProportion(users.get(uid),energyMapper);
-		
-		//validation
-		temp = Math.max(Math.min(temp, 1), 0);
-		
 		scene.update(uid, DataType.ENERGY, temp);
-		
 		return temp;
 	}
 	
 	//map respiration rate from [minresp, maxresp] to [0, 1]
 	public float mapColor(String uid){
 		float temp = getProportion(users.get(uid),colorMapper);
-		
-		//validation
-		temp = Math.max(Math.min(temp, 1), 0);
-		
 		scene.update(uid, DataType.COLOR, temp);
 		return temp;
 	}
@@ -206,6 +210,10 @@ public class DataProcess {
 		float uhr = users.get(uid).heartrate;
 		float ure = users.get(uid).respiration;
 		float uhv = users.get(uid).hrv;
+		
+		if(DEBUG){
+			//Log.d("dp", "hrv: " + uhv);
+		}
 		
 		if(users.get(uid).hrv_active){
 			map3DPosition(uid, uhr, ure, uhv);
@@ -599,7 +607,7 @@ public class DataProcess {
 			for(User user : c){
 				mapColor(user.id);
 				mapEnergy(user.id);
-				//user.calculateHRV();
+				user.calculateHRV();
 				
 				if(!user.merged){
 					mapPosition(user.id);

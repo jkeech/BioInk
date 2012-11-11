@@ -13,7 +13,7 @@ public class User {
 	public String id;
 	public float heartrate = 0;
 	public float respiration = 0;
-	public float hrv = 0;
+	public float hrv = 100;
 	public boolean hrv_active = false;
 	public boolean merged = false;
 	public List<Float> rrq;
@@ -88,6 +88,7 @@ public class User {
 			ssd = ssd / (qsize - 1);
 			//calculate the RMSSD value and update it to the HRV of the user
 			rmssd = (float) Math.sqrt(ssd);
+			rmssd = Math.max(Math.min(rmssd, 200), 0);
 			this.hrv = rmssd;
 		}
 		
