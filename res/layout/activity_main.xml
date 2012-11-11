@@ -7,22 +7,23 @@
     android:weightSum="2" >
 
     <LinearLayout
+        android:id="@+id/logoSide"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
         android:contentDescription="@string/bio_ink_logo" >
         
-	    <ImageView
-	        android:id="@+id/logoImageView"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center"
+        <ImageView
+            android:id="@+id/logoImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:contentDescription="@string/bio_ink_logo"
-	        android:src="@drawable/logo_transparent" />
-
-	</LinearLayout>
+            android:src="@drawable/logo_transparent" />
+    </LinearLayout>
     
     <LinearLayout
+        android:id="@+id/linearControl"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
@@ -70,7 +71,35 @@
             android:layout_marginTop="30dp"
             android:layout_weight="1"
             android:text="@string/menu_button" />
-
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/linearAdvanced"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:weightSum="15" >
+
+        <TextView
+            android:id="@+id/advanced"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Advanced Settings" />
+
+        <LinearLayout
+	        android:id="@+id/linearStub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:orientation="vertical" />
+
+        <Button
+            android:id="@+id/accept_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Accept" />
+    </LinearLayout>
 </LinearLayout>

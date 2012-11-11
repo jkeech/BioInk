@@ -29,6 +29,10 @@ public class MainActivity extends Activity {
 	private IntentFilter intentFilter;
 	private BluetoothAdapter btAdapter;
 	private Boolean vizActive;// = null;
+	private LinearLayout linearControl;
+	private LinearLayout linearAdvanced;
+	private LinearLayout linearStub;
+	private Button acceptButton;
 
 	// **** Start Lifecycle ****
 	@Override
@@ -36,6 +40,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "test message");
 		setContentView(R.layout.activity_main);
+		
 		if(DEBUG) Log.d(TAG, "__onCreate()__");
 
 		if(vizActive == null){
@@ -46,49 +51,49 @@ public class MainActivity extends Activity {
 		if(btAdapter==null){
 			Toast.makeText(getApplicationContext(),"Bluetooth not available on this device",Toast.LENGTH_LONG).show();
 			Log.e(TAG, "Bluetooth not available on this device");
-			finish();
+//			finish();
 		}
 
-		discovery=new Discovery(this, btAdapter);
-		new Thread(new Runnable() { 
-			public void run(){
-				if(DEBUG) Log.d(TAG,"start finding devices");
-				discovery.findDevices(btAdapter);
-			}
-		}).start();
+//		discovery=new Discovery(this, btAdapter);
+//		new Thread(new Runnable() { 
+//			public void run(){
+//				if(DEBUG) Log.d(TAG,"start finding devices");
+//				discovery.findDevices(btAdapter);
+//			}
+//		}).start();
 
 		// Catch Bluetooth radio events
-		intentFilter=new IntentFilter();
-		intentFilter.addAction(android.bluetooth.BluetoothAdapter.ACTION_STATE_CHANGED);
-		broadcastReceiver=new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context contxt, Intent intent) {
-				if(DEBUG) Log.d(TAG, "broadcast received");
-				int code = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
-				switch(code){
-				case BluetoothAdapter.STATE_ON:
-					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => on");
-					changeRadioStatus("on");
-					vizButton.setText("Start Visualization");
-//					BTMan.bt_enabled();
-					break;
-				case BluetoothAdapter.STATE_OFF:
-					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => off");
-					changeRadioStatus("off");
-					vizButton.setText("Enable Bluetooth");
-//					BTMan.bt_disabled();
-					break;
-				case BluetoothAdapter.STATE_TURNING_OFF:
-				case BluetoothAdapter.STATE_TURNING_ON:
-					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => changing");
-					changeRadioStatus("changing");
-					break;
-				default:
-					Log.e(TAG, "bluetooth broadcast receiver => undefined: " + code);
-					break;
-				}
-			}
-		};
+//		intentFilter=new IntentFilter();
+//		intentFilter.addAction(android.bluetooth.BluetoothAdapter.ACTION_STATE_CHANGED);
+//		broadcastReceiver=new BroadcastReceiver() {
+//			@Override
+//			public void onReceive(Context contxt, Intent intent) {
+//				if(DEBUG) Log.d(TAG, "broadcast received");
+//				int code = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+//				switch(code){
+//				case BluetoothAdapter.STATE_ON:
+//					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => on");
+//					changeRadioStatus("on");
+//					vizButton.setText("Start Visualization");
+////					BTMan.bt_enabled();
+//					break;
+//				case BluetoothAdapter.STATE_OFF:
+//					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => off");
+//					changeRadioStatus("off");
+//					vizButton.setText("Enable Bluetooth");
+////					BTMan.bt_disabled();
+//					break;
+//				case BluetoothAdapter.STATE_TURNING_OFF:
+//				case BluetoothAdapter.STATE_TURNING_ON:
+//					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => changing");
+//					changeRadioStatus("changing");
+//					break;
+//				default:
+//					Log.e(TAG, "bluetooth broadcast receiver => undefined: " + code);
+//					break;
+//				}
+//			}
+//		};
 		connectButton();
 	}
 
@@ -111,24 +116,35 @@ public class MainActivity extends Activity {
 				}
 		);
 
+
+		linearControl = (LinearLayout) findViewById(R.id.linearControl);
+		linearAdvanced = (LinearLayout) findViewById(R.id.linearAdvanced);
+		linearStub = (LinearLayout) findViewById(R.id.linearStub);
+		acceptButton = (Button) findViewById(R.id.accept_button);
+
 		this.menuButton = (Button)this.findViewById(R.id.menuButton);
 		this.menuButton.setOnClickListener(
-				new OnClickListener() {
-					public void onClick(View v) {
-						Log.d(TAG, "there be dragons 're");
-//						LinearLayout ll = (LinearLayout)findViewById(R.menu.advanced_menu);
-//						v.inflate(getApplicationContext(), R.menu.advanced_menu, (ViewGroup) v);
-						
-//						LinearLayout mainLayout = (LinearLayout) findViewById(R.layout.activity_main);
-//						LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//						View menuLayout = inflater.inflate(R.menu.advanced_menu, mainLayout, true);
-						
-//						setContentView(R.layout.advanced_menu);
-						
-						LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
-						View view1= inflater.inflate(R.layout.advanced_menu, null);
-					}
+			new OnClickListener() {
+				public void onClick(View v) {
+					Log.d(TAG, "add right side advanced controls");
+
+					linearControl.setVisibility(LinearLayout.GONE);
+					linearAdvanced.setVisibility(LinearLayout.VISIBLE);
+
+					
+
+					acceptButton.setOnClickListener(
+						new OnClickListener() {
+							public void onClick(View v) {
+								Log.d(TAG, "advanced settings have been chosen");
+
+								linearControl.setVisibility(LinearLayout.VISIBLE);
+								linearAdvanced.setVisibility(LinearLayout.GONE);
+							}
+						}
+					);
 				}
+			}
 		);
 	}
 
@@ -156,7 +172,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume() { // Activity was partially visible
 		if(DEBUG) Log.d(TAG, "__onResume()__");
-		registerReceiver(broadcastReceiver, intentFilter);
+//		registerReceiver(broadcastReceiver, intentFilter);
 		super.onResume();
 		if(vizActive){
 			if(DEBUG) Log.d(TAG, "return to visualization");
@@ -173,7 +189,7 @@ public class MainActivity extends Activity {
 	@Override
 	public void onPause(){ // Activity was visible but now is now partially visible
 		if(DEBUG) Log.d(TAG, "__onPause()__");
-		unregisterReceiver(broadcastReceiver);
+//		unregisterReceiver(broadcastReceiver);
 		super.onPause();
 	}
 	// **** End Lifecycle ****    
