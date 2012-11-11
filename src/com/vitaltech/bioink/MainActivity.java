@@ -1,5 +1,7 @@
 package com.vitaltech.bioink;
 
+import com.vitaltech.bioink.RangeSeekBar.OnRangeSeekBarChangeListener;
+
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -11,7 +13,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,11 +26,24 @@ public class MainActivity extends Activity {
 	public static final Boolean DEBUG=true;
 
 	private Button vizButton;
+	private Button settingsButton;
 	private Discovery discovery;
 	private BroadcastReceiver broadcastReceiver;
 	private IntentFilter intentFilter;
 	private BluetoothAdapter btAdapter;
 	private Boolean vizActive;// = null;
+	
+	private boolean settingsVisible = false;
+	
+	// Settings
+	private float minHR = DataProcess.MIN_HR;
+	private float maxHR = DataProcess.MAX_HR;
+	private float minResp = DataProcess.MIN_RESP;
+	private float maxResp = DataProcess.MAX_RESP;
+	private BiometricType colorType = BiometricType.RESPIRATION;
+	private BiometricType energyType = BiometricType.HEARTRATE;
+	private LinearLayout settingsLayout;
+	private LinearLayout.LayoutParams settingsParams;
 
 	// **** Start Lifecycle ****
 	@Override
@@ -86,6 +105,7 @@ public class MainActivity extends Activity {
 			}
 		};
 		connectButton();
+		setupSettingsMenu();
 	}
 
 	private void connectButton(){
@@ -100,12 +120,201 @@ public class MainActivity extends Activity {
 						}else{
 							if (DEBUG) Log.d(TAG,"start viz");
 							Intent myIntent = new Intent(v.getContext(), RajActivity.class);
+							
+							// transfer settings to RajActivity
+							myIntent.putExtra("minHR", minHR);
+							myIntent.putExtra("maxHR", maxHR);
+							myIntent.putExtra("minResp", minResp);
+							myIntent.putExtra("maxResp", maxResp);
+							myIntent.putExtra("colorType", colorType);
+							myIntent.putExtra("energyType", energyType);
+							
 							startActivityForResult(myIntent, 0);
 							vizActive = true;
 						}
 					}
 				}
 				);
+		
+		this.settingsButton=(Button)this.findViewById(R.id.settingsButton);
+		this.settingsButton.setOnClickListener(
+				new OnClickListener() {
+					public void onClick(View v) {
+						if (DEBUG) Log.d(TAG,"start settings");
+						toggleMenu();
+						/*
+						Intent myIntent = new Intent(v.getContext(), SettingsMenu.class);
+						startActivityForResult(myIntent, 0);
+						*/
+					}
+				}
+				);
+		
+	}
+	
+	private void setupSettingsMenu(){	         
+	        // Grabbing the Application context
+	        final Context context = getApplication();
+	         
+	        // Creating a new LinearLayout
+	        settingsLayout = new LinearLayout(this);
+	         
+	        // Setting the orientation to vertical
+	        settingsLayout.setOrientation(LinearLayout.VERTICAL);
+	         
+	        // Defining the LinearLayout layout parameters to fill the parent.
+	        settingsParams = new LinearLayout.LayoutParams(
+	            LinearLayout.LayoutParams.FILL_PARENT,
+	            LinearLayout.LayoutParams.WRAP_CONTENT);
+	        settingsParams.weight = 1;
+	        
+	        LinearLayout HRLayout = new LinearLayout(this);
+	        HRLayout.setOrientation(LinearLayout.HORIZONTAL);
+	        LinearLayout RespLayout = new LinearLayout(this);
+	        RespLayout.setOrientation(LinearLayout.HORIZONTAL);
+	        LinearLayout ColorLayout = new LinearLayout(this);
+	        ColorLayout.setOrientation(LinearLayout.HORIZONTAL);
+	        LinearLayout EnergyLayout = new LinearLayout(this);
+	        EnergyLayout.setOrientation(LinearLayout.HORIZONTAL);
+	        
+	        TextView HRText = new TextView(this);
+	        final TextView minHRText = new TextView(this);
+	        final TextView maxHRText = new TextView(this);
+	        TextView RespText = new TextView(this);
+	        final TextView minRespText = new TextView(this);
+	        final TextView maxRespText = new TextView(this);
+	        TextView colorText = new TextView(this);
+	        TextView energyText = new TextView(this);
+	        	        
+	        HRText.setWidth(150);
+	        RespText.setWidth(150);
+	        colorText.setWidth(150);
+	        energyText.setWidth(150);
+	        
+	        minHRText.setWidth(50);
+	        maxHRText.setWidth(50);
+	        minRespText.setWidth(50);
+	        maxRespText.setWidth(50);
+	        
+	        minHRText.setText(String.format("%d", (int)minHR));
+	        maxHRText.setText(String.format("%d", (int)maxHR));
+	        minRespText.setText(String.format("%d", (int)minResp));
+	        maxRespText.setText(String.format("%d", (int)maxResp));
+	        
+	        HRText.setText("Heartrate:");
+	        RespText.setText("Respiration:");
+	        colorText.setText("Color:");
+	        energyText.setText("Energy:");
+	        
+	        // create RangeSeekBar as Float for Heartrate
+	        RangeSeekBar<Float> seekBarHR = new RangeSeekBar<Float>(DataProcess.MIN_HR, DataProcess.MAX_HR, context);
+	        seekBarHR.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Float>() {
+	                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
+	                        minHR = minValue;
+	                        maxHR = maxValue;
+	                        minHRText.setText(String.format("%d", (int)minHR));
+	            	        maxHRText.setText(String.format("%d", (int)maxHR));
+	                        if(DEBUG) Log.d("menu","minHR: "+minHR+", maxHR: "+maxHR);
+	                }
+	        });
+	        
+	        // create RangeSeekBar as Float for Respiration
+	        RangeSeekBar<Float> seekBarResp = new RangeSeekBar<Float>(DataProcess.MIN_RESP, DataProcess.MAX_RESP, context);
+	        seekBarResp.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Float>() {
+	                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
+	                        minResp = minValue;
+	                        maxResp = maxValue;
+	                        minRespText.setText(String.format("%d", (int)minResp));
+	            	        maxRespText.setText(String.format("%d", (int)maxResp));
+	                        if(DEBUG) Log.d("menu","minResp: "+minResp+", maxResp: "+maxResp);
+	                }
+	        });
+	        
+	        Button saveBtn = new Button(this);
+	        saveBtn.setText(R.string.save_button);
+	        saveBtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+	        saveBtn.setOnClickListener(new Button.OnClickListener() {
+	            public void onClick(View v) {
+	              try {
+	                toggleMenu();
+	              } catch (Exception e) {	  
+	              }
+	            }
+	          });
+	        
+	        final String[] biometricTypes = { "Heartrate", "Respiration" };
+	        ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,biometricTypes);
+	        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);	        
+	        
+	        Spinner colorSpinner = new Spinner(this);
+	        colorSpinner.setAdapter(aa);
+	        colorSpinner.setSelection(1); // start this one with Respiration selected instead of heartrate
+	        colorSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener(){
+	        	public void onItemSelected(AdapterView<?> parent, View v, int position,
+	        			long id) {
+	        		if(biometricTypes[position].equals("Heartrate")){
+	        			colorType = BiometricType.HEARTRATE;
+	        		}
+	        		if(biometricTypes[position].equals("Respiration")){
+	        			colorType = BiometricType.RESPIRATION;
+	        		}
+	        		if(DEBUG) Log.d("menu","colorType: "+colorType);
+	        	}
+
+	        	public void onNothingSelected(AdapterView<?> parent) {}
+	        });
+	        
+	        Spinner energySpinner = new Spinner(this);
+	        energySpinner.setAdapter(aa);
+	        energySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener(){
+	        	public void onItemSelected(AdapterView<?> parent, View v, int position,
+	        			long id) {
+	        		if(biometricTypes[position].equals("Heartrate")){
+	        			energyType = BiometricType.HEARTRATE;
+	        		}
+	        		if(biometricTypes[position].equals("Respiration")){
+	        			energyType = BiometricType.RESPIRATION;
+	        		}
+	        		if(DEBUG) Log.d("menu","energyType: "+energyType);
+	        	}
+
+	        	public void onNothingSelected(AdapterView<?> parent) {}
+	        });
+
+	        HRLayout.addView(HRText);
+	        HRLayout.addView(minHRText);
+	        HRLayout.addView(seekBarHR,settingsParams);
+	        HRLayout.addView(maxHRText);
+	        
+	        RespLayout.addView(RespText);
+	        RespLayout.addView(minRespText);
+	        RespLayout.addView(seekBarResp,settingsParams);
+	        RespLayout.addView(maxRespText);
+	        
+	        ColorLayout.addView(colorText);
+	        ColorLayout.addView(colorSpinner,settingsParams);
+	        
+	        EnergyLayout.addView(energyText);
+	        EnergyLayout.addView(energySpinner,settingsParams);
+	        
+	        settingsLayout.addView(HRLayout);
+	        settingsLayout.addView(RespLayout);
+	        settingsLayout.addView(ColorLayout);
+	        settingsLayout.addView(EnergyLayout);
+	        settingsLayout.addView(saveBtn,settingsParams);
+	}
+	
+	private void toggleMenu(){
+		if(settingsVisible){
+			if(DEBUG) Log.d("menu","switching to Main Menu");
+			setContentView(R.layout.activity_main);
+			connectButton();
+			settingsVisible = false;
+		} else {
+			if(DEBUG) Log.d("menu","switching to Settings Menu");
+			setContentView(settingsLayout,settingsParams);
+			settingsVisible = true;
+		}
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

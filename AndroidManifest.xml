@@ -29,7 +29,11 @@
         <activity 
             android:screenOrientation="landscape"
             android:name=".RajActivity" >
-            </activity>
+        </activity>
+        <activity 
+            android:screenOrientation="landscape"
+            android:name=".SettingsMenu" >
+        </activity>   
     </application>
 
 </manifest>
