@@ -8,22 +8,27 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
+@SuppressWarnings("unused")
 public class MainActivity extends Activity {
 	private static final String TAG=MainActivity.class.getSimpleName();
 	public static final Boolean DEBUG=true;
@@ -39,8 +44,6 @@ public class MainActivity extends Activity {
 	private LinearLayout linearAdvanced;
 	private LinearLayout linearStub;
 	private Button acceptButton;
-	
-	private boolean settingsVisible = false;
 	
 	// Settings
 	private float minHR = DataProcess.MIN_HR;
@@ -143,6 +146,24 @@ public class MainActivity extends Activity {
 			}
 		);
 
+	// swap static logo for animated gif
+//		ImageView img = (ImageView) findViewById(R.id.logoImageView);
+//		img.setVisibility(ImageView.GONE);
+
+//		VideoView gifView = (VideoView) findViewById( R.id.logoVideoView);
+//		gifView.setMediaController( new MediaController( getApplicationContext()));
+//		gifView.setVideoURI( Uri.parse( "android.resource://" + getPackageName() + "/" + R.raw.logo));
+//		gifView.requestFocus();
+//		gifView.start();
+//		gifView.setVisibility( VideoView.VISIBLE);
+
+//		WebView gifView = (WebView) findViewById(R.id.logoWebView);
+//		gifView.loadUrl("file:///android_res/raw/logo.gif");
+//		gifView.setInitialScale(100);
+//		gifView.setVisibility(WebView.VISIBLE);
+
+//		LinearLayout linearLogo = (LinearLayout) findViewById(R.id.logoSide);
+//		linearLogo.addView(gifView);
 
 		linearControl = (LinearLayout) findViewById(R.id.linearControl);
 		linearAdvanced = (LinearLayout) findViewById(R.id.linearAdvanced);
@@ -176,7 +197,7 @@ public class MainActivity extends Activity {
 			}
 		);
 	}
-	
+
 	private void setupSettingsMenu(LinearLayout ll_stub){
 	        // Grabbing the Application context
 	        final Context context = getApplication();
@@ -190,7 +211,8 @@ public class MainActivity extends Activity {
 	         
 	        // Defining the LinearLayout layout parameters to fill the parent.
 	        settingsParams = new LinearLayout.LayoutParams(
-	            LinearLayout.LayoutParams.FILL_PARENT,
+//	            LinearLayout.LayoutParams.FILL_PARENT,
+	            LinearLayout.LayoutParams.WRAP_CONTENT,
 	            LinearLayout.LayoutParams.WRAP_CONTENT);
 	        settingsParams.weight = 1;
 	        
@@ -269,7 +291,7 @@ public class MainActivity extends Activity {
 //	          });
 	        
 	        final String[] biometricTypes = { "Heartrate", "Respiration" };
-	        ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,biometricTypes);
+	        ArrayAdapter<String> aa = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, biometricTypes);
 	        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);	        
 	        
 	        Spinner colorSpinner = new Spinner(this);

@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import android.util.Log;
 
+@SuppressWarnings("unused")
 public class DataProcess {
 	//List of current users
 	public ConcurrentHashMap<String,User> users;

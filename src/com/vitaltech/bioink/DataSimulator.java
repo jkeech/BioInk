@@ -2,6 +2,7 @@ package com.vitaltech.bioink;
 
 import java.util.Random;
 
+@SuppressWarnings("static-access")
 public class DataSimulator {
 	private DataProcess dp;
 	

@@ -15,4 +15,8 @@
     
     <string name="save_button">OK</string>
     
+    <string name="accept">Accept</string>
+    
+    <string name="advanced_settings">Advanced Settings</string>
+    
 </resources>

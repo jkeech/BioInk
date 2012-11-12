@@ -2,6 +2,7 @@ package com.vitaltech.bioink;
 
 import android.util.Log;
 
+@SuppressWarnings( {"static-access", "unused"} )
 public class DataSimulatorPlus {
 	private static final String TAG = DataSimulatorPlus.class.getSimpleName();
 	private static final Boolean DEBUG = MainActivity.DEBUG;
