@@ -206,6 +206,10 @@ public class MainActivity extends Activity {
 	        RangeSeekBar<Float> seekBarHR = new RangeSeekBar<Float>(DataProcess.MIN_HR, DataProcess.MAX_HR, context);
 	        seekBarHR.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Float>() {
 	                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
+	                		if(minValue == maxValue){
+	                			minValue -= 0.00001f;
+	                			maxValue += 0.00001f;
+	                		}
 	                        minHR = minValue;
 	                        maxHR = maxValue;
 	                        minHRText.setText(String.format("%d", (int)minHR));
@@ -218,6 +222,10 @@ public class MainActivity extends Activity {
 	        RangeSeekBar<Float> seekBarResp = new RangeSeekBar<Float>(DataProcess.MIN_RESP, DataProcess.MAX_RESP, context);
 	        seekBarResp.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Float>() {
 	                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
+		                	if(minValue == maxValue){
+	                			minValue -= 0.00001f;
+	                			maxValue += 0.00001f;
+	                		}
 	                        minResp = minValue;
 	                        maxResp = maxValue;
 	                        minRespText.setText(String.format("%d", (int)minResp));
