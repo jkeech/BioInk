@@ -205,33 +205,37 @@ public class MainActivity extends Activity {
 	        // create RangeSeekBar as Float for Heartrate
 	        RangeSeekBar<Float> seekBarHR = new RangeSeekBar<Float>(DataProcess.MIN_HR, DataProcess.MAX_HR, context);
 	        seekBarHR.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Float>() {
-	                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
-	                		if(minValue == maxValue){
-	                			minValue -= 0.00001f;
-	                			maxValue += 0.00001f;
-	                		}
-	                        minHR = minValue;
-	                        maxHR = maxValue;
-	                        minHRText.setText(String.format("%d", (int)minHR));
-	            	        maxHRText.setText(String.format("%d", (int)maxHR));
-	                        if(DEBUG) Log.d("menu","minHR: "+minHR+", maxHR: "+maxHR);
-	                }
+                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
+            		if(minValue.equals(maxValue)){
+            			minValue -= 0.00001f;
+            			maxValue += 0.00001f;
+            		}
+            		
+                    minHR = minValue;
+                    maxHR = maxValue;
+                    
+                    minHRText.setText(String.format("%d", (int)minHR));
+        	        maxHRText.setText(String.format("%d", (int)maxHR));
+                    if(DEBUG) Log.d("menu","minHR: "+minHR+", maxHR: "+maxHR);
+                }
 	        });
 	        
 	        // create RangeSeekBar as Float for Respiration
 	        RangeSeekBar<Float> seekBarResp = new RangeSeekBar<Float>(DataProcess.MIN_RESP, DataProcess.MAX_RESP, context);
 	        seekBarResp.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Float>() {
-	                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
-		                	if(minValue == maxValue){
-	                			minValue -= 0.00001f;
-	                			maxValue += 0.00001f;
-	                		}
-	                        minResp = minValue;
-	                        maxResp = maxValue;
-	                        minRespText.setText(String.format("%d", (int)minResp));
-	            	        maxRespText.setText(String.format("%d", (int)maxResp));
-	                        if(DEBUG) Log.d("menu","minResp: "+minResp+", maxResp: "+maxResp);
-	                }
+                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
+                	if(minValue.equals(maxValue)){
+            			minValue -= 0.00001f;
+            			maxValue += 0.00001f;
+            		}
+                	
+                    minResp = minValue;
+                    maxResp = maxValue;
+                    
+                    minRespText.setText(String.format("%d", (int)minResp));
+        	        maxRespText.setText(String.format("%d", (int)maxResp));
+                    if(DEBUG) Log.d("menu","minResp: "+minResp+", maxResp: "+maxResp);
+                }
 	        });
 	        
 	        Button saveBtn = new Button(this);
