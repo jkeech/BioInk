@@ -1,8 +1,0 @@
-
-version 0.03
-
-dual activity user interface branch
-
-post 0.04
-
-merged viz zoom
