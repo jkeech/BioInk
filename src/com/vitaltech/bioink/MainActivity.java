@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
 	private BroadcastReceiver broadcastReceiver;
 	private IntentFilter intentFilter;
 	private BluetoothAdapter btAdapter;
-	private Boolean vizActive;// = null;
+//	private Boolean vizActive;// = null;
 	private LinearLayout linearControl;
 	private LinearLayout linearAdvanced;
 	private LinearLayout linearStub;
@@ -64,9 +64,9 @@ public class MainActivity extends Activity {
 		
 		if(DEBUG) Log.d(TAG, "__onCreate()__");
 
-		if(vizActive == null){
-			vizActive = false;
-		}
+//		if(vizActive == null){
+//			vizActive = false;
+//		}
 
 		btAdapter=BluetoothAdapter.getDefaultAdapter();
 		if(btAdapter==null){
@@ -140,7 +140,7 @@ public class MainActivity extends Activity {
 						myIntent.putExtra("energyType", energyType);
 						
 						startActivityForResult(myIntent, 0);
-						vizActive = true;
+//						vizActive = true;
 					}
 				}
 			}
@@ -257,25 +257,37 @@ public class MainActivity extends Activity {
 	        // create RangeSeekBar as Float for Heartrate
 	        RangeSeekBar<Float> seekBarHR = new RangeSeekBar<Float>(DataProcess.MIN_HR, DataProcess.MAX_HR, context);
 	        seekBarHR.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Float>() {
-	                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
-	                        minHR = minValue;
-	                        maxHR = maxValue;
-	                        minHRText.setText(String.format("%d", (int)minHR));
-	            	        maxHRText.setText(String.format("%d", (int)maxHR));
-	                        if(DEBUG) Log.d("menu","minHR: "+minHR+", maxHR: "+maxHR);
-	                }
+                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
+            		if(minValue.equals(maxValue)){
+            			minValue -= 0.00001f;
+            			maxValue += 0.00001f;
+            		}
+            		
+                    minHR = minValue;
+                    maxHR = maxValue;
+                    
+                    minHRText.setText(String.format("%d", (int)minHR));
+        	        maxHRText.setText(String.format("%d", (int)maxHR));
+                    if(DEBUG) Log.d("menu","minHR: "+minHR+", maxHR: "+maxHR);
+                }
 	        });
 	        
 	        // create RangeSeekBar as Float for Respiration
 	        RangeSeekBar<Float> seekBarResp = new RangeSeekBar<Float>(DataProcess.MIN_RESP, DataProcess.MAX_RESP, context);
 	        seekBarResp.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Float>() {
-	                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
-	                        minResp = minValue;
-	                        maxResp = maxValue;
-	                        minRespText.setText(String.format("%d", (int)minResp));
-	            	        maxRespText.setText(String.format("%d", (int)maxResp));
-	                        if(DEBUG) Log.d("menu","minResp: "+minResp+", maxResp: "+maxResp);
-	                }
+                public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
+                	if(minValue.equals(maxValue)){
+            			minValue -= 0.00001f;
+            			maxValue += 0.00001f;
+            		}
+                	
+                    minResp = minValue;
+                    maxResp = maxValue;
+                    
+                    minRespText.setText(String.format("%d", (int)minResp));
+        	        maxRespText.setText(String.format("%d", (int)maxResp));
+                    if(DEBUG) Log.d("menu","minResp: "+minResp+", maxResp: "+maxResp);
+                }
 	        });
 	        
 //	        Button saveBtn = new Button(this);
@@ -368,16 +380,16 @@ public class MainActivity extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if(DEBUG) Log.d(TAG, "back keycode received");
-			if(vizActive){
-				if(DEBUG) Log.d(TAG, "turning off visualization");
-				setContentView(R.layout.activity_main);
-				vizActive = false;
-				connectButton();
-				return true;
-			}else{
+//			if(vizActive){
+//				if(DEBUG) Log.d(TAG, "turning off visualization");
+//				setContentView(R.layout.activity_main);
+//				vizActive = false;
+//				connectButton();
+//				return true;
+//			}else{
 				if(DEBUG) Log.d(TAG, "ending app");
 				finish();
-			}
+//			}
 		}else if (keyCode == KeyEvent.KEYCODE_MENU){
 			if(DEBUG) Log.d(TAG, "onCreateOptionsMenu()");
 			// FIXME              getMenuInflater().inflate(R.menu.activity_main, (android.view.Menu) menu);
@@ -391,14 +403,14 @@ public class MainActivity extends Activity {
 		if(DEBUG) Log.d(TAG, "__onResume()__");
 		registerReceiver(broadcastReceiver, intentFilter);
 		super.onResume();
-		if(vizActive){
-			if(DEBUG) Log.d(TAG, "return to visualization");
-			// FIXME            setContentView(mLayout);
-		}else{
+//		if(vizActive){
+//			if(DEBUG) Log.d(TAG, "return to visualization");
+//			// FIXME            setContentView(mLayout);
+//		}else{
 			if(DEBUG) Log.d(TAG, "return to menu");
 			setContentView(R.layout.activity_main);
 			connectButton();
-		}
+//		}
 	}
 
 	// **** Activity is running at this point ****
@@ -412,27 +424,27 @@ public class MainActivity extends Activity {
 	// **** End Lifecycle ****    
 
 	private void changeRadioStatus(String stat){
-		if(vizActive){
-			Log.e(TAG, "Cannot update radio status while in visualization");
-		}else{
+//		if(vizActive){
+//			Log.e(TAG, "Cannot update radio status while in visualization");
+//		}else{
 			((TextView)this.findViewById(R.id.radioTextView)).setText("Radio is "+stat);
-		}
+//		}
 	}
 
 	private void changePairedStatus(Integer paired){
-		if(vizActive){
-			Log.e(TAG, "Cannot update paired status while in visualization");
-		}else{
+//		if(vizActive){
+//			Log.e(TAG, "Cannot update paired status while in visualization");
+//		}else{
 			((TextView)this.findViewById(R.id.pairedTextView)).setText("Devices paired: "+paired.toString());
-		}
+//		}
 	}
 
 	private void changeAudibleStatus(Integer audible){
-		if(vizActive){
-			Log.e(TAG, "Cannot update audible status while in visualization");
-		}else{
+//		if(vizActive){
+//			Log.e(TAG, "Cannot update audible status while in visualization");
+//		}else{
 			((TextView)this.findViewById(R.id.audibleTextView)).setText("Devices audible: "+audible.toString());
-		}
+//		}
 	}
 }
 
