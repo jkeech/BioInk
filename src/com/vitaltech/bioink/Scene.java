@@ -31,6 +31,7 @@ public class Scene extends RajawaliRenderer {
 	
 	private Number3D cameraLookAt = new Number3D(0,0,0);
 	private float cameraZPos = -2.5f;
+	private float cameraYPos = 0;
 	
 	private boolean DEBUG = MainActivity.DEBUG;
 	
@@ -129,19 +130,19 @@ public class Scene extends RajawaliRenderer {
 			sphere.transform(blob.getModelMatrix());
 			maxDist = Math.max(maxDist, sphere.getPosition().distanceTo(avg) + blob.getRadius());
 		}
-		float distFromCamera = 2.5f*maxDist;
 		
-		// use the Pythagorean Theorem plus the z value of the centroid to calculate
-		// the position of the camera along the z-axis so that the distance from
-		// the camera to the centroid is correct
-		float distXY = FloatMath.sqrt(avg.x*avg.x + avg.y*avg.y);
-		float z = avg.z - FloatMath.sqrt(distFromCamera*distFromCamera - distXY*distXY);
+		// use the Pythagorean Theorem plus the y- and z-values of the centroid to calculate
+		// the position of the camera along the y- and z-axis so that the distance from
+		// the camera to the centroid is correct		
+		float distFromCamera = Math.max(2.5f*maxDist,avg.x);
+		float z = avg.z - FloatMath.sqrt(distFromCamera*distFromCamera - avg.x*avg.x);
+		float y = avg.y;
 		
 		// finally, set the position of the camera and the location for the camera to look at
-		animateCamera(avg,z);
+		animateCamera(avg,y,z);
 	}
 	
-	private void animateCamera(Number3D lookAt, float zPos){
+	private void animateCamera(Number3D lookAt,float yPos, float zPos){
 		// animate from the current position towards the target position
 		// by linearly interpolating the position to look at as well as
 		// the Z position of the camera
@@ -149,19 +150,14 @@ public class Scene extends RajawaliRenderer {
 		final float DECAY = 10.0f;
 		cameraLookAt.add(lookAt.add(cameraLookAt.clone().multiply(-1.0f)).multiply(1.0f/DECAY));
 		cameraZPos += (zPos-cameraZPos)/DECAY;
-		
-		// prevent a weird bug where cameraZPos ended up being NaN after a few minutes
-		if(Float.isNaN(cameraZPos)) {
-			if(DEBUG)
-				Log.e("viz","cameraZPos is NaN! Resetting to 0");
-			cameraZPos = 0;
-		}
+		cameraYPos += (yPos-cameraYPos)/DECAY;
 		
 		mCamera.setLookAt(cameraLookAt);
 		mCamera.setZ(cameraZPos);
+		mCamera.setY(cameraYPos);
 		
 		if(DEBUG)
-			Log.d("viz","Looking at: "+cameraLookAt.x + " " + cameraLookAt.y + " " + cameraLookAt.z + "; Z position: " + cameraZPos);
+			Log.d("viz","Looking at: "+cameraLookAt.x + " " + cameraLookAt.y + " " + cameraLookAt.z + "; Z position: " + cameraZPos + " Y position: " + cameraYPos);
 	}
 	
 	/*

@@ -37,6 +37,7 @@ public class Bioharness {
 		if(DEBUG) Log.d(TAG, "disconnect called");
 		//Called to close "the _comms thread and the communication link with the remote"
 		bt.removeConnectedEventListener(NConnListener);
-		bt.Close();
+		if(bt.IsConnected())
+			bt.Close();
 	}
 }
