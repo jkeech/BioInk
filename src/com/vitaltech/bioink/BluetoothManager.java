@@ -106,8 +106,7 @@ public class BluetoothManager {
 				break;
 
 			case RESPIRATION_RATE:
-				float RespirationRate = msg.getData().getFloat(
-						"RespirationRate");
+				float RespirationRate = msg.getData().getFloat("RespirationRate");
 				dataProcessing.push(UID, BiometricType.RESPIRATION,
 						RespirationRate);
 				break;

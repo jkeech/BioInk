@@ -23,15 +23,20 @@ public class Bioharness {
 		msgHandler = _msgHandler;
 		
 		if(DEBUG) Log.d(TAG, "Creating needed Zephyr objects");
+		if(DEBUG) Log.d(TAG, BtDevice.getAddress() + " " + BtDevice.getName());
 		bt = new BTClient(_adapter, BtDevice.getAddress());
+		if(DEBUG) Log.d(TAG,"Connected? " + bt.IsConnected());
 		NConnListener = new NewConnectedListener(msgHandler,msgHandler);
 		bt.addConnectedEventListener(NConnListener);
+		if(DEBUG) Log.d(TAG,"Connected? " + bt.IsConnected());
 		if(DEBUG) Log.d(TAG, "Exiting Bioharness constructor");
+		bt.start();
 	}
 	
 	public void disconnect(){
 		if(DEBUG) Log.d(TAG, "disconnect called");
 		//Called to close "the _comms thread and the communication link with the remote"
+		bt.removeConnectedEventListener(NConnListener);
 		bt.Close();
 	}
 }
