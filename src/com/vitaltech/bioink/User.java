@@ -14,6 +14,7 @@ public class User {
 	public float heartrate = 0;
 	public float respiration = 0;
 	public float hrv = 100;
+	boolean sign = false;
 	public boolean hrv_active = false;
 	public boolean merged = false;
 	public List<Float> rrq;

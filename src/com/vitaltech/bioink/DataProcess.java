@@ -148,6 +148,7 @@ public class DataProcess {
 			users.get(uid).hrv_active = true;
 			break;
 		case RR:
+			if(DEBUG) Log.d("dp", "RR: " + value);
 			users.get(uid).addRR(value);
 			break;
 		default:
@@ -610,6 +611,8 @@ public class DataProcess {
 				mapColor(user.id);
 				mapEnergy(user.id);
 				user.calculateHRV();
+				
+				if(DEBUG) Log.d("dp", "HRV: " + user.hrv);
 				
 				if(!user.merged){
 					mapPosition(user.id);
