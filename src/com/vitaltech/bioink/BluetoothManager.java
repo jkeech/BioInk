@@ -32,6 +32,8 @@ public class BluetoothManager {
 			DataProcess _dataProcessing) {
 		if (DEBUG)
 			Log.d(TAG, "Entering BluetoothManager Constructor");
+		
+		System.out.println("Test");
 
 		// Set our BTManager Globals
 		adapter = _adapter;
@@ -44,7 +46,8 @@ public class BluetoothManager {
 
 		// Create our list of Bioharnesses
 		buildBHList();
-
+		if (DEBUG)
+			Log.d(TAG, "Exiting BluetoothManager Constructor");
 	}
 
 	//Called by UI incase of bluetooth being turned on
@@ -91,10 +94,14 @@ public class BluetoothManager {
 
 	private final Handler msgHandler = new Handler() {
 		public void handleMessage(Message msg) {
+			if(DEBUG)
+				Log.d(TAG, "Entering message handler");
 			String UID = msg.getData().getString("UID");
 			switch (msg.what) {
 			case HEART_RATE:
 				float HeartRate = msg.getData().getFloat("HeartRate");
+				if(DEBUG)
+					Log.d(TAG, "Pushing a heartrate packet of value " + HeartRate);
 				dataProcessing.push(UID, BiometricType.HEARTRATE, HeartRate);
 				break;
 

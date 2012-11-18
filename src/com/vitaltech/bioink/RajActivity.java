@@ -1,5 +1,6 @@
 package com.vitaltech.bioink;
 
+import android.bluetooth.BluetoothAdapter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -62,7 +63,7 @@ public class RajActivity extends RajawaliActivity {
 			// BTMan.close()
 			BTMan = null; // should not be necessary
 		}
-//		BTMan = new BluetoothManager(btAdapter, dp); // FIXME
+		BTMan = new BluetoothManager(BluetoothAdapter.getDefaultAdapter(), dp); // FIXME
 		// END BLUETOOTH
 
 		// DISPLAY FPS
@@ -84,13 +85,13 @@ public class RajActivity extends RajawaliActivity {
 			dataSim.interrupt();
 			dataSim = null;
 		}
-		dataSim = new Thread(new Runnable() {
-			public void run() {
-				new DataSimulatorPlusPlus(dp, 5).run();
-				//new DataSimulatorPlus(dp).run();
-			}
-		});// debug data
-		dataSim.start();
+//		dataSim = new Thread(new Runnable() {
+//			public void run() {
+//				new DataSimulatorPlusPlus(dp, 5).run();
+//				//new DataSimulatorPlus(dp).run();
+//			}
+//		});// debug data
+//		dataSim.start();
 
 		setContentView(mLayout);
     }
