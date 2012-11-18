@@ -97,6 +97,8 @@ public class BluetoothManager {
 			if(DEBUG)
 				Log.d(TAG, "Entering message handler");
 			String UID = msg.getData().getString("UID");
+			if(UID == null)
+				return;
 			switch (msg.what) {
 			case HEART_RATE:
 				float HeartRate = msg.getData().getFloat("HeartRate");
