@@ -4,12 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MergedUser {
-	//average biological data from the merged users
-	//public String id;
-	public float heartrate = 0;
-	public float respiration = 0;
-	public float hrv = 0;
+@SuppressWarnings("unused")
+public class MergedUser extends User {
 	
 	public List<String> members;
 	

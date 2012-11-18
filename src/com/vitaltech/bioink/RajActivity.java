@@ -33,6 +33,8 @@ public class RajActivity extends RajawaliActivity {
 		scene.setSurfaceView(mSurfaceView);
 		super.setRenderer(scene);
 		// END VIZ SCENE
+		
+		Bundle settings = this.getIntent().getExtras();
 
 		// DATA PROCESSING 
 		if(dp != null){
@@ -41,8 +43,20 @@ public class RajActivity extends RajawaliActivity {
 		}
 		dp = new DataProcess(100);
 		dp.addScene(scene);
+		dp.setMinHR(settings.getFloat("minHR"));
+		dp.setMaxHR(settings.getFloat("maxHR"));
+		dp.setMinResp(settings.getFloat("minResp"));
+		dp.setMaxResp(settings.getFloat("maxResp"));
+		dp.setColor((BiometricType)settings.getSerializable("colorType"));
+		dp.setEnergy((BiometricType)settings.getSerializable("energyType"));
 		// END DATA PROCESSING
 
+		if(DEBUG){
+			Log.d(TAG, "minHR = " + settings.getFloat("minHR") + ", maxHR = " + settings.getFloat("maxHR"));
+			Log.d(TAG, "minResp = " + settings.getFloat("minResp") + ", maxResp = " + settings.getFloat("maxResp"));
+			Log.d(TAG, "color = " + settings.getSerializable("colorType").toString());
+			Log.d(TAG, "energy = " + settings.getSerializable("energyType").toString());
+		}
 		// BLUETOOTH
 		if(BTMan != null){
 			// BTMan.close()
@@ -73,7 +87,7 @@ public class RajActivity extends RajawaliActivity {
 		dataSim = new Thread(new Runnable() {
 			public void run() {
 				new DataSimulatorPlusPlus(dp, 5).run();
-				//new DataSimulatorDP(dp).run();
+				//new DataSimulatorPlus(dp).run();
 			}
 		});// debug data
 		dataSim.start();

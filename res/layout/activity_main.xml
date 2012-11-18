@@ -4,25 +4,44 @@
     android:layout_height="fill_parent"
     android:orientation="horizontal"
     android:baselineAligned="false"
+    android:background="@android:color/white"
     android:weightSum="2" >
 
     <LinearLayout
+        android:id="@+id/logoSide"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
         android:contentDescription="@string/bio_ink_logo" >
-        
-	    <ImageView
-	        android:id="@+id/logoImageView"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center"
-            android:contentDescription="@string/bio_ink_logo"
-	        android:src="@drawable/logo_transparent" />
 
-	</LinearLayout>
+        <ImageView
+            android:id="@+id/logoImageView"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:contentDescription="@string/bio_ink_logo"
+            android:src="@drawable/logo_transparent" />
+
+        <VideoView
+            android:visibility="gone"
+            android:id="@+id/logoVideoView"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:contentDescription="@string/bio_ink_logo" />
+
+        <WebView
+            android:visibility="gone"
+            android:id="@+id/logoWebView"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:contentDescription="@string/bio_ink_logo" />
+
+    </LinearLayout>
     
     <LinearLayout
+        android:id="@+id/linearControl"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
@@ -70,7 +89,36 @@
             android:layout_marginTop="30dp"
             android:layout_weight="1"
             android:text="@string/menu_button" />
-
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/linearAdvanced"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_margin="30dp"
+        android:weightSum="15" >
+
+        <TextView
+            android:id="@+id/advanced"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/advanced_settings" />
+
+        <LinearLayout
+	        android:id="@+id/linearStub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:orientation="vertical" />
+
+        <Button
+            android:id="@+id/accept_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/accept" />
+    </LinearLayout>
 </LinearLayout>

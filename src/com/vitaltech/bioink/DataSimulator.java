@@ -2,6 +2,7 @@ package com.vitaltech.bioink;
 
 import java.util.Random;
 
+@SuppressWarnings("static-access")
 public class DataSimulator {
 	private DataProcess dp;
 	
@@ -14,8 +15,8 @@ public class DataSimulator {
     		Random r = new Random();
     		
     		/*
-    		dp.push("user1", BiometricType.HEARTRATE, dp.maxHR/2);
-    		dp.push("user1", BiometricType.RESPIRATION, dp.maxResp/2);
+    		dp.push("user1", BiometricType.HEARTRATE, dp.MAX_HR/2);
+    		dp.push("user1", BiometricType.RESPIRATION, dp.MAX_RESP/2);
     		Thread.sleep(1);
     		*/
     		
@@ -23,8 +24,8 @@ public class DataSimulator {
     		
     		int cur = 0;
     		while(true){
-    			float hr = r.nextFloat() * dp.maxHR;
-    			float rr = r.nextFloat() * dp.maxResp;
+    			float hr = r.nextFloat() * dp.MAX_HR;
+    			float rr = r.nextFloat() * dp.MAX_RESP;
     			
     			dp.push("user"+cur, BiometricType.HEARTRATE, hr);
         		dp.push("user"+cur, BiometricType.RESPIRATION, rr);
