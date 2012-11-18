@@ -129,12 +129,12 @@ public class Scene extends RajawaliRenderer {
 			sphere.transform(blob.getModelMatrix());
 			maxDist = Math.max(maxDist, sphere.getPosition().distanceTo(avg) + blob.getRadius());
 		}
-		float distFromCamera = 2.5f*maxDist;
 		
 		// use the Pythagorean Theorem plus the z value of the centroid to calculate
 		// the position of the camera along the z-axis so that the distance from
 		// the camera to the centroid is correct
 		float distXY = FloatMath.sqrt(avg.x*avg.x + avg.y*avg.y);
+		float distFromCamera = Math.max(2.5f*maxDist,distXY);
 		float z = avg.z - FloatMath.sqrt(distFromCamera*distFromCamera - distXY*distXY);
 		
 		// finally, set the position of the camera and the location for the camera to look at

@@ -78,15 +78,15 @@ public class NewConnectedListener extends ConnectListenerImpl
 					//***************Displaying the Heart Rate********************************
 					int HRate =  GPInfo.GetHeartRate(DataArray);
 					Message text1 = _aNewHandler.obtainMessage(HEART_RATE);
-					b1.putString("HeartRate", String.valueOf(HRate));					
+					b1.putFloat("HeartRate", Float.valueOf(HRate));					
 					text1.setData(b1);
 					_aNewHandler.sendMessage(text1);
 					System.out.println("Heart Rate is "+ HRate);
 
 					//***************Displaying the Respiration Rate********************************
-					double RespRate = GPInfo.GetRespirationRate(DataArray);
+					float RespRate = (float)GPInfo.GetRespirationRate(DataArray);
 					text1 = _aNewHandler.obtainMessage(RESPIRATION_RATE);
-					b1.putString("RespirationRate", String.valueOf(RespRate));
+					b1.putFloat("RespirationRate", Float.valueOf(RespRate));
 					text1.setData(b1);
 					_aNewHandler.sendMessage(text1);
 					System.out.println("Respiration Rate is "+ RespRate);
@@ -95,15 +95,15 @@ public class NewConnectedListener extends ConnectListenerImpl
 
 					int PostureInt = GPInfo.GetPosture(DataArray);
 					text1 = _aNewHandler.obtainMessage(POSTURE);
-					b1.putString("Posture", String.valueOf(PostureInt));
+					b1.putFloat("Posture", Float.valueOf(PostureInt));
 					text1.setData(b1);
 					_aNewHandler.sendMessage(text1);
 					System.out.println("Posture is "+ PostureInt);	
 					//***************Displaying the Peak Acceleration******************************************
 
-					double PeakAccDbl = GPInfo.GetPeakAcceleration(DataArray);
+					float PeakAccDbl = (float)GPInfo.GetPeakAcceleration(DataArray);
 					text1 = _aNewHandler.obtainMessage(PEAK_ACCLERATION);
-					b1.putString("PeakAcceleration", String.valueOf(PeakAccDbl));
+					b1.putFloat("PeakAcceleration", Float.valueOf(PeakAccDbl));
 					text1.setData(b1);
 					_aNewHandler.sendMessage(text1);
 					System.out.println("Peak Acceleration is "+ PeakAccDbl);	
