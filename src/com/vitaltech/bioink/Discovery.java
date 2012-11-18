@@ -10,6 +10,8 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Discovery {
@@ -24,12 +26,13 @@ public class Discovery {
 	public Discovery(Context _context, BluetoothAdapter _btAdapter) {
 		if (DEBUG) Log.d(TAG, "Bluetooth discovery");
 		context = _context;
+		btAdapter = _btAdapter;
 		// findDevices(btAdapter);
 	}
 
 	public void findDevices(BluetoothAdapter _btAdapter) {
 		if (DEBUG) Log.d(TAG, "find devices");
-		btAdapter = BluetoothAdapter.getDefaultAdapter();
+//		btAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (btAdapter == null) {
 			Toast.makeText(context.getApplicationContext(),
 					"Bluetooth not available on this device", Toast.LENGTH_LONG)
@@ -39,11 +42,15 @@ public class Discovery {
 		}
 
 		// If BT is not on, request that it be enabled.
-		if (!btAdapter.isEnabled()) {
+		if (! btAdapter.isEnabled()) {
 			Intent enableIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			if (DEBUG) Log.d(TAG, "start bluetooth intent");
 			((Activity) context).startActivityForResult(enableIntent, 1);
+		}
+		if (! btAdapter.isEnabled()) {
+			if (DEBUG) Log.d(TAG, "bluetooth intent did not turn on bluetooth");
+			return;
 		}
 
 		if (DEBUG) Log.d(TAG, "bluetooth adapter: " + btAdapter.getName() + ", state: "
@@ -85,6 +92,27 @@ public class Discovery {
 		}
 		
 		return decoded;
+	}
+
+	public void showDevices(){
+		Activity activity = (Activity) context;
+		if(btAdapter == null){
+			Log.e(TAG, "No Bluetooth");
+			((TextView)activity.findViewById(R.id.radioTextView)).setText("Radio does not exist");
+			((TextView)activity.findViewById(R.id.pairedTextView)).setVisibility(View.INVISIBLE);
+			((TextView)activity.findViewById(R.id.audibleTextView)).setVisibility(View.INVISIBLE);
+		}else if(btAdapter.isEnabled()){
+			((TextView)activity.findViewById(R.id.radioTextView)).setText("Radio is on");
+			((TextView)activity.findViewById(R.id.pairedTextView)).setVisibility(View.VISIBLE);
+			((TextView)activity.findViewById(R.id.pairedTextView)).setText("add paired here");
+			((TextView)activity.findViewById(R.id.audibleTextView)).setVisibility(View.VISIBLE);
+			((TextView)activity.findViewById(R.id.audibleTextView)).setText("add audible here");
+		}else{
+			Log.d(TAG, "Bluetooth disabled");
+			((TextView)activity.findViewById(R.id.radioTextView)).setText("Radio is off");
+			((TextView)activity.findViewById(R.id.pairedTextView)).setVisibility(View.INVISIBLE);
+			((TextView)activity.findViewById(R.id.audibleTextView)).setVisibility(View.INVISIBLE);
+		}
 	}
 
 }

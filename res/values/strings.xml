@@ -10,7 +10,7 @@
     <string name="radio_status">radio status null</string>
     <string name="devices_paired">devices paired null</string>
     <string name="devices_audible">devices audible null</string>
-    <string name="viz_button">Start visualization</string>
+    <string name="viz_button">Null strings.xml</string>
     <string name="menu_button">Advanced</string>
     
     <string name="save_button">OK</string>

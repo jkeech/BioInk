@@ -70,12 +70,6 @@ public class MainActivity extends Activity {
 		}
 
 		discovery=new Discovery(this, btAdapter);
-		new Thread(new Runnable() { 
-			public void run(){
-				if(DEBUG) Log.d(TAG,"start finding devices");
-				discovery.findDevices(btAdapter);
-			}
-		}).start();
 
 		// Catch Bluetooth radio events
 		intentFilter=new IntentFilter();
@@ -88,33 +82,70 @@ public class MainActivity extends Activity {
 				switch(code){
 				case BluetoothAdapter.STATE_ON:
 					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => on");
-					changeRadioStatus("on");
+//					changeRadioStatus("on");
 					vizButton.setText("Start Visualization");
 //					BTMan.bt_enabled();
+					new Thread(new Runnable() { 
+						public void run(){
+							if(DEBUG) Log.v(TAG,"start finding devices");
+							discovery.findDevices(btAdapter);
+						}
+					}).start();
 					break;
 				case BluetoothAdapter.STATE_OFF:
 					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => off");
-					changeRadioStatus("off");
+//					changeRadioStatus("off");
 					vizButton.setText("Enable Bluetooth");
 //					BTMan.bt_disabled();
 					break;
 				case BluetoothAdapter.STATE_TURNING_OFF:
 				case BluetoothAdapter.STATE_TURNING_ON:
 					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => changing");
-					changeRadioStatus("changing");
+//					changeRadioStatus("changing");
 					break;
 				default:
 					Log.e(TAG, "bluetooth broadcast receiver => undefined: " + code);
 					break;
 				}
+				discovery.showDevices();
 			}
 		};
+		registerReceiver(broadcastReceiver, intentFilter);
 		connectButton();
 	}
 
+	@Override
+	protected void onResume() { // Activity was partially visible
+		if(DEBUG) Log.d(TAG, "__onResume()__");
+		registerReceiver(broadcastReceiver, intentFilter);
+		super.onResume();
+		if(DEBUG) Log.d(TAG, "return to menu");
+		setContentView(R.layout.activity_main);
+		linearStub = null;
+		connectButton();
+	}
+
+	// **** Activity is running at this point ****
+
+	@Override
+	public void onPause(){ // Activity was visible but now is now partially visible
+		if(DEBUG) Log.d(TAG, "__onPause()__");
+		unregisterReceiver(broadcastReceiver);
+		super.onPause();
+	}
+	// **** End Lifecycle ****    
+
+
 	private void connectButton(){
 		// Configure single Button system
-		this.vizButton=(Button)this.findViewById(R.id.vizButton);
+		vizButton = (Button) this.findViewById(R.id.vizButton);
+		if(btAdapter.isEnabled()){
+			Log.v(TAG, "radio is on");
+			vizButton.setText("Start Visualization");
+		}else{
+			Log.v(TAG, "radio is off");
+			vizButton.setText("Enable Bluetooth");
+		}
 		this.vizButton.setOnClickListener(
 			new OnClickListener() {
 				public void onClick(View v) {
@@ -167,26 +198,31 @@ public class MainActivity extends Activity {
 			new OnClickListener() {
 				public void onClick(View v) {
 					Log.d(TAG, "add right side advanced controls");
+					showAdvanced();
+				}
+			}
+		);
+		
+		discovery.showDevices();
+	}
+	
+	private void showAdvanced(){
+		linearControl.setVisibility(LinearLayout.GONE);
+		linearAdvanced.setVisibility(LinearLayout.VISIBLE);
 
-					linearControl.setVisibility(LinearLayout.GONE);
-					linearAdvanced.setVisibility(LinearLayout.VISIBLE);
+		if(linearStub == null){
+			Log.e(TAG, "linearStub == null");
+			linearStub = (LinearLayout) findViewById(R.id.linearStub);
+			setupSettingsMenu(linearStub);
+		}
 
-					if(linearStub == null){
-						Log.e(TAG, "linearStub == null");
-						linearStub = (LinearLayout) findViewById(R.id.linearStub);
-						setupSettingsMenu(linearStub);
-					}
+		acceptButton.setOnClickListener(
+			new OnClickListener() {
+				public void onClick(View v) {
+					Log.d(TAG, "advanced settings have been chosen");
 
-					acceptButton.setOnClickListener(
-						new OnClickListener() {
-							public void onClick(View v) {
-								Log.d(TAG, "advanced settings have been chosen");
-
-								linearControl.setVisibility(LinearLayout.VISIBLE);
-								linearAdvanced.setVisibility(LinearLayout.GONE);
-							}
-						}
-					);
+					linearControl.setVisibility(LinearLayout.VISIBLE);
+					linearAdvanced.setVisibility(LinearLayout.GONE);
 				}
 			}
 		);
@@ -345,7 +381,7 @@ public class MainActivity extends Activity {
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if(DEBUG) Log.d(TAG, "back keycode received");
+//			if(DEBUG) Log.d(TAG, "back keycode received");
 			if(DEBUG) Log.d(TAG, "ending app");
 			finish();
 		}else if (keyCode == KeyEvent.KEYCODE_MENU){
@@ -356,37 +392,16 @@ public class MainActivity extends Activity {
 		return false;
 	}
 
-	@Override
-	protected void onResume() { // Activity was partially visible
-		if(DEBUG) Log.d(TAG, "__onResume()__");
-		registerReceiver(broadcastReceiver, intentFilter);
-		super.onResume();
-		if(DEBUG) Log.d(TAG, "return to menu");
-		setContentView(R.layout.activity_main);
-		linearStub = null;
-		connectButton();
-	}
-
-	// **** Activity is running at this point ****
-
-	@Override
-	public void onPause(){ // Activity was visible but now is now partially visible
-		if(DEBUG) Log.d(TAG, "__onPause()__");
-		unregisterReceiver(broadcastReceiver);
-		super.onPause();
-	}
-	// **** End Lifecycle ****    
-
-	private void changeRadioStatus(String stat){
-		((TextView)this.findViewById(R.id.radioTextView)).setText("Radio is " + stat);
-	}
-
-	private void changePairedStatus(Integer paired){
-		((TextView)this.findViewById(R.id.pairedTextView)).setText("Devices paired: " + paired.toString());
-	}
-
-	private void changeAudibleStatus(Integer audible){
-		((TextView)this.findViewById(R.id.audibleTextView)).setText("Devices audible: " + audible.toString());
-	}
+//	private void changeRadioStatus(String stat){
+//		((TextView)this.findViewById(R.id.radioTextView)).setText("Radio is " + stat);
+//	}
+//
+//	private void changePairedStatus(Integer paired){
+//		((TextView)this.findViewById(R.id.pairedTextView)).setText("Devices paired: " + paired.toString());
+//	}
+//
+//	private void changeAudibleStatus(Integer audible){
+//		((TextView)this.findViewById(R.id.audibleTextView)).setText("Devices audible: " + audible.toString());
+//	}
 }
 
