@@ -52,6 +52,7 @@ public class NewConnectedListener extends ConnectListenerImpl
 		RqPacketType.GP_ENABLE = true;
 		RqPacketType.BREATHING_ENABLE = true;
 		RqPacketType.LOGGING_ENABLE = true;
+		RqPacketType.RtoR_ENABLE = true;
 		
 		
 		//Creates a new ZephyrProtocol object and passes it the BTComms object
@@ -123,12 +124,17 @@ public class NewConnectedListener extends ConnectListenerImpl
 					break;
 					case RtoR_MSG_ID:
 					/*Do what you want. Printing Sequence Number for now*/
-					byte[] ByteSamples = null;
-					int[] RtoRSamples = RtoRInfoPacket.GetRtoRSamples(ByteSamples);
-					text1 = _aNewHandler.obtainMessage(RtoR_Interval);
-					b1.putString("RtoR", String.valueOf(ByteSamples));
-					text1.setData(b1);
-					_aNewHandler.sendMessage(text1);
+					int[] RtoRSamples = RtoRInfoPacket.GetRtoRSamples(DataArray);
+					//text1 = _aNewHandler.obtainMessage(RtoR_Interval);
+					//b1.putString("RtoR", String.valueOf(700));
+					//text1.setData(b1);
+					for(int i = 0; i < 18; i ++){
+						System.out.println("R to R interval " + i + " " + RtoRSamples[i]);
+						text1 = _aNewHandler.obtainMessage(RtoR_Interval);
+						b1.putFloat("RtoR", Float.valueOf(RtoRSamples[i]));
+						text1.setData(b1);
+						_aNewHandler.sendMessage(text1);
+					}
 					System.out.println("R to R Packet Sequence Number is "+RtoRInfoPacket.GetSeqNum(DataArray));
 					break;
 					case ACCEL_100mg_MSG_ID:
@@ -138,8 +144,7 @@ public class NewConnectedListener extends ConnectListenerImpl
 					case SUMMARY_MSG_ID:
 					/*Do what you want. Printing Sequence Number for now*/
 					System.out.println("Summary Packet Sequence Number is "+SummaryInfoPacket.GetSeqNum(DataArray));
-					break;
-					
+					break;					
 				}
 			}
 		});

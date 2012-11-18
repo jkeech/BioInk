@@ -86,7 +86,7 @@ public class BluetoothManager {
 		for (BluetoothDevice device : AllDevices) {
 			if (device.getName().startsWith("BH")) {
 				if (DEBUG)
-					Log.d(TAG, "Creating and adding a BH device");
+					Log.d(TAG, "Creating and adding " + device.getName());
 				BHDevices.add(new Bioharness(adapter, device, msgHandler));
 			}
 		}
@@ -97,6 +97,10 @@ public class BluetoothManager {
 			if(DEBUG)
 				Log.d(TAG, "Entering message handler");
 			String UID = msg.getData().getString("UID");
+			if(UID == null){
+				Log.e(TAG, "UID is Null!");
+				return;
+			}
 			switch (msg.what) {
 			case HEART_RATE:
 				float HeartRate = msg.getData().getFloat("HeartRate");
@@ -122,10 +126,11 @@ public class BluetoothManager {
 				break;
 				
 			case RtoR_Interval:
-				byte[] rtor = msg.getData().getByteArray("RtoR");
-				for(int sample = 0; sample < 35; sample=+2){
-					dataProcessing.push(UID, BiometricType.RR, BitOps.ZBTS(rtor[sample], rtor[sample+1]));
-				}
+				float rtor = msg.getData().getFloat("RtoR");
+				//Magic negative number conversion!
+				if(rtor > 60000)
+					rtor = rtor - 65535;
+			    dataProcessing.push(UID, BiometricType.RR, rtor);
 				break;
 			}
 		}
