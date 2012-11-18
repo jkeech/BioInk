@@ -152,6 +152,15 @@ public class Scene extends RajawaliRenderer {
 		cameraZPos += (zPos-cameraZPos)/DECAY;
 		cameraYPos += (yPos-cameraYPos)/DECAY;
 		
+		if(Float.isNaN(cameraZPos)){
+			cameraZPos = 0;
+			if(DEBUG) Log.w("viz","Camera Z Position NaN; Resetting to 0");
+		}
+		if(Float.isNaN(cameraYPos)){
+			cameraYPos = 0;
+			if(DEBUG) Log.w("viz","Camera Y Position NaN; Resetting to 0");
+		}
+		
 		mCamera.setLookAt(cameraLookAt);
 		mCamera.setZ(cameraZPos);
 		mCamera.setY(cameraYPos);

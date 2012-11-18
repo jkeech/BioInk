@@ -23,7 +23,7 @@ public class DataProcess {
 	public final static float MIN_RESP = 0;
 	public final static float MAX_RESP = 70;
 	public final static float MIN_HRV = 0;
-	public final static float MAX_HRV = 200;	
+	public final static float MAX_HRV = 300;	
 
 	//Distance that determines if two users are similar
 	public final float mdis = 0.08f;
@@ -46,8 +46,8 @@ public class DataProcess {
 	private float maxHRV = MAX_HRV;
 	
 	//R to R interval
-	private float minRR = -1250;
-	private float maxRR = 1250;
+	private float minRR = -2000;
+	private float maxRR = 2000;
 	
 	private BiometricType colorMapper = BiometricType.RESPIRATION;
 	private BiometricType energyMapper = BiometricType.HEARTRATE;
@@ -148,6 +148,7 @@ public class DataProcess {
 			users.get(uid).hrv_active = true;
 			break;
 		case RR:
+			if(DEBUG) Log.d("dp", "RR: " + value);
 			users.get(uid).addRR(value);
 			break;
 		default:
@@ -610,6 +611,8 @@ public class DataProcess {
 				mapColor(user.id);
 				mapEnergy(user.id);
 				user.calculateHRV();
+				
+				if(DEBUG) Log.d("dp", "HRV: " + user.hrv);
 				
 				if(!user.merged){
 					mapPosition(user.id);

@@ -13,12 +13,13 @@ public class User {
 	public String id;
 	public float heartrate = 0;
 	public float respiration = 0;
-	public float hrv = 100;
+	public float hrv = DataProcess.MAX_HRV / 2;
+	boolean sign = false;
 	public boolean hrv_active = false;
 	public boolean merged = false;
 	public List<Float> rrq;
 	
-	public final int qsize = 10;
+	public final int qsize = 20;
 	
 	public User(){
 		rrq = Collections.synchronizedList(new ArrayList<Float>());
@@ -69,13 +70,13 @@ public class User {
 			    Iterator<Float> i = rrq.iterator(); // Must be in synchronized block
 			    
 			    while(i.hasNext()){
-			    	float rri = i.next(); 
+			    	float rri = Math.abs(i.next()); 
 			    	if(previous == -1){
-			    		previous = rri;
+			    		previous = Math.abs(rri);
 			    		continue;
 			    	}else{
 			    		//calculate consecutive difference
-			    		float diff = rri + previous;
+			    		float diff = previous - rri;
 			    		diff = diff * diff;
 			    		//add the new square difference to the total
 			    		ssd = ssd + diff;
@@ -85,10 +86,10 @@ public class User {
 			    }
 			}
 			//calculate the MSSD
-			ssd = ssd / (qsize - 1);
+			ssd = ssd / (rrq.size() - 1);
 			//calculate the RMSSD value and update it to the HRV of the user
 			rmssd = (float) Math.sqrt(ssd);
-			rmssd = Math.max(Math.min(rmssd, 200), 0);
+			rmssd = Math.max(Math.min(rmssd, DataProcess.MAX_HRV), 0);
 			this.hrv = rmssd;
 		}
 		
