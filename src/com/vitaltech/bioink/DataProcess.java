@@ -231,12 +231,7 @@ public class DataProcess {
 		float uhv = mu.hrv;
 		
 		for(String uu: mu.members){
-			
-			if(users.get(uu).hrv_active){
-				map3DPosition(uu, uhr, ure, uhv);
-			}else{
-				map2DPosition(uu, uhr, ure);
-			}
+			map3DPosition(uu, uhr, ure, uhv);
 			
 			if(mu.members.indexOf(uu) == 0){
 				//first element on the member list
