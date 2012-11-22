@@ -14,7 +14,7 @@ import android.util.Log;
 public class BluetoothManager {
 	//Logging information
 	private final boolean DEBUG = MainActivity.DEBUG;
-	private static final String TAG = MainActivity.class.getSimpleName();
+	private static final String TAG = BluetoothManager.class.getSimpleName();
 
 	//Zephyr Consts
 	private final int HEART_RATE = 0x100;

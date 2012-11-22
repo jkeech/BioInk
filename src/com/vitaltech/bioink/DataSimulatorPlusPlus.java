@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import android.util.Log;
 
 public class DataSimulatorPlusPlus{
-	private static final String TAG = DataSimulatorPlus.class.getSimpleName();
+	private static final String TAG = DataSimulatorPlusPlus.class.getSimpleName();
 	private static final Boolean DEBUG = MainActivity.DEBUG;
 	
 	private DataProcess dp;

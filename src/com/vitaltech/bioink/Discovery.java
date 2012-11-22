@@ -1,26 +1,21 @@
 package com.vitaltech.bioink;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import zephyr.android.BioHarnessBT.BTClient;
-import zephyr.android.BioHarnessBT.ConnectListenerImpl;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
+import android.content.IntentFilter;
 import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,12 +28,22 @@ public class Discovery {
 	private BluetoothAdapter btAdapter;
 	private Context context;
 	private AtomicBoolean running;
+	private boolean listenerRunning;
+	private BroadcastReceiver receiver;
+	private IntentFilter filter;
+	private ArrayList<String> bhHeard;
+	private ArrayList<String> bhPaired;
 
 	public Discovery(Context _context, BluetoothAdapter _btAdapter) {
-		if (DEBUG) Log.d(TAG, "Bluetooth discovery instantiated");
+		if (DEBUG) Log.v(TAG, "Bluetooth discovery instantiated");
 		context = _context;
 		btAdapter = _btAdapter;
 		running = new AtomicBoolean(false);
+		bhHeard = new ArrayList<String>();
+		bhPaired = new ArrayList<String>();
+		receiver = null;
+		filter = null;
+		listenerRunning = false;
 	}
 
 	public void findDevices() {
@@ -58,106 +63,72 @@ public class Discovery {
 			return;
 		}
 
-//		// If BT is not on, request that it be enabled.
-//		if (! btAdapter.isEnabled()) {
-//			Intent enableIntent = new Intent(
-//					BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//			if (DEBUG) Log.d(TAG, "findDevices() start bluetooth intent");
-//			((Activity) context).startActivityForResult(enableIntent, 1);
-//		}
 		if (! btAdapter.isEnabled()) {
 			if (DEBUG) Log.d(TAG, "findDevices() bluetooth is off");
 			return;
 		}
-		if (DEBUG) Log.d(TAG, "findDevices() started");
+		if (DEBUG) Log.v(TAG, "findDevices() started");
 
 		if (DEBUG) Log.d(TAG, "findDevices() bluetooth adapter: " + btAdapter.getName() + ", state: "
 			+ btAdapter.getState() + ", scanmode: " + btAdapter.getScanMode());
 
 		Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
 		if (DEBUG) Log.d(TAG, "findDevices() bluetooth set size: " + pairedDevices.size());
+		bhPaired = new ArrayList<String>();
 		if (pairedDevices.size() > 0) {
 			for (BluetoothDevice device : pairedDevices) {
 				if (DEBUG) Log.d(TAG, "findDevices(): " + device.getName() + ", "
-					+ device.getAddress() + ", " + device.getBondState());
-
-		//		ConnectListenerImpl c = new ConnectListenerImpl(msgHandler, null);
-//				Bioharness bh = new Bioharness(btAdapter, device, msgHandler);
-				
-				BTClient btclient = new BTClient(btAdapter, device.getAddress());
-
-//				bt = new BTClient(_adapter, BtDevice.getAddress());
-//				if(DEBUG) Log.d(TAG,"Connected? " + bt.IsConnected());
-//				NConnListener = new NewConnectedListener(msgHandler,msgHandler);
-//				bt.addConnectedEventListener(NConnListener);
-
-
-				if(btclient == null){
-					Log.e(TAG, device.getName() + " null connection 1");
-					continue;
-				}
-				if(btclient.IsConnected()){
-					Log.e(TAG, device.getName() + " connected 2");
-					btclient.addConnectedEventListener(new NewConnectedListener(new Handler(Looper.getMainLooper()), new Handler(Looper.getMainLooper())));
-					try{
-						btclient.Close();
-					} catch (NullPointerException npe){
-						Log.e(TAG, "npe on btclient.close()");
-					}
-					continue;
-				}else if(! btclient.IsConnected()){
-					Log.e(TAG, device.getName() + " not connected 3");
-					continue;
-				}
-
-
-
-
-//				private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-				UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-				BluetoothSocket btSocket = null;
-//BluetoothDevice remoteDevice = myAdapter.getRemoteDevice("00:00:00:00:00:00");
-				BluetoothDevice remote = btAdapter.getRemoteDevice(device.getAddress());
-				try {
-//					btSocket = device.createRfcommSocketToServiceRecord(
-					btSocket = remote.createRfcommSocketToServiceRecord(
-							//UUID.fromString("BioInk Discovery")
-							//UUID.randomUUID()
-							MY_UUID
-					);
-				} catch (IOException e) {
-					Log.e(TAG, "could not socket to " + device.getName());
-				}
-				btAdapter.cancelDiscovery();
-				if( btSocket == null){
-					Log.d(TAG, "null device " + device.getName());
-				}else{
-					Log.d(TAG, "good socket to device " + device.getName());
-					try {
-						Log.d(TAG, "try connect to socket to device " + device.getName());
-						btSocket.connect();
-						Log.d(TAG, "finished connect to socket to device " + device.getName());
-					} catch (IOException e) {
-//						e.printStackTrace();
-						Log.e(TAG, "connect to socket failed " + device.getName());
-//						continue;
-					}
-					try {
-						Log.d(TAG, "try closing socket to device " + device.getName());
-						btSocket.close();
-						Log.d(TAG, "finished closing socket to device " + device.getName());
-					} catch (IOException e) {
-//						e.printStackTrace();
-						Log.e(TAG, "close device failed " + device.getName());
-//						continue;
-					}
-					Log.w(TAG, "connected and closed device " + device.getName());
+						+ device.getAddress() + ", " + device.getBondState());
+				if(device.getName().startsWith("BH")){
+					bhPaired.add(device.getName());
 				}
 			}
+			if(DEBUG) Log.v(TAG, "found " + bhPaired.size() + " bioharness pairs");
+		}
+
+		if( ! listenerRunning){
+			if(DEBUG) Log.v(TAG, "add receiver, intent, discovery");
+			bhHeard = new ArrayList<String>();
+			receiver = new BroadcastReceiver() {
+				public void onReceive(final Context context, Intent intent) {
+					String action = intent.getAction();
+					if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+						// Get the BluetoothDevice object from the Intent
+						BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+						// Add the name and address to an array adapter to show in a ListView
+						//		            mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+						Log.i(TAG, "heard " + device.getName());
+						if(device.getName().startsWith("BH")){
+							bhHeard.add(device.getName());
+						}
+						((Activity)context).runOnUiThread(
+							new Runnable() {
+								public void run() {
+									if(DEBUG) Log.v(TAG,"discovery found new device");
+//									showDevices();
+									try{
+										((TextView)((Activity)context).findViewById(R.id.audibleTextView)).setText("Heard: " + bhHeard.toString());
+									}catch (Throwable e){
+										Log.e(TAG, "error updating number of heard devices");
+										Log.e(TAG, e.toString());
+									}
+								}
+							}
+						);
+					}
+				}
+			};
+			filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+			context.registerReceiver(receiver, filter);
+			listenerRunning = true;
+			btAdapter.startDiscovery();
+			showProgress(true);
+		}else{
+			if(DEBUG) Log.v(TAG, "listener already running");
 		}
 
 		if(running.getAndSet(false)){
-			if(DEBUG) Log.d(TAG, "findDevices() finished clean");
+			if(DEBUG) Log.v(TAG, "findDevices() finished clean");
 		}else{
 			Log.w(TAG, "findDevices() finished dirty");
 		}
@@ -180,14 +151,14 @@ public class Discovery {
 				((TextView)activity.findViewById(R.id.pairedTextView)).setVisibility(View.INVISIBLE);
 				((TextView)activity.findViewById(R.id.audibleTextView)).setVisibility(View.INVISIBLE);
 			}else if(btAdapter.isEnabled()){
-				if(DEBUG) Log.d(TAG, "Bluetooth enabled");
+				if(DEBUG) Log.v(TAG, "Bluetooth enabled, showing devices");
 				((TextView)activity.findViewById(R.id.radioTextView)).setText("Radio is on");
 				((TextView)activity.findViewById(R.id.pairedTextView)).setVisibility(View.VISIBLE);
-				((TextView)activity.findViewById(R.id.pairedTextView)).setText("add \npaired\n here");
+				((TextView)activity.findViewById(R.id.pairedTextView)).setText("Paired: " + bhPaired.toString());
 				((TextView)activity.findViewById(R.id.audibleTextView)).setVisibility(View.VISIBLE);
-				((TextView)activity.findViewById(R.id.audibleTextView)).setText("add audible here");
+				((TextView)activity.findViewById(R.id.audibleTextView)).setText("Heard: " + bhHeard.toString());
 			}else{
-				if(DEBUG) Log.d(TAG, "Bluetooth disabled");
+				if(DEBUG) Log.v(TAG, "Bluetooth disabled, radio is off");
 				((TextView)activity.findViewById(R.id.radioTextView)).setText("Radio is off");
 				((TextView)activity.findViewById(R.id.pairedTextView)).setVisibility(View.INVISIBLE);
 				((TextView)activity.findViewById(R.id.audibleTextView)).setVisibility(View.INVISIBLE);
@@ -195,10 +166,48 @@ public class Discovery {
 		} catch (NullPointerException nullExc){
 			Log.w(TAG, "null pointer exception: layout not set up?");
 		} finally{
-			if(DEBUG) Log.d(TAG, "finished showing devices");
+			if(DEBUG) Log.v(TAG, "finished showing devices");
 		}
 	}
 
+	public void stopListener(){
+		if(! listenerRunning){
+			Log.w(TAG, "listener not running; not stopping");
+			return;
+		}
+		if(receiver == null || filter == null){
+			Log.e(TAG, "error in listener setup; not stopping");
+			return;
+		}
+		Log.d(TAG, "ending discovery: " + btAdapter.cancelDiscovery());
+		showProgress(false);
+		try{
+			context.unregisterReceiver(receiver);
+		} catch (IllegalArgumentException arg){
+			Log.w(TAG, arg.toString());
+		}
+		listenerRunning = false;
+	}
+
+	public void showProgress(final boolean b){
+		((Activity)context).runOnUiThread(
+				new Runnable() {
+					public void run() {
+						try{
+							ProgressBar bar = ((ProgressBar)((Activity)context).findViewById(R.id.progress));
+							if(b){
+								bar.setVisibility(ProgressBar.VISIBLE);
+							}else{
+								bar.setVisibility(ProgressBar.INVISIBLE);
+							}
+						}catch (Throwable e){
+							Log.e(TAG, "error toggling progress indicator");
+							Log.e(TAG, e.toString());
+						}
+					}
+				}
+		);
+	}
 	// Turn a Set of 8-bit Bytes into a List of 10-bit Longs
 	public static List<Long> zephyParse(Set<Byte> samples) {
 		List<Long> decoded = new ArrayList<Long>();
@@ -222,9 +231,7 @@ public class Discovery {
 				shifter = 1;
 			}
 		}
-		
 		return decoded;
 	}
-
 }
 

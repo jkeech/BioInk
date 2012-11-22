@@ -1,124 +1,140 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="horizontal"
-    android:baselineAligned="false"
-    android:background="@android:color/white"
-    android:weightSum="2" >
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="horizontal"
+	android:baselineAligned="false"
+	android:background="@android:color/white"
+	android:weightSum="2" >
 
-    <LinearLayout
-        android:id="@+id/logoSide"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:contentDescription="@string/bio_ink_logo" >
+	<LinearLayout
+		android:id="@+id/logoSide"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_weight="1"
+		android:contentDescription="@string/bio_ink_logo" >
 
-        <ImageView
-            android:id="@+id/logoImageView"
+		<ImageView
+			android:id="@+id/logoImageView"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:contentDescription="@string/bio_ink_logo"
-            android:src="@drawable/logo_transparent" />
+			android:layout_gravity="center"
+			android:contentDescription="@string/bio_ink_logo"
+			android:src="@drawable/logo_transparent" />
 
-        <VideoView
-            android:visibility="gone"
-            android:id="@+id/logoVideoView"
+		<VideoView
+			android:visibility="gone"
+			android:id="@+id/logoVideoView"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:contentDescription="@string/bio_ink_logo" />
+			android:layout_gravity="center"
+			android:contentDescription="@string/bio_ink_logo" />
 
-        <WebView
-            android:visibility="gone"
-            android:id="@+id/logoWebView"
+		<WebView
+			android:visibility="gone"
+			android:id="@+id/logoWebView"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:contentDescription="@string/bio_ink_logo" />
+			android:layout_gravity="center"
+			android:contentDescription="@string/bio_ink_logo" />
+	</LinearLayout>
+	
+	<LinearLayout
+		android:id="@+id/linearControl"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_weight="1"
+		android:gravity="center_vertical|center_horizontal"
+		android:orientation="vertical"
+		android:weightSum="15" >
 
-    </LinearLayout>
-    
-    <LinearLayout
-        android:id="@+id/linearControl"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical|center_horizontal"
-        android:orientation="vertical"
-        android:weightSum="15" >
+		<LinearLayout 
+			android:id="@+id/linearRadio"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:gravity="center_vertical|center_horizontal"
+			android:orientation="horizontal" >
+			
+			<TextView
+				android:id="@+id/radioTextView"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/radio_status" />
+			
+			<ProgressBar
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/progress"
+				android:visibility="invisible"
+				style="@android:style/Widget.ProgressBar.Small"
+				android:layout_marginLeft="5dp" />
+		</LinearLayout>
 
-        <TextView
-            android:id="@+id/radioTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/radio_status" />
+		<TextView
+			android:id="@+id/pairedTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/devices_paired" />
 
-        <TextView
-            android:id="@+id/pairedTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/devices_paired" />
+		<TextView
+			android:id="@+id/audibleTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/devices_audible" />
 
-        <TextView
-            android:id="@+id/audibleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/devices_audible" />
+		<Button
+			android:id="@+id/vizButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="20dp"
+			android:layout_marginRight="20dp"
+			android:layout_marginTop="20dp"
+			android:layout_weight="3"
+			android:text="@string/viz_button" />
 
-       <Button
-            android:id="@+id/vizButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_weight="3"
-            android:text="@string/viz_button" />
+		<Button
+			android:id="@+id/menuButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="0dp"
+			android:layout_marginRight="0dp"
+			android:layout_marginTop="30dp"
+			android:layout_weight="1"
+			android:text="@string/menu_button" />
+	</LinearLayout>
 
-        <Button
-            android:id="@+id/menuButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginTop="30dp"
-            android:layout_weight="1"
-            android:text="@string/menu_button" />
-    </LinearLayout>
+	<LinearLayout
+		android:id="@+id/linearAdvanced"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_weight="1"
+		android:gravity="center_vertical|center_horizontal"
+		android:orientation="vertical"
+		android:visibility="gone"
+		android:layout_margin="30dp"
+		android:weightSum="15" >
 
-    <LinearLayout
-        android:id="@+id/linearAdvanced"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical|center_horizontal"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:layout_margin="30dp"
-        android:weightSum="15" >
+		<TextView
+			android:id="@+id/advanced"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/advanced_settings" />
 
-        <TextView
-            android:id="@+id/advanced"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/advanced_settings" />
+		<LinearLayout
+			android:id="@+id/linearStub"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center_vertical|center_horizontal"
+			android:orientation="vertical" />
 
-        <LinearLayout
-	        android:id="@+id/linearStub"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-	        android:gravity="center_vertical|center_horizontal"
-	        android:orientation="vertical" />
+		<Button
+			android:id="@+id/accept_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/accept" />
+	</LinearLayout>
 
-        <Button
-            android:id="@+id/accept_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/accept" />
-    </LinearLayout>
 </LinearLayout>
