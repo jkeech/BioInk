@@ -43,6 +43,8 @@ public class MainActivity extends Activity {
 	private LinearLayout linearAdvanced;
 	private LinearLayout linearStub;
 	private Button acceptButton;
+	private String startText = "Start Visualization";
+	private String enableBlue = "Enable Bluetooth";
 	
 	// Settings
 	private float minHR = DataProcess.MIN_HR;
@@ -63,18 +65,18 @@ public class MainActivity extends Activity {
 		if(DEBUG) Log.d(TAG, "__onCreate()__");
 
 		btAdapter=BluetoothAdapter.getDefaultAdapter();
-		if(btAdapter==null){
+		if(btAdapter == null){
 			Toast.makeText(getApplicationContext(),"Bluetooth not available on this device",Toast.LENGTH_LONG).show();
 			Log.e(TAG, "Bluetooth not available on this device");
 			finish();
 		}
 
-		discovery=new Discovery(this, btAdapter);
+		discovery = new Discovery(this, btAdapter);
 
 		// Catch Bluetooth radio events
-		intentFilter=new IntentFilter();
+		intentFilter = new IntentFilter();
 		intentFilter.addAction(android.bluetooth.BluetoothAdapter.ACTION_STATE_CHANGED);
-		broadcastReceiver=new BroadcastReceiver() {
+		broadcastReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context contxt, Intent intent) {
 				if(DEBUG) Log.d(TAG, "broadcast received");
@@ -82,32 +84,22 @@ public class MainActivity extends Activity {
 				switch(code){
 				case BluetoothAdapter.STATE_ON:
 					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => on");
-//					changeRadioStatus("on");
-					vizButton.setText("Start Visualization");
-//					BTMan.bt_enabled();
-					new Thread(new Runnable() { 
-						public void run(){
-							if(DEBUG) Log.v(TAG,"start finding devices");
-							discovery.findDevices(btAdapter);
-						}
-					}).start();
+					vizButton.setText(startText);
+					doDiscovery();
 					break;
 				case BluetoothAdapter.STATE_OFF:
 					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => off");
-//					changeRadioStatus("off");
-					vizButton.setText("Enable Bluetooth");
-//					BTMan.bt_disabled();
+					vizButton.setText(enableBlue);
+					discovery.showDevices();
 					break;
 				case BluetoothAdapter.STATE_TURNING_OFF:
 				case BluetoothAdapter.STATE_TURNING_ON:
 					if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => changing");
-//					changeRadioStatus("changing");
 					break;
 				default:
 					Log.e(TAG, "bluetooth broadcast receiver => undefined: " + code);
 					break;
 				}
-				discovery.showDevices();
 			}
 		};
 		registerReceiver(broadcastReceiver, intentFilter);
@@ -141,19 +133,22 @@ public class MainActivity extends Activity {
 		vizButton = (Button) this.findViewById(R.id.vizButton);
 		if(btAdapter.isEnabled()){
 			Log.v(TAG, "radio is on");
-			vizButton.setText("Start Visualization");
+			vizButton.setText(startText);
+			doDiscovery();
 		}else{
 			Log.v(TAG, "radio is off");
-			vizButton.setText("Enable Bluetooth");
+			vizButton.setText(enableBlue);
+			discovery.showDevices();
 		}
 		this.vizButton.setOnClickListener(
 			new OnClickListener() {
 				public void onClick(View v) {
 					if(DEBUG) Log.d(TAG, "Viz Button pressed");
-					if(vizButton.getText()=="Enable Bluetooth"){
+					if(vizButton.getText() == enableBlue){
+						if (DEBUG) Log.d(TAG,"enabling bluetooth");
 						startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
-					}else{
-						if (DEBUG) Log.d(TAG,"start viz");
+					}else if(vizButton.getText() == startText){
+						if (DEBUG) Log.d(TAG,"starting viz");
 						Intent myIntent = new Intent(v.getContext(), RajActivity.class);
 						
 						// transfer settings to RajActivity
@@ -165,6 +160,8 @@ public class MainActivity extends Activity {
 						myIntent.putExtra("energyType", energyType);
 						
 						startActivityForResult(myIntent, 0);
+					}else{
+						Log.w(TAG, "button labeled as " + vizButton.getText());
 					}
 				}
 			}
@@ -197,13 +194,11 @@ public class MainActivity extends Activity {
 		this.menuButton.setOnClickListener(
 			new OnClickListener() {
 				public void onClick(View v) {
-					Log.d(TAG, "add right side advanced controls");
+					if(DEBUG) Log.d(TAG, "add right side advanced controls");
 					showAdvanced();
 				}
 			}
 		);
-		
-		discovery.showDevices();
 	}
 	
 	private void showAdvanced(){
@@ -211,7 +206,7 @@ public class MainActivity extends Activity {
 		linearAdvanced.setVisibility(LinearLayout.VISIBLE);
 
 		if(linearStub == null){
-			Log.e(TAG, "linearStub == null");
+			Log.w(TAG, "linearStub == null");
 			linearStub = (LinearLayout) findViewById(R.id.linearStub);
 			setupSettingsMenu(linearStub);
 		}
@@ -219,7 +214,7 @@ public class MainActivity extends Activity {
 		acceptButton.setOnClickListener(
 			new OnClickListener() {
 				public void onClick(View v) {
-					Log.d(TAG, "advanced settings have been chosen");
+					if(DEBUG) Log.d(TAG, "advanced settings have been chosen");
 
 					linearControl.setVisibility(LinearLayout.VISIBLE);
 					linearAdvanced.setVisibility(LinearLayout.GONE);
@@ -231,10 +226,9 @@ public class MainActivity extends Activity {
 	private void setupSettingsMenu(LinearLayout ll_stub){
 		// Grabbing the Application context
 		final Context context = getApplication();
-		
-		settingsLayout = ll_stub;
-		
+
 		// Setting the orientation to vertical
+		settingsLayout = ll_stub;
 		settingsLayout.setOrientation(LinearLayout.VERTICAL);
 		 
 		// Defining the LinearLayout layout parameters to fill the parent.
@@ -287,6 +281,7 @@ public class MainActivity extends Activity {
 		seekBarHR.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Float>() {
 		    public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
 				if(minValue.equals(maxValue)){
+					Log.w(TAG, "fixing: min == max");
 					minValue -= 0.00001f;
 					maxValue += 0.00001f;
 				}
@@ -380,6 +375,7 @@ public class MainActivity extends Activity {
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(DEBUG) Log.d(TAG, "keycode: " + keyCode + ", keyevent: " + event.toString());
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 //			if(DEBUG) Log.d(TAG, "back keycode received");
 			if(DEBUG) Log.d(TAG, "ending app");
@@ -392,16 +388,27 @@ public class MainActivity extends Activity {
 		return false;
 	}
 
-//	private void changeRadioStatus(String stat){
-//		((TextView)this.findViewById(R.id.radioTextView)).setText("Radio is " + stat);
-//	}
-//
-//	private void changePairedStatus(Integer paired){
-//		((TextView)this.findViewById(R.id.pairedTextView)).setText("Devices paired: " + paired.toString());
-//	}
-//
-//	private void changeAudibleStatus(Integer audible){
-//		((TextView)this.findViewById(R.id.audibleTextView)).setText("Devices audible: " + audible.toString());
-//	}
+	private void doDiscovery(){
+		if(DEBUG) Log.d(TAG, "doDiscovery(): start");
+		new Thread(
+			new Runnable() {
+				public void run(){
+					if(DEBUG) Log.v(TAG,"doDiscovery(): start finding devices");
+					discovery.findDevices();
+					if(DEBUG) Log.v(TAG,"doDiscovery(): finding devices finished");
+					runOnUiThread(
+						new Runnable() {
+							public void run() {
+								if(DEBUG) Log.v(TAG,"doDiscovery(): show devices start");
+								discovery.showDevices();
+								if(DEBUG) Log.v(TAG,"doDiscovery(): finish showing devices");
+							}
+						}
+					);
+				}
+			}
+		).start();
+		if(DEBUG) Log.d(TAG, "doDiscovery() finished");
+	}
 }
 

@@ -9,7 +9,7 @@ import android.util.Log;
 public class Bioharness {
 	//Logging information
 	private final boolean DEBUG = MainActivity.DEBUG;
-	private static final String TAG = MainActivity.class.getSimpleName();
+	private static final String TAG = Bioharness.class.getSimpleName();
 	
 	//Private globals needed to maintain BT connection
 	private BluetoothDevice BtDevice;
