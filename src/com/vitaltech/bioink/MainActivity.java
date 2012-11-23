@@ -30,7 +30,7 @@ import android.widget.VideoView;
 
 @SuppressWarnings("unused")
 public class MainActivity extends Activity {
-	private static final String TAG=MainActivity.class.getSimpleName();
+	private static final String TAG = MainActivity.class.getSimpleName();
 	public static final Boolean DEBUG=true;
 
 	private Button vizButton;
@@ -95,22 +95,22 @@ public class MainActivity extends Activity {
 					int code = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
 					switch(code){
 					case BluetoothAdapter.STATE_ON:
-						if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => on");
+						if(DEBUG) Log.v(TAG, "bluetooth broadcast receiver => on");
 						vizButton.setText(startText);
 						doDiscovery();
 						break;
 					case BluetoothAdapter.STATE_OFF:
-						if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => off");
+						if(DEBUG) Log.v(TAG, "bluetooth broadcast receiver => off");
 						vizButton.setText(enableBlue);
 						discovery.stopListener();
 						discovery.showDevices();
 						break;
 					case BluetoothAdapter.STATE_TURNING_OFF:
 					case BluetoothAdapter.STATE_TURNING_ON:
-						if(DEBUG) Log.d(TAG, "bluetooth broadcast receiver => changing");
+						if(DEBUG) Log.v(TAG, "bluetooth broadcast receiver => changing");
 						break;
 					default:
-						Log.e(TAG, "bluetooth broadcast receiver => undefined: " + code);
+						Log.e(TAG, "bluetooth broadcast receiver => undefined: " + action + ", "+ code);
 						break;
 					}
 				}
@@ -421,10 +421,10 @@ public class MainActivity extends Activity {
 							}
 						}
 					);
+					if(DEBUG) Log.v(TAG, "doDiscovery() finished");
 				}
 			}
 		).start();
-		if(DEBUG) Log.v(TAG, "doDiscovery() finished");
 	}
 }
 

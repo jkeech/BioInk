@@ -46,6 +46,7 @@ public class Discovery {
 		listenerRunning = false;
 	}
 
+	/** atomic */
 	public void findDevices() {
 		if(running.getAndSet(true)){
 			Log.w(TAG, "findDevices() already running");
@@ -62,9 +63,8 @@ public class Discovery {
 			Log.e(TAG, "findDevices() Bluetooth not available on this device");
 			return;
 		}
-
 		if (! btAdapter.isEnabled()) {
-			if (DEBUG) Log.d(TAG, "findDevices() bluetooth is off");
+			if (DEBUG) Log.w(TAG, "findDevices() bluetooth is off");
 			return;
 		}
 		if (DEBUG) Log.v(TAG, "findDevices() started");
@@ -77,13 +77,13 @@ public class Discovery {
 		bhPaired = new ArrayList<String>();
 		if (pairedDevices.size() > 0) {
 			for (BluetoothDevice device : pairedDevices) {
-				if (DEBUG) Log.d(TAG, "findDevices(): " + device.getName() + ", "
+				if (DEBUG) Log.v(TAG, "findDevices(): " + device.getName() + ", "
 						+ device.getAddress() + ", " + device.getBondState());
 				if(device.getName().startsWith("BH")){
 					bhPaired.add(device.getName());
 				}
 			}
-			if(DEBUG) Log.v(TAG, "found " + bhPaired.size() + " bioharness pairs");
+			if(DEBUG) Log.d(TAG, "found " + bhPaired.size() + " bioharness pairs: " + bhPaired.toString());
 		}
 
 		if( ! listenerRunning){
@@ -94,22 +94,21 @@ public class Discovery {
 					String action = intent.getAction();
 					if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 						// Get the BluetoothDevice object from the Intent
-						BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+						final BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 						// Add the name and address to an array adapter to show in a ListView
 						//		            mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
-						Log.i(TAG, "heard " + device.getName());
+						Log.v(TAG, "heard " + device.getName());
 						if(device.getName().startsWith("BH")){
 							bhHeard.add(device.getName());
 						}
 						((Activity)context).runOnUiThread(
 							new Runnable() {
 								public void run() {
-									if(DEBUG) Log.v(TAG,"discovery found new device");
-//									showDevices();
+									if(DEBUG) Log.v(TAG,"discovery found new device: " + device.getName());
 									try{
 										((TextView)((Activity)context).findViewById(R.id.audibleTextView)).setText("Heard: " + bhHeard.toString());
 									}catch (Throwable e){
-										Log.e(TAG, "error updating number of heard devices");
+										Log.e(TAG, "error updating heard devices");
 										Log.e(TAG, e.toString());
 									}
 								}
@@ -124,7 +123,7 @@ public class Discovery {
 			btAdapter.startDiscovery();
 			showProgress(true);
 		}else{
-			if(DEBUG) Log.v(TAG, "listener already running");
+			if(DEBUG) Log.d(TAG, "listener already running");
 		}
 
 		if(running.getAndSet(false)){
@@ -179,7 +178,7 @@ public class Discovery {
 			Log.e(TAG, "error in listener setup; not stopping");
 			return;
 		}
-		Log.d(TAG, "ending discovery: " + btAdapter.cancelDiscovery());
+		Log.d(TAG, "cancel discovery success: " + btAdapter.cancelDiscovery());
 		showProgress(false);
 		try{
 			context.unregisterReceiver(receiver);
@@ -208,6 +207,7 @@ public class Discovery {
 				}
 		);
 	}
+
 	// Turn a Set of 8-bit Bytes into a List of 10-bit Longs
 	public static List<Long> zephyParse(Set<Byte> samples) {
 		List<Long> decoded = new ArrayList<Long>();
