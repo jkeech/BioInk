@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import rajawali.RajawaliActivity;
@@ -124,6 +125,12 @@ public class RajActivity extends RajawaliActivity {
 		BTMan = null;
 
 		scene = null;
+
+		/** Hack needed to exit RajActivity without crash */
+		BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
+		if(bt.isEnabled()){
+			bt.disable();
+		}
 
 		System.gc();
 		finish();

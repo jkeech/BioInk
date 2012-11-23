@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Movie;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -81,18 +82,17 @@ public class MainActivity extends Activity {
 		broadcastReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context contxt, Intent intent) {
-				if(DEBUG) Log.v(TAG, "intent received: " + intent.toString());
 				String action = intent.getAction();
-				Log.e(TAG, action);
+				if(DEBUG) Log.v(TAG, "intent received: " + intent.toString() + ", " + action);
 				if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)){
-					Log.e(TAG, "discovery finished");
+					if(DEBUG) Log.v(TAG, "discovery finished");
 					discovery.stopListener();
 					discovery.showDevices();
 				}else if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
-					Log.e(TAG, "discovery started");
+					if(DEBUG) Log.v(TAG, "discovery started");
 					discovery.showProgress(true);
 				}else{
-					int code = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+					int code = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -99);
 					switch(code){
 					case BluetoothAdapter.STATE_ON:
 						if(DEBUG) Log.v(TAG, "bluetooth broadcast receiver => on");
@@ -110,7 +110,7 @@ public class MainActivity extends Activity {
 						if(DEBUG) Log.v(TAG, "bluetooth broadcast receiver => changing");
 						break;
 					default:
-						Log.e(TAG, "bluetooth broadcast receiver => undefined: " + action + ", "+ code);
+						Log.w(TAG, "bluetooth broadcast receiver => undefined: " + action + ", "+ code);
 						break;
 					}
 				}
@@ -199,6 +199,11 @@ public class MainActivity extends Activity {
 //		gifView.setInitialScale(100);
 //		gifView.setVisibility(WebView.VISIBLE);
 
+//		Movie gifMovie = (Movie) findViewById(R.id.logoMovieView);
+		
+		
+		
+		
 //		LinearLayout linearLogo = (LinearLayout) findViewById(R.id.logoSide);
 //		linearLogo.addView(gifView);
 

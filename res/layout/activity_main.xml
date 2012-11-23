@@ -37,6 +37,14 @@
 			android:layout_height="fill_parent"
 			android:layout_gravity="center"
 			android:contentDescription="@string/bio_ink_logo" />
+
+		<VideoView
+			android:visibility="gone"
+			android:id="@+id/logoVideoView"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_gravity="center"
+			android:contentDescription="@string/bio_ink_logo" />
 	</LinearLayout>
 	
 	<LinearLayout
