@@ -33,7 +33,7 @@ public class BluetoothManager {
 		if (DEBUG)
 			Log.d(TAG, "Entering BluetoothManager Constructor");
 		
-		System.out.println("Test");
+		if(DEBUG) Log.v(TAG, "Test");
 
 		// Set our BTManager Globals
 		adapter = _adapter;
