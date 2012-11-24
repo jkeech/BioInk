@@ -128,7 +128,7 @@ public class RajActivity extends RajawaliActivity {
 		/** Hack needed to exit RajActivity without crash */
 		BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
 		if(bt.isEnabled()){
-			Log.w(TAG, "turning off bluetooth before exiting");
+			if(DEBUG) Log.w(TAG, "turning off bluetooth before exiting");
 			bt.disable();
 		}
 
