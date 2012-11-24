@@ -121,7 +121,7 @@ public class RajActivity extends RajawaliActivity {
 		if(BTMan != null){
 			BTMan.bt_disabled();
 		}
-		BTMan = null;
+//		BTMan = null;
 
 		scene = null;
 
@@ -147,6 +147,13 @@ public class RajActivity extends RajawaliActivity {
 	public void onResume(){
 		if(DEBUG) Log.d(TAG, "__onResume()__");
 		super.onResume();
+		new Thread(
+			new Runnable() {
+				public void run() {
+					BTMan.start();
+				}
+			}
+		).start();
 	}
 }
 
