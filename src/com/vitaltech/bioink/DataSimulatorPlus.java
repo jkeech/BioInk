@@ -27,6 +27,12 @@ public class DataSimulatorPlus {
 			while(run){
 				if(DEBUG) Log.d(TAG, "simulator loop " + loop++);
 				fourCorners();	// no Z plane
+
+				if(loop > -1){ // always true
+					return; // four corners is more than enough for now
+				}
+				
+				
 //				fourCornersZ();	// in Z plane
 				Thread.sleep(2 * wait);
 				walkabout();
