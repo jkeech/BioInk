@@ -4,7 +4,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import rajawali.RajawaliActivity;
