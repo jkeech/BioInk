@@ -37,6 +37,7 @@ public class MainActivity extends Activity {
 	private Button acceptButton;
 	private String startText = "Start Visualization";
 	private String enableBlue = "Enable Bluetooth";
+	private Boolean backFromRaj;
 	
 	// Settings
 	private float minHR = DataProcess.MIN_HR;
@@ -62,10 +63,7 @@ public class MainActivity extends Activity {
 			Log.e(TAG, "Bluetooth not available on this device");
 			finish();
 		}
-		if(! btAdapter.isEnabled()){
-			startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
-		}
-
+		backFromRaj = false;
 		discovery = new Discovery(this, btAdapter);
 
 		// Catch Bluetooth radio events
@@ -117,6 +115,12 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume() { // Activity was partially visible
 		if(DEBUG) Log.d(TAG, "__onResume()__");
+		if(btAdapter == null){
+			Log.w(TAG, "no bluetooth device");
+		}else if(! btAdapter.isEnabled() && backFromRaj){
+			backFromRaj = false;
+			startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
+		}
 		registerReceiver(broadcastReceiver, intentFilter);
 		super.onResume();
 		if(DEBUG) Log.d(TAG, "return to menu");
@@ -169,6 +173,7 @@ public class MainActivity extends Activity {
 						myIntent.putExtra("colorType", colorType);
 						myIntent.putExtra("energyType", energyType);
 						
+						backFromRaj = true;
 						startActivityForResult(myIntent, 0);
 					}else{
 						Log.w(TAG, "button labeled as " + vizButton.getText());

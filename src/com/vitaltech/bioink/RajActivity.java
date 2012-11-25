@@ -90,7 +90,7 @@ public class RajActivity extends RajawaliActivity {
 			public void run() {
 				//new DataSimulatorPlusPlus(dp, 5).run();
 				//new DataSimulatorDP(dp).run();
-				new DataSimulatorPlus(dp).run(); // show 2D four corners
+//				new DataSimulatorPlus(dp).run(); // show 2D four corners
 			}
 		});// debug data
 		dataSim.start();
