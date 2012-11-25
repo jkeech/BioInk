@@ -62,6 +62,9 @@ public class MainActivity extends Activity {
 			Log.e(TAG, "Bluetooth not available on this device");
 			finish();
 		}
+		if(! btAdapter.isEnabled()){
+			startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
+		}
 
 		discovery = new Discovery(this, btAdapter);
 
