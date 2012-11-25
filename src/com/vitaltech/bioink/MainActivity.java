@@ -334,6 +334,12 @@ public class MainActivity extends Activity {
 		    }
 		});
 		
+		// set up the sliders to be at the current correct position
+		seekBarHR.setSelectedMinValue(minHR);
+		seekBarHR.setSelectedMaxValue(maxHR);
+		seekBarResp.setSelectedMinValue(minResp);
+		seekBarResp.setSelectedMaxValue(maxResp);
+		
 		final String[] biometricTypes = { "Heartrate", "Respiration" };
 		ArrayAdapter<String> aa = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, biometricTypes);
 		aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);	        
