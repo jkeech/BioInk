@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import android.util.Log;
 
-@SuppressWarnings("unused")
 public class DataProcess {
 	//List of current users
 	public ConcurrentHashMap<String,User> users;
@@ -148,7 +147,7 @@ public class DataProcess {
 			users.get(uid).hrv_active = true;
 			break;
 		case RR:
-			if(DEBUG) Log.d("dp", "RR: " + value);
+			if(DEBUG) Log.v("dp", "RR: " + value);
 			users.get(uid).addRR(value);
 			break;
 		default:
@@ -607,7 +606,7 @@ public class DataProcess {
 				mapEnergy(user.id);
 				user.calculateHRV();
 				
-				if(DEBUG) Log.d("dp", "HRV: " + user.hrv);
+				if(DEBUG) Log.v("dp", "HRV: " + user.hrv);
 				
 				if(!user.merged){
 					mapPosition(user.id);

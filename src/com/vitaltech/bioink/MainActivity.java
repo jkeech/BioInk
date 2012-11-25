@@ -8,28 +8,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Movie;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
-@SuppressWarnings("unused")
 public class MainActivity extends Activity {
 	private static final String TAG = MainActivity.class.getSimpleName();
 	public static final Boolean DEBUG=true;
@@ -46,6 +37,7 @@ public class MainActivity extends Activity {
 	private Button acceptButton;
 	private String startText = "Start Visualization";
 	private String enableBlue = "Enable Bluetooth";
+	private Boolean backFromRaj;
 	
 	// Settings
 	private float minHR = DataProcess.MIN_HR;
@@ -71,7 +63,7 @@ public class MainActivity extends Activity {
 			Log.e(TAG, "Bluetooth not available on this device");
 			finish();
 		}
-
+		backFromRaj = false;
 		discovery = new Discovery(this, btAdapter);
 
 		// Catch Bluetooth radio events
@@ -123,6 +115,12 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume() { // Activity was partially visible
 		if(DEBUG) Log.d(TAG, "__onResume()__");
+		if(btAdapter == null){
+			Log.w(TAG, "no bluetooth device");
+		}else if(! btAdapter.isEnabled() && backFromRaj){
+			backFromRaj = false;
+			startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
+		}
 		registerReceiver(broadcastReceiver, intentFilter);
 		super.onResume();
 		if(DEBUG) Log.d(TAG, "return to menu");
@@ -177,6 +175,7 @@ public class MainActivity extends Activity {
 						myIntent.putExtra("colorType", colorType);
 						myIntent.putExtra("energyType", energyType);
 						
+						backFromRaj = true;
 						startActivityForResult(myIntent, 0);
 					}else{
 						Log.w(TAG, "button labeled as " + vizButton.getText());

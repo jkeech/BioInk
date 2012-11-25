@@ -5,7 +5,6 @@ import android.os.Message;
 import android.util.Log;
 import zephyr.android.BioHarnessBT.*;
 
-@SuppressWarnings("unused")
 public class NewConnectedListener extends ConnectListenerImpl
 {
 	private static final String TAG = NewConnectedListener.class.getSimpleName();

@@ -3,14 +3,12 @@ package com.vitaltech.bioink;
 import java.util.ArrayList;
 import java.util.Set;
 
-import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-@SuppressLint("HandlerLeak")
 public class BluetoothManager {
 	//Logging information
 	private final boolean DEBUG = MainActivity.DEBUG;
@@ -38,7 +36,8 @@ public class BluetoothManager {
 		// Set our BTManager Globals
 		adapter = _adapter;
 		dataProcessing = _dataProcessing;
-
+	}
+	public void start(){
 		if (DEBUG)
 			Log.d(TAG, "Initialize ArrayList of BHDevices");
 		// Initialize Bioharness object array
@@ -62,11 +61,13 @@ public class BluetoothManager {
 	public void bt_disabled() {
 		if (DEBUG)
 			Log.d(TAG, "bt_disabled called");
-		for (Bioharness device : BHDevices) {
-			device.disconnect();
+		if(BHDevices != null){
+			for (Bioharness device : BHDevices) {
+				device.disconnect();
+			}
+			Log.d(TAG, "Clear out BHDevices list");
+			BHDevices.clear();
 		}
-		Log.d(TAG, "Clear out BHDevices list");
-		BHDevices.clear();
 		Log.d(TAG, "bt_disabled exiting");
 	}
 
@@ -95,7 +96,7 @@ public class BluetoothManager {
 	private final Handler msgHandler = new Handler() {
 		public void handleMessage(Message msg) {
 			if(DEBUG)
-				Log.d(TAG, "Entering message handler");
+				Log.v(TAG, "Entering message handler");
 			String UID = msg.getData().getString("UID");
 			if(UID == null){
 				Log.e(TAG, "UID is Null!");
@@ -105,7 +106,7 @@ public class BluetoothManager {
 			case HEART_RATE:
 				float HeartRate = msg.getData().getFloat("HeartRate");
 				if(DEBUG)
-					Log.d(TAG, "Pushing a heartrate packet of value " + HeartRate);
+					Log.v(TAG, "Pushing a heartrate packet of value " + HeartRate);
 				dataProcessing.push(UID, BiometricType.HEARTRATE, HeartRate);
 				break;
 

@@ -98,6 +98,10 @@ public class Discovery {
 						// Add the name and address to an array adapter to show in a ListView
 						//		            mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
 						Log.v(TAG, "heard " + device.getName());
+						if(device.getName() == null){
+							if(DEBUG) Log.w(TAG, "null device name");
+							return;
+						}
 						if(device.getName().startsWith("BH")){
 							bhHeard.add(device.getName());
 						}
