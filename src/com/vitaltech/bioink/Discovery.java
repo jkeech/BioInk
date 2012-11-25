@@ -164,6 +164,8 @@ public class Discovery {
 			}
 		} catch (NullPointerException nullExc){
 			Log.w(TAG, "null pointer exception: layout not set up?");
+		} catch (Exception e){
+			Log.w(TAG,"unknown exception occured: " + e);
 		} finally{
 			if(DEBUG) Log.v(TAG, "finished showing devices");
 		}

@@ -132,8 +132,8 @@ public class RajActivity extends RajawaliActivity {
 			bt.disable();
 		}
 
-		System.gc();
 		finish();
+		System.gc();
 	}
 
 	@Override

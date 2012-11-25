@@ -18,10 +18,10 @@ public class DataProcess {
 	private CalculationTimer task;
 	private int uinterval = 0;
 
-	public final static float MIN_HR = 0;
-	public final static float MAX_HR = 250;
-	public final static float MIN_RESP = 0;
-	public final static float MAX_RESP = 70;
+	public final static float MIN_HR = 40;
+	public final static float MAX_HR = 180;
+	public final static float MIN_RESP = 5;
+	public final static float MAX_RESP = 60;
 	public final static float MIN_HRV = 0;
 	public final static float MAX_HRV = 300;	
 
