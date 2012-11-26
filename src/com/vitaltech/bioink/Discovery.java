@@ -121,7 +121,7 @@ public class Discovery {
 			context.registerReceiver(receiver, filter);
 			listenerRunning = true;
 			btAdapter.startDiscovery();
-			showProgress(true);
+			//showProgress(true);
 		}else{
 			if(DEBUG) Log.d(TAG, "listener already running");
 		}
@@ -181,7 +181,7 @@ public class Discovery {
 			return;
 		}
 		Log.d(TAG, "cancel discovery success: " + btAdapter.cancelDiscovery());
-		showProgress(false);
+		//showProgress(false);
 		try{
 			context.unregisterReceiver(receiver);
 		} catch (IllegalArgumentException arg){

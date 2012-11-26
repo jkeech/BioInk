@@ -90,7 +90,7 @@ public class MainActivity extends Activity {
 					discovery.showDevices();
 				}else if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
 					if(DEBUG) Log.v(TAG, "discovery started");
-					discovery.showProgress(true);
+					//discovery.showProgress(true);
 				}else{
 					int code = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -99);
 					switch(code){
