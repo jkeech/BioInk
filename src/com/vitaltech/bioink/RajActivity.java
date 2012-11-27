@@ -3,6 +3,7 @@ package com.vitaltech.bioink;
 import android.bluetooth.BluetoothAdapter;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ public class RajActivity extends RajawaliActivity {
 	private Scene scene;
 	private BluetoothManager BTMan;
 	private Thread dataSim;
+	private StatsDisplay statsDisplay;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -66,19 +68,28 @@ public class RajActivity extends RajawaliActivity {
 		BTMan = new BluetoothManager(BluetoothAdapter.getDefaultAdapter(), dp); // FIXME
 		// END BLUETOOTH
 
-		// DISPLAY FPS
+		// DISPLAY FPS AND STATS
 		if(DEBUG){
 			LinearLayout ll = new LinearLayout(this);
-			ll.setOrientation(LinearLayout.HORIZONTAL);
+			ll.setOrientation(LinearLayout.VERTICAL);
 			TextView label = new TextView(this);
 			label.setTextSize(20);
+			label.setGravity(Gravity.LEFT);
 			ll.addView(label);
 			mLayout.addView(ll);
 			
 			FPSDisplay fps = new FPSDisplay(this,label);
 			scene.setFPSUpdateListener(fps);
+			
+			TextView label2 = new TextView(this);
+			label2.setTextSize(20);
+			label2.setGravity(Gravity.RIGHT);
+			ll.addView(label2);
+			mLayout.addView(ll);
+			
+			statsDisplay = new StatsDisplay(this,label2,dp);
 		}
-		// END FPS DISPLAY
+		// END FPS AND STATS DISPLAY
 
 		// start data feeding thread for testing
 		if(dataSim != null){
