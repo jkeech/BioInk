@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import rajawali.RajawaliActivity;
@@ -76,7 +77,6 @@ public class RajActivity extends RajawaliActivity {
 			label.setTextSize(20);
 			label.setGravity(Gravity.LEFT);
 			ll.addView(label);
-			mLayout.addView(ll);
 			
 			FPSDisplay fps = new FPSDisplay(this,label);
 			scene.setFPSUpdateListener(fps);
@@ -84,10 +84,10 @@ public class RajActivity extends RajawaliActivity {
 			TextView label2 = new TextView(this);
 			label2.setTextSize(20);
 			label2.setGravity(Gravity.RIGHT);
-			ll.addView(label2);
-			mLayout.addView(ll);
-			
+			ll.addView(label2);			
 			statsDisplay = new StatsDisplay(this,label2,dp);
+			
+			mLayout.addView(ll);
 		}
 		// END FPS AND STATS DISPLAY
 

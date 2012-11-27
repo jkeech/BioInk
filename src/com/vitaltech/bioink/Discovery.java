@@ -97,6 +97,10 @@ public class Discovery {
 						final BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 						// Add the name and address to an array adapter to show in a ListView
 						//		            mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+						if(device == null || device.getName() == null){
+							Log.w(TAG,"null device found in discovery");
+							return;
+						}
 						Log.v(TAG, "heard " + device.getName());
 						if(device.getName().startsWith("BH")){
 							bhHeard.add(device.getName());
