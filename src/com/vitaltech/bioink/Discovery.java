@@ -97,6 +97,10 @@ public class Discovery {
 						final BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 						// Add the name and address to an array adapter to show in a ListView
 						//		            mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+						if(device == null || device.getName() == null){
+							Log.w(TAG,"null device found in discovery");
+							return;
+						}
 						Log.v(TAG, "heard " + device.getName());
 						if(device.getName() == null){
 							if(DEBUG) Log.w(TAG, "null device name");
@@ -125,7 +129,7 @@ public class Discovery {
 			context.registerReceiver(receiver, filter);
 			listenerRunning = true;
 			btAdapter.startDiscovery();
-			showProgress(true);
+			//showProgress(true);
 		}else{
 			if(DEBUG) Log.d(TAG, "listener already running");
 		}
@@ -185,7 +189,7 @@ public class Discovery {
 			return;
 		}
 		Log.d(TAG, "cancel discovery success: " + btAdapter.cancelDiscovery());
-		showProgress(false);
+		//showProgress(false);
 		try{
 			context.unregisterReceiver(receiver);
 		} catch (IllegalArgumentException arg){
