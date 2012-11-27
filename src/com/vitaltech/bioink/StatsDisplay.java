@@ -7,7 +7,6 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 import android.widget.TextView;
 import rajawali.RajawaliActivity;
-import rajawali.util.FPSUpdateListener;
 
 @SuppressWarnings("deprecation")
 public class StatsDisplay {
