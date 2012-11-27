@@ -103,7 +103,8 @@ public class RajActivity extends RajawaliActivity {
 		if(DEBUG) Log.d(TAG, "keycode received " + keyCode);
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if(DEBUG) Log.d(TAG, "back keycode received, ending raj viz activity");
-			cleanExit();
+//			cleanExit();
+			finish();
 			return true;
 		}
 		return false;
@@ -135,7 +136,7 @@ public class RajActivity extends RajawaliActivity {
 //		}
 
 		finish();
-		System.gc();
+//		System.gc();
 	}
 
 	@Override

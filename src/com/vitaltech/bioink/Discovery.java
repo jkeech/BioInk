@@ -170,7 +170,7 @@ public class Discovery {
 			Log.w(TAG, "null pointer exception: layout not set up?");
 		} catch (Exception e){
 			Log.w(TAG,"unknown exception occured: " + e);
-		} finally{
+		} finally {
 			if(DEBUG) Log.v(TAG, "finished showing devices");
 		}
 	}
@@ -195,23 +195,25 @@ public class Discovery {
 	}
 
 	public void showProgress(final boolean b){
-		((Activity)context).runOnUiThread(
-				new Runnable() {
-					public void run() {
-						try{
-							ProgressBar bar = ((ProgressBar)((Activity)context).findViewById(R.id.progress));
-							if(b){
-								bar.setVisibility(ProgressBar.VISIBLE);
-							}else{
-								bar.setVisibility(ProgressBar.INVISIBLE);
-							}
-						}catch (Throwable e){
-							Log.e(TAG, "error toggling progress indicator");
-							Log.e(TAG, e.toString());
-						}
-					}
-				}
-		);
+		Log.e(TAG, "progress bar disabled");
+		return;
+//		((Activity)context).runOnUiThread(
+//				new Runnable() {
+//					public void run() {
+//						try{
+//							ProgressBar bar = ((ProgressBar)((Activity)context).findViewById(R.id.progress));
+//							if(b){
+//								bar.setVisibility(ProgressBar.VISIBLE);
+//							}else{
+//								bar.setVisibility(ProgressBar.INVISIBLE);
+//							}
+//						}catch (Throwable e){
+//							Log.e(TAG, "error toggling progress indicator");
+//							Log.e(TAG, e.toString());
+//						}
+//					}
+//				}
+//		);
 	}
 
 	// Turn a Set of 8-bit Bytes into a List of 10-bit Longs
