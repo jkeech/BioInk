@@ -125,7 +125,7 @@ public class Discovery {
 			context.registerReceiver(receiver, filter);
 			listenerRunning = true;
 			btAdapter.startDiscovery();
-			showProgress(true);
+			//showProgress(true);
 		}else{
 			if(DEBUG) Log.d(TAG, "listener already running");
 		}
@@ -168,6 +168,8 @@ public class Discovery {
 			}
 		} catch (NullPointerException nullExc){
 			Log.w(TAG, "null pointer exception: layout not set up?");
+		} catch (Exception e){
+			Log.w(TAG,"unknown exception occured: " + e);
 		} finally{
 			if(DEBUG) Log.v(TAG, "finished showing devices");
 		}
@@ -183,7 +185,7 @@ public class Discovery {
 			return;
 		}
 		Log.d(TAG, "cancel discovery success: " + btAdapter.cancelDiscovery());
-		showProgress(false);
+		//showProgress(false);
 		try{
 			context.unregisterReceiver(receiver);
 		} catch (IllegalArgumentException arg){

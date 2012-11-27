@@ -82,7 +82,7 @@ public class MainActivity extends Activity {
 					discovery.showDevices();
 				}else if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
 					if(DEBUG) Log.v(TAG, "discovery started");
-					discovery.showProgress(true);
+					//discovery.showProgress(true);
 				}else{
 					int code = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -99);
 					switch(code){
@@ -127,6 +127,7 @@ public class MainActivity extends Activity {
 		if(DEBUG) Log.d(TAG, "return to menu");
 		setContentView(R.layout.activity_main);
 		linearStub = null;
+		
 		connectButton();
 	}
 
@@ -143,7 +144,7 @@ public class MainActivity extends Activity {
 	// **** End Lifecycle ****    
 
 
-	private void connectButton(){
+	private void connectButton(){		
 		// Configure single Button system
 		vizButton = (Button) findViewById(R.id.vizButton);
 		if(btAdapter.isEnabled()){
@@ -155,6 +156,7 @@ public class MainActivity extends Activity {
 			vizButton.setText(enableBlue);
 			discovery.showDevices();
 		}
+		
 		vizButton.setOnClickListener(
 			new OnClickListener() {
 				public void onClick(View v) {
@@ -182,7 +184,6 @@ public class MainActivity extends Activity {
 				}
 			}
 		);
-
 	// swap static logo for animated gif
 //		ImageView img = (ImageView) findViewById(R.id.logoImageView);
 //		img.setVisibility(ImageView.GONE);
@@ -210,7 +211,7 @@ public class MainActivity extends Activity {
 		linearControl = (LinearLayout) findViewById(R.id.linearControl);
 		linearAdvanced = (LinearLayout) findViewById(R.id.linearAdvanced);
 		acceptButton = (Button) findViewById(R.id.accept_button);
-
+		
 		menuButton = (Button) findViewById(R.id.menuButton);
 		menuButton.setOnClickListener(
 			new OnClickListener() {

@@ -129,7 +129,7 @@ public class BluetoothManager {
 			case RtoR_Interval:
 				float rtor = msg.getData().getFloat("RtoR");
 				//Magic negative number conversion!
-				if(rtor > 60000)
+				if(rtor > 32767)
 					rtor = rtor - 65535;
 			    dataProcessing.push(UID, BiometricType.RR, rtor);
 				break;
