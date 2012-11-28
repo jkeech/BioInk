@@ -147,6 +147,10 @@ public class MainActivity extends Activity {
 	private void connectButton(){		
 		// Configure single Button system
 		vizButton = (Button) findViewById(R.id.vizButton);
+		if(vizButton == null){
+			Log.e(TAG, "vizButton == null");
+			return;
+		}
 		if(btAdapter.isEnabled()){
 			Log.v(TAG, "radio is on");
 			vizButton.setText(startText);
@@ -213,7 +217,10 @@ public class MainActivity extends Activity {
 		acceptButton = (Button) findViewById(R.id.accept_button);
 		
 		menuButton = (Button) findViewById(R.id.menuButton);
-		//fixme
+		if(menuButton == null){
+			Log.e(TAG, "menuButton == null");
+			return;
+		}
 		menuButton.setOnClickListener(
 			new OnClickListener() {
 				public void onClick(View v) {
