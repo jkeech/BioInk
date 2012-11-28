@@ -141,7 +141,7 @@ public class MainActivity extends Activity {
 		discovery.stopListener();
 		super.onPause();
 	}
-	// **** End Lifecycle ****    
+	// **** End Lifecycle ****
 
 
 	private void connectButton(){		
@@ -213,6 +213,7 @@ public class MainActivity extends Activity {
 		acceptButton = (Button) findViewById(R.id.accept_button);
 		
 		menuButton = (Button) findViewById(R.id.menuButton);
+		//fixme
 		menuButton.setOnClickListener(
 			new OnClickListener() {
 				public void onClick(View v) {
