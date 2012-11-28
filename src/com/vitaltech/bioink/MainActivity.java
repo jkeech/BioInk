@@ -286,15 +286,15 @@ public class MainActivity extends Activity {
 		TextView colorText = new TextView(this);
 		TextView energyText = new TextView(this);
 			        
-//		HRText.setWidth(150);
-//		RespText.setWidth(150);
-//		colorText.setWidth(150);
-//		energyText.setWidth(150);
+		HRText.setWidth(150);
+		RespText.setWidth(150);
+		colorText.setWidth(150);
+		energyText.setWidth(150);
 		
-//		minHRText.setWidth(50);
-//		maxHRText.setWidth(50);
-//		minRespText.setWidth(50);
-//		maxRespText.setWidth(50);
+		minHRText.setWidth(50);
+		maxHRText.setWidth(50);
+		minRespText.setWidth(50);
+		maxRespText.setWidth(50);
 		
 		minHRText.setText(String.format("%d", (int)minHR));
 		maxHRText.setText(String.format("%d", (int)maxHR));
