@@ -27,7 +27,6 @@ public class MainActivity extends Activity {
 
 	private Button vizButton;
 	private Button menuButton;
-//	private Discovery discovery;
 	private BroadcastReceiver broadcastReceiver;
 	private IntentFilter intentFilter;
 	private BluetoothAdapter btAdapter;
@@ -131,7 +130,6 @@ public class MainActivity extends Activity {
 		if(DEBUG) Log.d(TAG, "__onPause()__");
 		unregisterReceiver(broadcastReceiver);
 		btAdapter.cancelDiscovery();
-//		discovery.stopListener();
 		super.onPause();
 	}
 	// **** End Lifecycle ****
