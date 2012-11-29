@@ -49,43 +49,6 @@
 		android:orientation="vertical"
 		android:weightSum="15" >
 
-		<LinearLayout 
-			android:id="@+id/linearRadio"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:gravity="center_vertical|center_horizontal"
-			android:orientation="horizontal" >
-			
-			<TextView
-				android:id="@+id/radioTextView"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/radio_status" />
-			
-			<ProgressBar
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:id="@+id/progress"
-				android:visibility="gone"
-				style="@android:style/Widget.ProgressBar.Small"
-				android:layout_marginLeft="5dp" />
-		</LinearLayout>
-
-		<TextView
-			android:id="@+id/pairedTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="@string/devices_paired" />
-
-		<TextView
-			android:id="@+id/audibleTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="@string/devices_audible" />
-
 		<Button
 			android:id="@+id/vizButton"
 			android:layout_width="wrap_content"

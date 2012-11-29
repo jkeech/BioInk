@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
 
 	private Button vizButton;
 	private Button menuButton;
-	private Discovery discovery;
+//	private Discovery discovery;
 	private BroadcastReceiver broadcastReceiver;
 	private IntentFilter intentFilter;
 	private BluetoothAdapter btAdapter;
@@ -64,7 +64,6 @@ public class MainActivity extends Activity {
 			finish();
 		}
 		backFromRaj = false;
-		discovery = new Discovery(this, btAdapter);
 
 		// Catch Bluetooth radio events
 		intentFilter = new IntentFilter();
@@ -78,24 +77,18 @@ public class MainActivity extends Activity {
 				if(DEBUG) Log.v(TAG, "intent received: " + intent.toString() + ", " + action);
 				if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)){
 					if(DEBUG) Log.v(TAG, "discovery finished");
-					discovery.stopListener();
-					discovery.showDevices();
 				}else if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
 					if(DEBUG) Log.v(TAG, "discovery started");
-					//discovery.showProgress(true);
 				}else{
 					int code = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -99);
 					switch(code){
 					case BluetoothAdapter.STATE_ON:
 						if(DEBUG) Log.v(TAG, "bluetooth broadcast receiver => on");
 						vizButton.setText(startText);
-						doDiscovery();
 						break;
 					case BluetoothAdapter.STATE_OFF:
 						if(DEBUG) Log.v(TAG, "bluetooth broadcast receiver => off");
 						vizButton.setText(enableBlue);
-						discovery.stopListener();
-						discovery.showDevices();
 						break;
 					case BluetoothAdapter.STATE_TURNING_OFF:
 					case BluetoothAdapter.STATE_TURNING_ON:
@@ -138,7 +131,7 @@ public class MainActivity extends Activity {
 		if(DEBUG) Log.d(TAG, "__onPause()__");
 		unregisterReceiver(broadcastReceiver);
 		btAdapter.cancelDiscovery();
-		discovery.stopListener();
+//		discovery.stopListener();
 		super.onPause();
 	}
 	// **** End Lifecycle ****
@@ -154,11 +147,9 @@ public class MainActivity extends Activity {
 		if(btAdapter.isEnabled()){
 			Log.v(TAG, "radio is on");
 			vizButton.setText(startText);
-			doDiscovery();
 		}else{
 			Log.v(TAG, "radio is off");
 			vizButton.setText(enableBlue);
-			discovery.showDevices();
 		}
 		
 		vizButton.setOnClickListener(
@@ -188,29 +179,6 @@ public class MainActivity extends Activity {
 				}
 			}
 		);
-	// swap static logo for animated gif
-//		ImageView img = (ImageView) findViewById(R.id.logoImageView);
-//		img.setVisibility(ImageView.GONE);
-
-//		VideoView gifView = (VideoView) findViewById( R.id.logoVideoView);
-//		gifView.setMediaController( new MediaController( getApplicationContext()));
-//		gifView.setVideoURI( Uri.parse( "android.resource://" + getPackageName() + "/" + R.raw.logo));
-//		gifView.requestFocus();
-//		gifView.start();
-//		gifView.setVisibility( VideoView.VISIBLE);
-
-//		WebView gifView = (WebView) findViewById(R.id.logoWebView);
-//		gifView.loadUrl("file:///android_res/raw/logo.gif");
-//		gifView.setInitialScale(100);
-//		gifView.setVisibility(WebView.VISIBLE);
-
-//		Movie gifMovie = (Movie) findViewById(R.id.logoMovieView);
-		
-		
-		
-		
-//		LinearLayout linearLogo = (LinearLayout) findViewById(R.id.logoSide);
-//		linearLogo.addView(gifView);
 
 		linearControl = (LinearLayout) findViewById(R.id.linearControl);
 		linearAdvanced = (LinearLayout) findViewById(R.id.linearAdvanced);
@@ -408,11 +376,6 @@ public class MainActivity extends Activity {
 		settingsLayout.addView(RespLayout);
 		settingsLayout.addView(ColorLayout);
 		settingsLayout.addView(EnergyLayout);
-
-//		((TextView) findViewById(R.id.hrTextView)).setWidth(
-//				((TextView) findViewById(R.id.respTextView)).getWidth());
-//		HRText.setWidth( RespText.getWidth());
-//		colorText.setWidth( energyText.getWidth());
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -422,34 +385,10 @@ public class MainActivity extends Activity {
 			finish();
 		}else if (keyCode == KeyEvent.KEYCODE_MENU){
 			if(DEBUG) Log.d(TAG, "onCreateOptionsMenu()");
-			doDiscovery();
 			// TODO toggle advanced settings
 			return true;
 		}
 		return false;
-	}
-
-	private void doDiscovery(){
-		if(DEBUG) Log.v(TAG, "doDiscovery(): start");
-		new Thread(
-			new Runnable() {
-				public void run(){
-					if(DEBUG) Log.v(TAG,"doDiscovery(): start finding devices");
-					discovery.findDevices();
-					if(DEBUG) Log.d(TAG,"doDiscovery(): finding devices finished");
-					runOnUiThread(
-						new Runnable() {
-							public void run() {
-								if(DEBUG) Log.v(TAG,"doDiscovery(): show devices start");
-								discovery.showDevices();
-								if(DEBUG) Log.d(TAG,"doDiscovery(): finish showing devices");
-							}
-						}
-					);
-					if(DEBUG) Log.v(TAG, "doDiscovery() finished");
-				}
-			}
-		).start();
 	}
 }
 

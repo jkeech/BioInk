@@ -95,8 +95,8 @@ public class BluetoothManager {
 
 	private final Handler msgHandler = new Handler() {
 		public void handleMessage(Message msg) {
-			if(DEBUG)
-				Log.v(TAG, "Entering message handler" + msg.getData().toString());
+			//if(DEBUG)
+			//	Log.v(TAG, "Entering message handler" + msg.getData().toString());
 			String UID = msg.getData().getString("UID");
 			if(UID == null){
 				Log.e(TAG, "UID is Null!");

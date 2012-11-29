@@ -164,9 +164,6 @@ public class Scene extends RajawaliRenderer {
 		mCamera.setLookAt(cameraLookAt);
 		mCamera.setZ(cameraZPos);
 		mCamera.setY(cameraYPos);
-		
-		if(DEBUG)
-			Log.v("viz","Looking at: "+cameraLookAt.x + " " + cameraLookAt.y + " " + cameraLookAt.z + "; Z position: " + cameraZPos + " Y position: " + cameraYPos);
 	}
 	
 	/*
